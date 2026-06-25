@@ -930,3 +930,17 @@ Si, dentro de 30 dias si la tela esta en buen estado.
 **¿Cual es el metraje minimo?**
 Minimo 0.5 metros por producto.
 
+
+---
+
+## Stack Tecnologico Completo
+
+| Capa | Tecnologia | Proposito |
+|---|---|---|
+| Frontend | React 18 + Vite | Interfaz SPA |
+| Estilos | Tailwind CSS | Diseno Glassmorphism |
+| Animaciones | Framer Motion | Transiciones fluidas |
+| Backend | Java 17 (Vanilla) | API REST sin frameworks |
+| Base de Datos | PostgreSQL 14+ | Persistencia ACID |
+| JSON | GSON 2.10.1 | Serializacion |
+
