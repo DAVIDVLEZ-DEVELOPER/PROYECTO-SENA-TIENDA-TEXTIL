@@ -844,3 +844,15 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 - ix: correcciones de errores
 - docs: cambios en documentacion
 
+
+---
+
+## Creditos y Autores
+
+### Desarrollo Principal
+- **Jhon Moreno** - Arquitecto Principal y Desarrollador Lead
+
+### Colaboradores
+- **David Velez** - Documentacion tecnica y diagramas del proyecto
+- Equipo de Desarrollo SENA
+
