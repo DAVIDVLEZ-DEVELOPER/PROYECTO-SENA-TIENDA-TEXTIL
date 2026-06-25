@@ -959,3 +959,19 @@ cd backend-java/conexionPostgres
 javac -d bin -cp "lib/*" src/**/*.java
 `
 
+
+---
+
+## Tutoriales Rapidos
+
+### Agregar un producto (Vendedor)
+1. Iniciar sesion como vendedor
+2. Ir a Mis Productos > Agregar producto
+3. Completar formulario con fotos y stock
+4. Esperar aprobacion del administrador
+
+### Reportar un problema (Cliente)
+1. Ir a Ayuda > Reportar Problemas
+2. Describir el incidente y adjuntar evidencia
+3. Seguir el estado en Mis Tickets
+
