@@ -975,3 +975,15 @@ javac -d bin -cp "lib/*" src/**/*.java
 2. Describir el incidente y adjuntar evidencia
 3. Seguir el estado en Mis Tickets
 
+
+---
+
+## Variables de Entorno
+
+`ash
+DB_PASSWORD=tu_contrasena_postgres
+DB_USER=postgres
+DB_NAME=tienda_digital_textiles_db
+VITE_API_URL=http://localhost:8081
+`
+
