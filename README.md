@@ -788,3 +788,10 @@ Recientemente hemos integrado mejoras significativas orientadas a facilitar el d
 
 ## Contacto
 Puedes comunicarte vía [GitHub](https://github.com/Jhonmoreno000) 
+
+---
+
+## Diagramas del Proyecto
+
+Esta seccion incluye los diagramas tecnicos que describen la arquitectura de datos y la navegacion de la plataforma D&D Textil.
+
