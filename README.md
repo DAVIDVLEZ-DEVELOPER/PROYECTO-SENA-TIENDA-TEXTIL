@@ -887,3 +887,16 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 - Prepared Statements contra SQL injection
 - Credenciales de BD via variables de entorno (DB_PASSWORD)
 
+
+---
+
+## Estadisticas del Proyecto
+
+| Metrica | Valor |
+|---|---|
+| Lineas de codigo (Frontend) | ~5000+ |
+| Lineas de codigo (Backend) | ~3000+ |
+| Tablas en PostgreSQL | 20+ |
+| Endpoints API | 40+ |
+| Componentes React | 30+ |
+
