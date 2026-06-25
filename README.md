@@ -809,3 +809,18 @@ El siguiente diagrama muestra las **22+ tablas** de PostgreSQL y sus relaciones:
 - inventory_batches, waste_events, stock_thresholds
 - support_tickets, ug_reports, coupons, pending_products
 
+
+### Mapa de Navegacion de la Plataforma
+
+Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador.
+
+<p align="center">
+  <img src="public/images/diagrams/mapa-navegacion.png" alt="Mapa de navegacion D&D Textil" width="900" />
+</p>
+
+**Areas del mapa:**
+- **Publico:** Inicio, Catalogo, Nosotros, Contacto, Carrito, Login
+- **Cliente:** Compras, Mi Coleccion, Ayuda (tickets y reportes)
+- **Vendedor:** Inventario, Ventas, Configuracion
+- **Administrador:** Resumen, Usuarios, Catalogo, Moderacion, Analytics, Soporte, Reportes
+
