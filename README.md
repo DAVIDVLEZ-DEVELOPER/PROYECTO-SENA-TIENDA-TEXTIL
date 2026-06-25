@@ -824,3 +824,23 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 - **Vendedor:** Inventario, Ventas, Configuracion
 - **Administrador:** Resumen, Usuarios, Catalogo, Moderacion, Analytics, Soporte, Reportes
 
+
+---
+
+## Guia de Contribucion
+
+¡Nos encantaria que contribuyas a mejorar D&D Textil!
+
+### Pasos para Contribuir
+1. **Fork** el repositorio en GitHub
+2. **Clona** tu fork: git clone https://github.com/tu-usuario/PROYECTO-SENA-TIENDA-TEXTIL-.git
+3. **Crea una rama:** git checkout -b feature/tu-feature
+4. **Realiza cambios** con commits descriptivos
+5. **Push:** git push origin feature/tu-feature
+6. **Abre un Pull Request** describiendo tus cambios
+
+### Convenciones de Commits
+- eat: nuevas funcionalidades
+- ix: correcciones de errores
+- docs: cambios en documentacion
+
