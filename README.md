@@ -795,3 +795,17 @@ Puedes comunicarte vía [GitHub](https://github.com/Jhonmoreno000)
 
 Esta seccion incluye los diagramas tecnicos que describen la arquitectura de datos y la navegacion de la plataforma D&D Textil.
 
+
+### Diagrama Entidad-Relacion (ERD)
+
+El siguiente diagrama muestra las **22+ tablas** de PostgreSQL y sus relaciones: usuarios, productos, pedidos, inventario, cupones, tickets de soporte y mas.
+
+<p align="center">
+  <img src="public/images/diagrams/diagrama-erd.png" alt="Diagrama Entidad-Relacion D&D Textil" width="900" />
+</p>
+
+**Tablas principales del diagrama:**
+- users, products, categories, orders, order_items
+- inventory_batches, waste_events, stock_thresholds
+- support_tickets, ug_reports, coupons, pending_products
+
