@@ -944,3 +944,18 @@ Minimo 0.5 metros por producto.
 | Base de Datos | PostgreSQL 14+ | Persistencia ACID |
 | JSON | GSON 2.10.1 | Serializacion |
 
+
+---
+
+## Testing y Calidad de Codigo
+
+`ash
+# Frontend
+npm run lint
+npm run test
+
+# Backend - compilar y ejecutar
+cd backend-java/conexionPostgres
+javac -d bin -cp "lib/*" src/**/*.java
+`
+
