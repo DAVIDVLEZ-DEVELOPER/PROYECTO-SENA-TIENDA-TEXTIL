@@ -856,3 +856,23 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 - **David Velez** - Documentacion tecnica y diagramas del proyecto
 - Equipo de Desarrollo SENA
 
+
+---
+
+## Mejores Practicas de Desarrollo
+
+### Frontend
+- Usar componentes funcionales con hooks
+- Componentes pequeños y reutilizables
+- Lazy loading para optimizar rendimiento
+
+### Backend
+- Seguir patrones SOLID
+- Validar todos los inputs del usuario
+- Usar prepared statements para SQL
+
+### Base de Datos
+- Mantener integridad referencial con foreign keys
+- Usar indices en tablas grandes
+- Documentar cambios en el schema
+
