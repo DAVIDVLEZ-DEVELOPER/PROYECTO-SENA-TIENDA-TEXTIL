@@ -1000,3 +1000,17 @@ git checkout -b feature/mi-rama
 git push -u origin feature/mi-rama
 `
 
+
+---
+
+## Resumen de Mejoras Documentales
+
+Documentacion ampliada por **David Velez** incluyendo:
+
+- Diagrama Entidad-Relacion (ERD) de PostgreSQL
+- Mapa de navegacion por roles (Cliente, Vendedor, Admin)
+- Guia de contribucion y mejores practicas
+- Roadmap, changelog y FAQs adicionales
+
+**Ultima actualizacion:** 25 de Junio de 2026 | **Version del documento:** 1.6.0
+
