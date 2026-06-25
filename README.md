@@ -856,6 +856,19 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 - **David Velez** - Documentacion tecnica y diagramas del proyecto
 - Equipo de Desarrollo SENA
 
+---
+
+## Roadmap - Futuras Mejoras
+
+### Q3 2026
+- [ ] Integracion con pasarelas de pago (Stripe, PayPal)
+- [ ] Notificaciones en tiempo real con WebSockets
+- [ ] Modulo de resenas y calificaciones
+
+### Q4 2026
+- [ ] API REST con documentacion OpenAPI/Swagger
+- [ ] App movil nativa (React Native)
+- [ ] Soporte multiidioma (i18n)
 
 ---
 
@@ -949,7 +962,7 @@ Minimo 0.5 metros por producto.
 
 ## Testing y Calidad de Codigo
 
-`ash
+```bash
 # Frontend
 npm run lint
 npm run test
@@ -957,7 +970,7 @@ npm run test
 # Backend - compilar y ejecutar
 cd backend-java/conexionPostgres
 javac -d bin -cp "lib/*" src/**/*.java
-`
+```
 
 
 ---
@@ -980,25 +993,25 @@ javac -d bin -cp "lib/*" src/**/*.java
 
 ## Variables de Entorno
 
-`ash
+```bash
 DB_PASSWORD=tu_contrasena_postgres
 DB_USER=postgres
 DB_NAME=tienda_digital_textiles_db
 VITE_API_URL=http://localhost:8081
-`
+```
 
 
 ---
 
 ## Comandos Utiles de Git
 
-`ash
+```bash
 git log --oneline --graph --all
 git status
 git diff
 git checkout -b feature/mi-rama
 git push -u origin feature/mi-rama
-`
+```
 
 
 ---
