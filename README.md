@@ -900,3 +900,19 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 | Endpoints API | 40+ |
 | Componentes React | 30+ |
 
+
+---
+
+## Changelog
+
+### v1.0.0 - Release Inicial
+- Autenticacion multi-rol (cliente, vendedor, admin)
+- Catalogo de productos y carrito de compras
+- Calculadora de metraje
+- Sistema de tickets de soporte
+- Panel administrativo con metricas
+
+### v1.1.0 - Documentacion (2026)
+- Diagrama ER y mapa de navegacion en README
+- Guia de contribucion ampliada
+
