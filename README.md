@@ -805,9 +805,9 @@ El siguiente diagrama muestra las **22+ tablas** de PostgreSQL y sus relaciones:
 </p>
 
 **Tablas principales del diagrama:**
-- users, products, categories, orders, order_items
-- inventory_batches, waste_events, stock_thresholds
-- support_tickets, ug_reports, coupons, pending_products
+- `users`, `products`, `categories`, `orders`, `order_items`
+- `inventory_batches`, `waste_events`, `stock_thresholds`
+- `support_tickets`, `bug_reports`, `coupons`, `pending_products`
 
 
 ### Mapa de Navegacion de la Plataforma
@@ -840,9 +840,9 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 6. **Abre un Pull Request** describiendo tus cambios
 
 ### Convenciones de Commits
-- eat: nuevas funcionalidades
-- ix: correcciones de errores
-- docs: cambios en documentacion
+- `feat:` nuevas funcionalidades
+- `fix:` correcciones de errores
+- `docs:` cambios en documentacion
 
 
 ---
