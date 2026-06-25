@@ -987,3 +987,16 @@ DB_NAME=tienda_digital_textiles_db
 VITE_API_URL=http://localhost:8081
 `
 
+
+---
+
+## Comandos Utiles de Git
+
+`ash
+git log --oneline --graph --all
+git status
+git diff
+git checkout -b feature/mi-rama
+git push -u origin feature/mi-rama
+`
+
