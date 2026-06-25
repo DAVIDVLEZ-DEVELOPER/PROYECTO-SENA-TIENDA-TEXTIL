@@ -876,3 +876,14 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 - Usar indices en tablas grandes
 - Documentar cambios en el schema
 
+
+---
+
+## Consideraciones de Seguridad
+
+- Passwords encriptados con SHA-256
+- Validacion de roles en backend y frontend
+- Rutas protegidas con ProtectedRoute
+- Prepared Statements contra SQL injection
+- Credenciales de BD via variables de entorno (DB_PASSWORD)
+
