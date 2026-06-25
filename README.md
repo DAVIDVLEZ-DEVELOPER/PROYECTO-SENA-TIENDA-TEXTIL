@@ -916,3 +916,17 @@ Flujo completo de paginas publicas, paneles de Cliente, Vendedor y Administrador
 - Diagrama ER y mapa de navegacion en README
 - Guia de contribucion ampliada
 
+
+---
+
+## FAQs Adicionales
+
+**¿Cual es el tiempo de entrega?**
+Las ordenes se procesan en 1-2 dias habiles.
+
+**¿Aceptan devoluciones?**
+Si, dentro de 30 dias si la tela esta en buen estado.
+
+**¿Cual es el metraje minimo?**
+Minimo 0.5 metros por producto.
+
