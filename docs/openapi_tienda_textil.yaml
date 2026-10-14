@@ -1,0 +1,437 @@
+openapi: 3.0.3
+info:
+  title: API REST - Plataforma Textil D&D Textil
+  description: |
+    Contrato formal de interfaz (OpenAPI v3.0) para la plataforma distribuida de comercialización
+    y control logístico de telas por metraje fraccionado, inventario de rollos y órdenes de corte.
+    Desarrollado para la sustentación del Tecnólogo ADSO - SENA.
+  version: 2.0.0
+  contact:
+    name: Soporte Técnico D&D Textil
+    email: contacto@ddtextil.com
+
+servers:
+  - url: http://localhost:8081
+    description: Servidor de Desarrollo Local
+  - url: http://backend:8081
+    description: Contenedor Docker Interno en Red Bridge
+
+paths:
+  # =========================================================================
+  # 1. AUTENTICACIÓN Y CONTROL DE ACCESO
+  # =========================================================================
+  /api/login:
+    post:
+      summary: Autenticación de usuarios
+      description: Valida credenciales contra la base de datos comparando hash SHA-256 en UTF-8.
+      tags: [Autenticación]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: cliente@ddtextil.com
+                password:
+                  type: string
+                  format: password
+                  example: MiClaveSegura#2026
+      responses:
+        '200':
+          description: Autenticación exitosa. Retorna el perfil del usuario autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioPerfil'
+        '400':
+          description: Credenciales inválidas o campos faltantes.
+        '403':
+          description: Cuenta suspendida por la administración.
+
+  /api/register:
+    post:
+      summary: Registro público de clientes
+      description: Crea una nueva cuenta de cliente forzando el rol seguro 'cliente'.
+      tags: [Autenticación]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                  example: Carlos Confeccionista
+                email:
+                  type: string
+                  format: email
+                  example: carlos@telas.com
+                password:
+                  type: string
+                  format: password
+                  example: Segura#1234
+      responses:
+        '201':
+          description: Usuario registrado exitosamente.
+        '400':
+          description: Datos incompletos o correo ya registrado.
+
+  # =========================================================================
+  # 2. CATÁLOGO TEXTIL Y PRODUCTOS
+  # =========================================================================
+  /api/products:
+    get:
+      summary: Listado paginado de telas y catálogo
+      description: Retorna la lista de productos filtrables por categoría, estado y precio.
+      tags: [Catálogo Textil]
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: integer
+          description: ID de categoría para filtrar
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Texto de búsqueda en nombre o descripción
+      responses:
+        '200':
+          description: Catálogo textil obtenido correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Producto'
+
+    post:
+      summary: Publicar nueva tela en catálogo
+      description: Crea un nuevo producto textil con su ficha técnica granular (gramaje, ancho, cuidados).
+      tags: [Catálogo Textil]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoCreacion'
+      responses:
+        '201':
+          description: Tela creada exitosamente en estado de moderación 'approved'.
+
+  /api/products/{id}:
+    get:
+      summary: Obtener detalle técnico de una tela
+      tags: [Catálogo Textil]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle del producto obtenido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '404':
+          description: Tela no encontrada.
+
+  # =========================================================================
+  # 3. PEDIDOS, CORTE Y TRANSACCIONES SAGA
+  # =========================================================================
+  /api/orders:
+    get:
+      summary: Listar pedidos del sistema
+      description: Clientes ven sus pedidos; administradores y operarios de corte ven el consolidado.
+      tags: [Pedidos y Corte]
+      responses:
+        '200':
+          description: Lista de pedidos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pedido'
+
+    post:
+      summary: Crear pedido con reserva de metraje continuo
+      description: Valida stock continuo, ejecuta bloqueo pesimista en base de datos y genera orden de corte.
+      tags: [Pedidos y Corte]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PedidoCreacion'
+      responses:
+        '201':
+          description: Pedido creado y metraje reservado en rollo físico.
+        '400':
+          description: Stock insuficiente, tela fragmentada o datos inválidos.
+
+  /api/orders/{id}/status:
+    put:
+      summary: Actualizar estado operativo del pedido
+      description: Cambia el estado a 'cutting', 'shipped', 'delivered' o 'cancelled'.
+      tags: [Pedidos y Corte]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [pending, cutting, shipped, delivered, cancelled]
+      responses:
+        '200':
+          description: Estado del pedido actualizado.
+
+  # =========================================================================
+  # 4. INVENTARIO, LOTES Y MERMAS
+  # =========================================================================
+  /api/inventory/batches:
+    get:
+      summary: Listar lotes de tela recibidos
+      tags: [Inventario y Mermas]
+      responses:
+        '200':
+          description: Lotes de inventario.
+    post:
+      summary: Registrar nuevo lote de compra de fábrica
+      tags: [Inventario y Mermas]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [productId, batchNumber, receivedMeters, costPerMeter]
+              properties:
+                productId:
+                  type: integer
+                batchNumber:
+                  type: string
+                receivedMeters:
+                  type: number
+                costPerMeter:
+                  type: number
+                provider:
+                  type: string
+      responses:
+        '201':
+          description: Lote registrado.
+
+  /api/inventory/waste:
+    get:
+      summary: Consultar historial de mermas y retazos
+      tags: [Inventario y Mermas]
+      responses:
+        '200':
+          description: Eventos de merma.
+    post:
+      summary: Registrar merma o reclasificación a retazo sub-metro
+      tags: [Inventario y Mermas]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [productId, lostMeters, reason]
+              properties:
+                productId:
+                  type: integer
+                lostMeters:
+                  type: number
+                reason:
+                  type: string
+                  example: remanente_sub_metro
+                costImpact:
+                  type: number
+      responses:
+        '201':
+          description: Merma registrada.
+
+  # =========================================================================
+  # 5. MONITOREO Y SALUD (DEVSECOPS)
+  # =========================================================================
+  /health/live:
+    get:
+      summary: Probe de Liveness para Kubernetes o Docker
+      description: Verifica que el proceso HTTP de Java esté activo y recibiendo conexiones.
+      tags: [Monitoreo]
+      responses:
+        '200':
+          description: Servidor vivo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+
+  /health/ready:
+    get:
+      summary: Probe de Readiness
+      description: Verifica la conectividad efectiva contra el pool de PostgreSQL.
+      tags: [Monitoreo]
+      responses:
+        '200':
+          description: Servidor y base de datos listos para tráfico.
+        '503':
+          description: Base de datos no disponible temporalmente.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UsuarioPerfil:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Juan Perez
+        email:
+          type: string
+          example: juan@ddtextil.com
+        role:
+          type: string
+          example: cliente
+        status:
+          type: string
+          example: Activo
+
+    Producto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        name:
+          type: string
+          example: Lino Crudo Italiano
+        price:
+          type: number
+          example: 35000.0
+        stock:
+          type: integer
+          example: 120
+        category:
+          type: string
+          example: Lino
+        material:
+          type: string
+          example: 100% Lino Natural
+        width:
+          type: string
+          example: 1.50 metros
+        weight:
+          type: string
+          example: 240 g/m2
+        moderationStatus:
+          type: string
+          example: approved
+
+    ProductoCreacion:
+      type: object
+      required: [name, price, categoryId]
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        categoryId:
+          type: integer
+        stock:
+          type: integer
+        material:
+          type: string
+        width:
+          type: string
+        weight:
+          type: string
+        careInstructions:
+          type: string
+
+    Pedido:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1042
+        customerName:
+          type: string
+          example: María Confecciones
+        totalAmount:
+          type: number
+          example: 180000.0
+        status:
+          type: string
+          example: cutting
+        paymentStatus:
+          type: string
+          example: paid
+        guideNumber:
+          type: string
+          example: DND-ORDER-1042-QR
+
+    PedidoCreacion:
+      type: object
+      required: [customerName, customerEmail, shippingAddress, items]
+      properties:
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        shippingAddress:
+          type: string
+        city:
+          type: string
+        department:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            required: [productId, quantity, unitPrice]
+            properties:
+              productId:
+                type: integer
+              quantity:
+                type: number
+                description: Metros lineales solicitados
+              unitPrice:
+                type: number

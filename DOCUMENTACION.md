@@ -4,9 +4,21 @@ Bienvenido al portal central de documentación de **D&D Textil**. Aquí encontra
 
 ---
 
-## Índice General
+## 🏛️ Documentación Formal de Sustentación SENA ADSO (`/docs`)
 
-Para consultar un apartado de interés, haz clic en el enlace correspondiente:
+Los documentos formales exigidos para la evaluación del tecnólogo ADSO según normas IEEE 830, ISO/IEC 25010 y Modelo C4 se encuentran centralizados en la carpeta `/docs`:
+
+*   📋 **[01. Especificación de Requerimientos de Software (IEEE 830 y BDD)](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/01_especificacion_requerimientos.md)**: Planteamiento del problema textil, justificación económica, matriz RF-01 a RF-07, RNF-01 a RNF-05 y escenarios Gherkin BDD para corte continuo y mermas.
+*   📐 **[02. Arquitectura de Software y Modelo C4](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/02_arquitectura_c4.md)**: Diagramas Mermaid C4 (Contexto N1, Contenedores N2, Componentes N3), DER individual, Diccionario de Datos y orquestación Saga.
+*   🛡️ **[03. Políticas de Seguridad, Fiabilidad y Resiliencia](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/03_politicas_seguridad_resiliencia.md)**: IAM, cumplimiento PCI-DSS (cero almacenamiento PAN/CVV), Habeas Data (Ley 1581 de 2012), DRP (RTO <= 2h, RPO <= 15min) y mitigación OWASP API Security.
+*   🚀 **[04. Manual Técnico de Instalación y Despliegue](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/Manual_Tecnico_Instalacion.md)**: Requisitos de hardware, variables de entorno, orquestación Docker Compose y validación de probes de salud.
+*   📄 **[05. Contrato de Interfaz OpenAPI v3.0](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/openapi_tienda_textil.yaml)**: Especificación Swagger/OpenAPI v3.0 de todos los endpoints de la API REST.
+
+---
+
+## Índice General de Módulos Técnicos (`/documentacion`)
+
+Para consultar los manuales modulares de cada subsistema:
 
 1.  ### [01. Descripción General y Roles de Usuario](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/01-descripcion-y-roles.md)
     *   Propósito y descripción general del sistema.

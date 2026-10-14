@@ -2,6 +2,7 @@ services:
   db:
     image: postgres:17
     container_name: ddtextil-db
+    restart: unless-stopped
     env_file:
       - .env
     environment:
@@ -13,6 +14,8 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - backend-net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-tienda_digital_textiles_db}"]
       interval: 10s
@@ -34,6 +37,9 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
       - "8081:8081"
+    networks:
+      - backend-net
+      - frontend-net
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8081/health/live || exit 1"]
       interval: 15s
@@ -54,9 +60,24 @@ services:
     restart: unless-stopped
     ports:
       - "3001:80"
+    networks:
+      - frontend-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
 volumes:
   pgdata:
+    driver: local
 
+networks:
+  backend-net:
+    driver: bridge
+    internal: false
+  frontend-net:
+    driver: bridge
