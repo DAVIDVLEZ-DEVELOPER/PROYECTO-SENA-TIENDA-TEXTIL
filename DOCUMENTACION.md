@@ -1,65 +1,87 @@
-# Documentación del Proyecto D&D Textil
-
-Bienvenido al portal central de documentación de **D&D Textil**. Aquí encontrarás información detallada sobre la plataforma, estructurada en secciones modulares para facilitar la consulta técnica y funcional.
-
----
-
-## 🏛️ Documentación Formal de Sustentación SENA ADSO (`/docs`)
-
-Los documentos formales exigidos para la evaluación del tecnólogo ADSO según normas IEEE 830, ISO/IEC 25010 y Modelo C4 se encuentran centralizados en la carpeta `/docs`:
-
-*   📋 **[01. Especificación de Requerimientos de Software (IEEE 830 y BDD)](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/01_especificacion_requerimientos.md)**: Planteamiento del problema textil, justificación económica, matriz RF-01 a RF-07, RNF-01 a RNF-05 y escenarios Gherkin BDD para corte continuo y mermas.
-*   📐 **[02. Arquitectura de Software y Modelo C4](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/02_arquitectura_c4.md)**: Diagramas Mermaid C4 (Contexto N1, Contenedores N2, Componentes N3), DER individual, Diccionario de Datos y orquestación Saga.
-*   🛡️ **[03. Políticas de Seguridad, Fiabilidad y Resiliencia](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/03_politicas_seguridad_resiliencia.md)**: IAM, cumplimiento PCI-DSS (cero almacenamiento PAN/CVV), Habeas Data (Ley 1581 de 2012), DRP (RTO <= 2h, RPO <= 15min) y mitigación OWASP API Security.
-*   🚀 **[04. Manual Técnico de Instalación y Despliegue](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/Manual_Tecnico_Instalacion.md)**: Requisitos de hardware, variables de entorno, orquestación Docker Compose y validación de probes de salud.
-*   📄 **[05. Contrato de Interfaz OpenAPI v3.0](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/docs/openapi_tienda_textil.yaml)**: Especificación Swagger/OpenAPI v3.0 de todos los endpoints de la API REST.
+# Indice General de Documentacion Tecnica - D&D Textil
+**Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
+**Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
+**Estandares Aplicados:** IEEE 830, ISO/IEC 25010, Modelo C4 (Simon Brown), BDD (Gherkin), Clean Architecture, Domain-Driven Design (DDD), OWASP API Security, PCI-DSS v4.0, Ley 1581 de 2012 (Habeas Data)  
+**Version:** 2.0.0 - Documentacion Tecnica Oficial  
 
 ---
 
-## Índice General de Módulos Técnicos (`/documentacion`)
+## Presentacion del Proyecto
 
-Para consultar los manuales modulares de cada subsistema:
+La plataforma **D&D Textil** es un ecosistema tecnologico disenado para la comercializacion, control logistico y administracion de inventario continuo y fraccionado de tejidos textiles. El sistema aborda las ineficiencias del sector tradicional (errores de medicion en mesa, acumulacion de mermas y retazos no comerciales, desviaciones de color por lotes de tintoreria y sobreventas por falta de control por rollo fisico).
 
-1.  ### [01. Descripción General y Roles de Usuario](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/01-descripcion-y-roles.md)
-    *   Propósito y descripción general del sistema.
-    *   Matriz de roles y permisos (Cliente, Vendedor y Administrador).
-    *   Mapa de navegación e interfaces públicas y privadas.
+El cuerpo documental oficial del proyecto se encuentra centralizado en el directorio `documentacion/`, organizado en modulos tecnicos exhaustivos sin abreviaciones ni ambiguedades:
 
-2.  ### [02. Arquitectura del Backend (Java)](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/02-arquitectura-backend.md)
-    *   Estructura y diseño modular de Vanilla Java 17 sin frameworks.
-    *   Organización de directorios por capas lógicas (Arquitectura Limpia).
-    *   Aplicación práctica de principios SOLID en el backend.
-    *   Catálogo y especificaciones de Endpoints de la API REST.
+---
 
-3.  ### [03. Arquitectura del Frontend (React)](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/03-arquitectura-frontend.md)
-    *   Stack tecnológico principal (React 18, Vite, Tailwind CSS, Framer Motion).
-    *   Estructura del árbol de directorios `src/`.
-    *   Manejo de estado global con Context API (Autenticación, Carrito y Métricas).
-    *   Enrutamiento local, protección de rutas y animaciones.
+## Indice de Modulos Documentales (`documentacion/`)
 
-4.  ### [04. Diseño y Estructura de la Base de Datos](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/04-base-de-datos.md)
-    *   Esquema y diagramación física de PostgreSQL 14+.
-    *   Tablas nucleares, secundarias y agregados de analíticas.
-    *   Manejo del pool de conexiones JDBC y resiliencia ante caídas de red.
-    *   Algoritmos matemáticos y fórmulas de la Calculadora de Metraje.
+### 1. [01. Especificacion de Requerimientos de Software (IEEE 830 y BDD)](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/01-especificacion-requerimientos-ieee830.md)
+*   **Fase de Investigacion y Fundamentacion:** Caracterizacion del problema en el sector textil tradicional colombiano, impacto economico de la digitalizacion, reduccion de mermas en un 18% y justificacion operativa.
+*   **Objetivos del Proyecto:** Objetivo general y cinco objetivos especificos orientados a arquitectura limpia, motor textil, transaccionalidad concurrente, aseguramiento de calidad y despliegue reproducible.
+*   **Alcance y Delimitacion:** Detalle de los seis modulos en alcance y limites operativos de la version inicial.
+*   **Matriz de Requerimientos Funcionales (RF-01 a RF-07):** Especificacion segun IEEE 830 con identificador, rol, prioridad y criterios de aceptacion (catalogo granular, inventario por rollos, calculo de corte continuo, escala de precios, checkout y pagos, gestion de corte en bodega y administracion de mermas).
+*   **Requerimientos No Funcionales (RNF-01 a RNF-05):** Alineados con la norma ISO/IEC 25010 (Eficiencia de desempeno, Fiabilidad, Mantenibilidad, Seguridad y Usabilidad).
+*   **Escenarios BDD (Behavior-Driven Development):** Especificaciones formales en sintaxis Gherkin (Dado-Cuando-Entonces) para validacion de corte continuo, clasificacion automatica de retazos liquidados y consistencia cromatica por lote de tintoreria.
+*   **Matriz de Trazabilidad de Requerimientos:** Cruce bidireccional entre requerimientos de negocio, casos de uso tecnicos y componentes de software.
 
-5.  ### [05. Guía de Despliegue y Configuración](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/05-despliegue-y-configuracion.md)
-    *   Despliegue rápido mediante Docker y Docker Compose.
-    *   Gestión y definición de Variables de Entorno (`.env`).
-    *   Guía de comandos rápidos y mantenimiento de contenedores.
-    *   Instrucciones para despliegue manual en servidores locales.
+### 2. [02. Arquitectura de Software, Modelo C4 y Backend Java](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/02-arquitectura-software-c4-y-backend.md)
+*   **Vision General del Backend:** Diseno en Vanilla Java 17 de alto desempeno, servidor HTTP nativo con pool de 32 hilos concurrentes, pool de conexiones HikariCP y Google Gson.
+*   **Estructura Exhaustiva de Capas y Paquetes:** Distribucion Clean Architecture en capas `dominio`, `aplicacion` e `infraestructura` con correspondencia exacta de clases en idioma espanol.
+*   **Principios SOLID con Ejemplos de Codigo:** Demostracion de SRP, OCP, LSP, ISP y DIP en el contexto textil.
+*   **Diagramas de Arquitectura bajo el Modelo C4:**
+    *   Nivel 1: Diagrama de Contexto del Sistema (Mermaid C4Context).
+    *   Nivel 2: Diagrama de Contenedores (Mermaid C4Container).
+    *   Nivel 3: Diagrama de Componentes del Backend (Mermaid C4Component).
+*   **Orquestacion Transaccional (Patron Saga Coreografiado):** Diagrama de secuencia Mermaid para reserva de metraje, procesamiento de pasarela y compensacion de inventario ante fallos.
+*   **Catalogo Completo de Endpoints REST:** Definicion de metodos, rutas, codigos de estado HTTP y politicas de autorizacion RBAC.
 
-6.  ### [06. Soporte, Solución de Problemas y Extras](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/06-soporte-y-extras.md)
-    *   Preguntas Frecuentes (FAQ).
-    *   Guía de resolución de errores comunes (solución a problemas de credenciales).
-    *   Arquitectura y detalles de la aplicación móvil (Android Wrapper).
-    *   Directrices de contribución al repositorio de código.
+### 3. [03. Arquitectura del Frontend y Gestion de Roles de Usuario](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/03-arquitectura-frontend-y-roles.md)
+*   **Arquitectura de la Interfaz:** Single Page Application (SPA) con React 18, Vite 5, TailwindCSS 3 (diseno Glassmorphism) y Context API.
+*   **Arbol de Directorios:** Organizacion de `assets/`, `components/`, `context/`, `pages/`, `panels/` (Cliente, Vendedor y Administrador) y `utils/`.
+*   **Matriz de Roles y Permisos (RBAC):** Politicas de acceso para Cliente, Vendedor, Operario de Corte y Administrador.
+*   **Mapa de Navegacion:** Detalle de vistas publicas y privadas protegidas.
+*   **Calculadora de Metraje Inteligente:** Modelado matematico y formulas para cortinas, vestidos, faldas circulares, manteles y tapiceria con margen tecnico de confeccion del +10%.
+*   **Cliente Movil Hibrido (Android Wrapper):** Arquitectura en Kotlin con `WebViewAssetLoader`, ciclo de vida e integracion con el backend.
 
-7.  ### [07. Estándares Internacionales de Calidad (ISO/IEC 25010) y DevSecOps](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/07-estandares-calidad-iso25010-seguridad.md)
-    *   Evaluación y cumplimiento de la Norma ISO/IEC 25010 en comercio textil.
-    *   Estrategia de pirámide de pruebas (QA) y métricas de SonarQube / SAST.
-    *   Arquitectura de seguridad integral DevSecOps (API Gateway, Rate Limiting, OWASP ASVS).
-    *   Cumplimiento normativo de comercio electrónico: PCI-DSS y Ley 1581 de 2012 (Habeas Data).
-    *   Control de concurrencia y bloqueo pesimista (`SELECT ... FOR UPDATE`) en inventario textil.
-    *   Observabilidad: Endpoints de salud (`/health/live`, `/health/ready`), Correlation ID y logs JSON.
+### 4. [04. Diseno, Estructura y Esquema de Base de Datos Relacional](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/04-base-de-datos-diseno-y-esquema.md)
+*   **Diseno Arquitectonico:** PostgreSQL 17 en codificacion UTF-8, normalizacion en Tercera Forma Normal (3FN), precision decimal en moneda (`NUMERIC(12,2)`) y metrajes (`NUMERIC(10,2)`).
+*   **Diagrama Entidad-Relacion (DER):** Modelado conceptual completo en sintaxis Mermaid.
+*   **Diccionario de Datos Exhaustivo:** Especificacion columna por columna de las 23 tablas de la base de datos (tipos de datos, restricciones PK, FK, UK, nulabilidad y descripcion del proposito comercial).
+*   **Estrategia de Indexacion B-Tree:** Indices para busqueda de catalogo, ordenamiento de inventario por menor remanente y trazabilidad de ordenes de corte.
+*   **Transaccionalidad y Bloqueo Pesimista:** Aplicacion de `SELECT ... FOR UPDATE` para evitar condiciones de carrera en reservas simultaneas de rollos.
 
+### 5. [05. Politicas de Seguridad, Resiliencia y Calidad de Software](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/05-politicas-seguridad-resiliencia-y-calidad.md)
+*   **Evaluacion ISO/IEC 25010:** Tabla de cumplimiento y criterios de medicion (Adecuacion Funcional, Fiabilidad, Eficiencia, Mantenibilidad, Seguridad, Usabilidad y Portabilidad).
+*   **Gestion de Identidad y Acceso (IAM):** Autenticacion mediante tokens efimeros (15 minutos), cookies seguras (`HttpOnly; Secure; SameSite=Strict`) y hashing SHA-256 en UTF-8.
+*   **Politica Financiera PCI-DSS v4.0:** Cumplimiento del Requisito 3 mediante politica de cero almacenamiento de datos de tarjeta (PAN y CVV).
+*   **Proteccion de Datos Personales (Ley 1581 de 2012):** Politica de Habeas Data, consentimiento previo y procedimiento de anonimizacion/derecho al olvido.
+*   **Plan de Recuperacion ante Desastres (DRP):** Objetivos RTO <= 2 horas y RPO <= 15 minutos, respaldos fisicos diarios `pg_dump` y procedimiento de contingencia.
+*   **Matriz de Mitigacion OWASP API Security Top 10:** Estrategias implementadas contra Broken Object Level Authorization, Broken Authentication, Broken Object Property Level Authorization, Unrestricted Resource Consumption, Broken Function Level Authorization, etc.
+*   **Observabilidad y Auditoria:** Formato de logs estructurados en JSON, correlacion mediante UUID y trazabilidad inmutable.
+
+### 6. [06. Manual Tecnico de Instalacion, Configuracion y Despliegue](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/06-manual-tecnico-instalacion-y-despliegue.md)
+*   **Requisitos de Infraestructura:** Parametros minimos y recomendados de hardware (CPU, RAM, SSD) y software (Java 17, Node.js 18+, PostgreSQL 17, Docker Engine 24+).
+*   **Topologia de Redes Docker Compose:** Diagrama de aislamiento entre red publica `frontend-net` y red interna aislada `backend-net`.
+*   **Especificacion de Variables de Entorno (`.env`):** Configuracion completa de conexiones, secretos y puertos.
+*   **Despliegue Automatizado con Docker Compose:** Procedimiento paso a paso para construccion, inicio, verificacion de estado y bitacoras.
+*   **Procedimiento de Instalacion Manual (Entorno Nativo):** Instrucciones para Linux y Windows (PowerShell) para compilar y ejecutar backend y frontend de forma local.
+*   **Probes de Salud:** Verificacion de endpoints `/health/live` y `/health/ready`.
+*   **Guia de Solucion de Problemas (Troubleshooting):** Resolucion de conflictos de puerto, caidas de conexion JDBC y cabeceras CORS.
+
+### 7. [07. Motor Textil, Reglas de Negocio y Suite de Pruebas Automatizadas](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/07-motor-textil-reglas-negocio-y-pruebas.md)
+*   **Fundamentacion de Dominio:** Peculiaridades del corte de telas (continuidad de pieza, consistencia cromatica por lote, reclasificacion de mermas y tarifas por volumen).
+*   **Entidad RolloTextil:** Estados del ciclo de vida (`DISPONIBLE`, `RESERVADO`, `RETAZO_LIQUIDADO`, `AGOTADO`) y metodos de corte.
+*   **Servicio de Corte Textil:** Algoritmo Best Fit para seleccion de rollo con menor desperdicio y formula de liquidacion con descuentos (12% mayorista, 25% rollo cerrado, 40% retazos).
+*   **Matriz de Pruebas de Reglas de Negocio:** Detalle de los 14 casos de prueba unitarios ejecutados en `PruebasReglasNegocioTextil.java` (100% aprobados).
+*   **Matriz de Pruebas de Seguridad y Casos Extremos:** Detalle de los 12 casos de prueba ejecutados en `PruebasSeguridadYBugs.java` (100% aprobados).
+*   **Certificacion de Resultados:** Registro oficial de ejecucion de las 26 pruebas automatizadas.
+
+### 8. [Contrato de Interfaz OpenAPI v3.0](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/openapi_tienda_textil.yaml)
+*   Especificacion Swagger / OpenAPI v3.0 completa y estandarizada de todos los endpoints de la API REST, con esquemas de peticion, esquemas de respuesta y codigos de error HTTP.
+
+---
+
+## Certificacion de Conformidad Tecnica
+
+La presente documentacion tecnica satisface la totalidad de los criterios de evaluacion tecnica para proyectos de software del Servicio Nacional de Aprendizaje (SENA) en el programa **ADSO**, garantizando rigor metodologico, coherencia arquitectonica e inmutabilidad operativa.

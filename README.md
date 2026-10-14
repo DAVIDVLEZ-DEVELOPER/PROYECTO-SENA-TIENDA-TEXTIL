@@ -94,8 +94,9 @@ docker compose up -d
 
 | Servicio | Acceso |
 | :--- | :--- |
-| Frontend de la aplicación | http://localhost:3001 |
+| Frontend de la aplicacion | http://localhost:5173 |
 | Backend API (REST) | http://localhost:8081 |
+| Base de Datos PostgreSQL | localhost:5432 |
 
 ### Detener y limpiar
 
@@ -111,7 +112,7 @@ docker compose down -v
 
 Usuarios sembrados en la base de datos para validar los niveles de acceso del software.
 
-| Rol | Correo electrónico | Contraseña |
+| Rol | Correo electronico | Contrasena |
 | :--- | :--- | :--- |
 | Cliente | `cliente@ddtextil.com` | `cliente123` |
 | Vendedor | `vendedor@ddtextil.com` | `vendedor123` |
@@ -119,14 +120,15 @@ Usuarios sembrados en la base de datos para validar los niveles de acceso del so
 
 ## Calidad de Software y Suite de Pruebas Automatizadas
 
-El proyecto implementa los estándares de la norma **ISO/IEC 25010** y las directrices de aseguramiento de calidad del **SENA**. Cuenta con una suite de 12 pruebas automatizadas que validan seguridad, integridad criptográfica, observabilidad y concurrencia pesimista:
+El proyecto implementa los estandares de la norma **ISO/IEC 25010** y las directrices de aseguramiento de calidad del **SENA**. Cuenta con una suite integral de 26 pruebas automatizadas (14 de reglas de negocio textiles y 12 de seguridad y casos extremos):
 
 ```bash
 # Navegar al directorio del backend
 cd "tienda digital de telas/backend-java/conexionPostgres"
 
-# Ejecutar la suite de pruebas automatizadas
-java -cp "lib/*;src" PruebasSeguridadYBugs
+# Ejecutar las suites de pruebas automatizadas
+java -cp "lib/*;bin" PruebasReglasNegocioTextil
+java -cp "lib/*;bin" PruebasSeguridadYBugs
 ```
 
 ### Probes de Observabilidad (Health Checks)
@@ -134,18 +136,19 @@ java -cp "lib/*;src" PruebasSeguridadYBugs
 * **Readiness Probe**: `GET http://localhost:8081/health/ready`
 * **Reporte Global**: `GET http://localhost:8081/api/health`
 
-## Portal Central de Documentación
+## Portal Central de Documentacion Tecnica
 
-La documentación técnica completa y detallada está estructurada en secciones modulares:
+El cuerpo documental oficial del sistema esta estructurado de forma modular en la carpeta `documentacion/`:
 
-* 📖 **[Índice General de Documentación](DOCUMENTACION.md)**
-* 01. **[Descripción General y Roles de Usuario](documentacion/01-descripcion-y-roles.md)**
-* 02. **[Arquitectura del Backend (Java Vanilla 17 & Clean Architecture)](documentacion/02-arquitectura-backend.md)**
-* 03. **[Arquitectura del Frontend (React 18 & Vite)](documentacion/03-arquitectura-frontend.md)**
-* 04. **[Diseño y Estructura de la Base de Datos (PostgreSQL & ACID)](documentacion/04-base-de-datos.md)**
-* 05. **[Guía de Despliegue y Configuración (Docker & Docker Compose)](documentacion/05-despliegue-y-configuracion.md)**
-* 06. **[Soporte, Solución de Problemas y Extras](documentacion/06-soporte-y-extras.md)**
-* 07. **[Estándares Internacionales de Calidad (ISO/IEC 25010), DevSecOps y Sustentación SENA](documentacion/07-estandares-calidad-iso25010-seguridad.md)**
+* **[Indice General de Documentacion](DOCUMENTACION.md)**
+* 01. **[Especificacion de Requerimientos de Software (IEEE 830 y BDD)](documentacion/01-especificacion-requerimientos-ieee830.md)**
+* 02. **[Arquitectura de Software, Modelo C4 y Backend Java](documentacion/02-arquitectura-software-c4-y-backend.md)**
+* 03. **[Arquitectura del Frontend y Gestion de Roles de Usuario](documentacion/03-arquitectura-frontend-y-roles.md)**
+* 04. **[Diseno, Estructura y Esquema de Base de Datos Relacional](documentacion/04-base-de-datos-diseno-y-esquema.md)**
+* 05. **[Politicas de Seguridad, Resiliencia y Calidad de Software](documentacion/05-politicas-seguridad-resiliencia-y-calidad.md)**
+* 06. **[Manual Tecnico de Instalacion, Configuracion y Despliegue](documentacion/06-manual-tecnico-instalacion-y-despliegue.md)**
+* 07. **[Motor Textil, Reglas de Negocio y Suite de Pruebas Automatizadas](documentacion/07-motor-textil-reglas-negocio-y-pruebas.md)**
+* 08. **[Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)**
 
 ---
 
