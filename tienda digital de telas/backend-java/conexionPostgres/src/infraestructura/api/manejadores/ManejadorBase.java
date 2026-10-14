@@ -157,11 +157,6 @@ public abstract class ManejadorBase implements HttpHandler {
      */
     protected abstract void procesarPeticion(HttpExchange intercambio) throws Exception;
 
-    // Alias para compatibilidad
-    protected void processRequest(HttpExchange exchange) throws Exception {
-        procesarPeticion(exchange);
-    }
-
     /**
      * Envía una respuesta HTTP con cuerpo JSON en UTF-8.
      */
@@ -175,11 +170,6 @@ public abstract class ManejadorBase implements HttpHandler {
         os.close();
     }
 
-    /** Alias para compatibilidad */
-    protected void sendJsonResponse(HttpExchange exchange, int statusCode, String jsonResponse) throws IOException {
-        enviarRespuestaJson(exchange, statusCode, jsonResponse);
-    }
-
     /**
      * Envía una respuesta de error en JSON.
      */
@@ -187,10 +177,6 @@ public abstract class ManejadorBase implements HttpHandler {
         String mensajeSeguro = mensaje != null ? mensaje.replace("\"", "\\\"") : "Error";
         String json = "{\"error\": \"" + mensajeSeguro + "\"}";
         enviarRespuestaJson(intercambio, codigoEstado, json);
-    }
-
-    protected void sendErrorResponse(HttpExchange exchange, int statusCode, String message) throws IOException {
-        enviarRespuestaError(exchange, statusCode, message);
     }
 
     /**
@@ -208,10 +194,6 @@ public abstract class ManejadorBase implements HttpHandler {
         return null;
     }
 
-    protected String getQueryParam(HttpExchange exchange, String paramName) {
-        return obtenerParametroConsulta(exchange, paramName);
-    }
-
     /**
      * Obtiene un parámetro de consulta como entero de forma segura.
      */
@@ -223,9 +205,5 @@ public abstract class ManejadorBase implements HttpHandler {
         } catch (NumberFormatException e) {
             return valorPorDefecto;
         }
-    }
-
-    protected int getQueryParamInt(HttpExchange exchange, String paramName, int defaultValue) {
-        return obtenerParametroConsultaEntero(exchange, paramName, defaultValue);
     }
 }

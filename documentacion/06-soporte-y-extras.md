@@ -36,9 +36,9 @@ Si al intentar ingresar con las credenciales de prueba predefinidas el sistema d
         ```bash
         psql -U postgres -d tienda_digital_textiles_db -f "BASE DE DATOS/TIENDA DIGITAL TEXTIL.sql"
         ```
-    4.  **Alternativa (Seeder de Java)**: En la carpeta del backend, ejecutar la herramienta de siembra de datos de prueba:
+    4.  **Alternativa (Poblador de Datos Java)**: En la carpeta del backend, ejecutar la herramienta de siembra de datos de prueba:
         ```bash
-        java -cp "bin;lib/*" MockDataSeeder
+        java -cp "bin;lib/*" PobladorDatosPrueba
         ```
         Esto truncará las tablas e inyectará de forma automática usuarios de prueba con contraseñas encriptadas en SHA-256.
 

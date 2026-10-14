@@ -133,11 +133,4 @@ public class ServidorApi {
         servidor.start();
         System.out.println("Servidor API (Alto Rendimiento Concurrente: " + numeroHilos + " hilos) corriendo en puerto: " + puerto);
     }
-
-    /**
-     * Alias de inicio en inglés para compatibilidad.
-     */
-    public static void startServer(int port) throws IOException {
-        iniciarServidor(port);
-    }
 }

@@ -381,66 +381,64 @@ El backend en Java ha sido rigurosamente estructurado separando las responsabili
 
 ```text
 src/
- ├── domain/                  # Capa 1: Entidades Centrales
- │    ├── models/               # Clases planas (Product, User, Order, Coupon, etc.)
- │    └── repositories/         # Interfaces (contratos) que definen qué operaciones de DB existen.
- ├── application/             # Capa 2: Casos de Uso y Lógica de Negocio
- │    └── services/             # Lógica de aplicación (AuthService), validaciones, encriptación.
- ├── infrastructure/          # Capa 3: Adaptadores hacia el mundo exterior (HTTP, BD)
+ ├── dominio/                   # Capa 1: Entidades Centrales
+ │    ├── modelos/              # Clases puras (Producto, Usuario, Pedido, Cupon, etc.)
+ │    ├── repositorios/         # Interfaces de persistencia (RepositorioUsuario)
+ │    └── excepciones/          # Excepciones de dominio (ExcepcionDominio)
+ ├── aplicacion/                # Capa 2: Casos de Uso y Servicios
+ │    └── servicios/            # Reglas de negocio (ServicioAutenticacion, ServicioFactura)
+ ├── infraestructura/           # Capa 3: Adaptadores y Persistencia
  │    ├── api/
- │    │    ├── handlers/          # Controladores HTTP (AuthHandler, ProductsHandler)
- │    │    └── ApiServer.java     # Configuración del servidor y enrutamiento principal.
- │    ├── persistence/jdbc/     # DAOs y Repositorios concretos (JdbcUserRepositoryImpl)
- │    └── config/
- │         └── Conexion.java      # Singleton de conexión a la Base de Datos.
- ├── App.java                 # Punto de entrada (main) de la aplicación.
- └── MockDataSeeder.java      # Utilidad para poblar la BD con datos iniciales reales.
+ │    │    ├── manejadores/     # Controladores HTTP (ManejadorAutenticacion, ManejadorProductos...)
+ │    │    └── ServidorApi.java # Servidor HTTP concurrente (Pool de 32+ hilos)
+ │    ├── persistencia/jdbc/    # DAOs y Repositorios JDBC (UsuarioDAO, JdbcRepositorioUsuarioImpl...)
+ │    └── configuracion/
+ │         └── Conexion.java    # Pool de conexiones HikariCP / PostgreSQL
+ ├── App.java                   # Punto de entrada principal
+ ├── PobladorDatosPrueba.java   # Utilidad para poblar la BD con datos iniciales reales
+ └── PruebasSeguridadYBugs.java # Suite de validación de seguridad y concurrencia
 ```
 
 ---
 
 ### 2. Implementación de los Principios SOLID (Backend)
 
-Durante la reestructuración del backend, se aplicaron rigurosamente los 5 principios de diseño orientado a objetos definidos por Robert C. Martin:
+Durante la estructuración del backend, se aplicaron rigurosamente los 5 principios de diseño orientado a objetos:
 
 #### S - Single Responsibility Principle (Principio de Responsabilidad Única)
 *Una clase debe tener una, y solo una, razón para cambiar.*
-- **Implementación:** Antes, las clases hacían rutas HTTP, lógica y base de datos simultáneamente. Ahora:
-  - `AuthHandler`: **Solo** intercepta la petición HTTP (Request), verifica los headers (CORS), extrae el JSON y arma la respuesta HTTP (Response).
-  - `AuthService`: **Solo** contiene lógica de negocio pura (hashear contraseñas con SHA-256, verificar prohibiciones, verificar roles de usuarios).
-  - `UserDAO` / `JdbcUserRepositoryImpl`: **Solo** ejecutan queries SQL (`SELECT`, `INSERT`) y mapean la base de datos a objetos Java.
+- **Implementación:**
+  - `ManejadorAutenticacion`: **Solo** intercepta la petición HTTP (Request), verifica headers (CORS, Rate Limiting), extrae el JSON y emite la respuesta HTTP (Response).
+  - `ServicioAutenticacion`: **Solo** contiene lógica de negocio pura (hashing SHA-256 de contraseñas, validación de suspensión, verificación de roles).
+  - `UsuarioDAO` / `JdbcRepositorioUsuarioImpl`: **Solo** ejecutan consultas SQL (`SELECT`, `INSERT`) y mapean resultados relacionales a objetos Java.
 
 #### O - Open/Closed Principle (Principio de Abierto/Cerrado)
 *El software debe estar abierto para extensión, pero cerrado para modificación.*
-- **Implementación:** El servidor (`ApiServer.java`) está diseñado para agregar nuevas rutas sin tocar el código de los manejadores existentes. Si el día de mañana agregamos un flujo de recuperar con Google (Google Oauth), no destruiremos `AuthService`. En lugar de eso, crearíamos nuevas entidades extendiendo nuestras interfaces de inicio de sesión sin necesidad de reescribir la autenticación que ya validamos y aprobamos.
+- **Implementación:** El servidor (`ServidorApi.java`) está diseñado para agregar nuevas rutas sin alterar el código de los manejadores existentes. Nuevos proveedores de autenticación o métodos de pago extienden las interfaces de dominio sin reescribir la lógica ya validada.
 
 #### L - Liskov Substitution Principle (Principio de Sustitución de Liskov)
 *Las clases derivadas deben poder sustituir a sus clases base.*
-- **Implementación:** El diseño base de Java Sun HTTP (`HttpHandler`) permite polimorfismo riguroso. Cualquier `Handler` implementado (por ejemplo, `ProductsHandler` o `UsersHandler`) cumple a la perfección el contrato de `handle(HttpExchange exchange)`. Puedes agrupar, enviar a métodos genéricos, o sustituir un controlador por un mock de testing de `HttpHandler` sin que el programa note la diferencia ni provoque fallos.
+- **Implementación:** Todos los controladores extienden `ManejadorBase` e implementan el contrato `HttpHandler` de Java nativo. Cualquier manejador (`ManejadorProductos`, `ManejadorUsuarios`, etc.) puede sustituirse o evaluarse mediante pruebas sin alterar el flujo del servidor.
 
 #### I - Interface Segregation Principle (Principio de Segregación de Interfaces)
 *Ningún cliente debe verse obligado a depender de métodos que no utiliza.*
-- **Implementación:** En un sistema de e-commerce grande, los DAOs pueden tener cientos de métodos. Al usar carpetas como `domain/repositories/`, segregamos las responsabilidades. `UserRepository` expone métodos estrictamente relevantes para usuarios (`findByEmail`, `save`). Un controlador de autenticación accede a `UserRepository` libre del peso del código y métodos de facturación, carritos e inventario con los que nunca va a interactuar.
+- **Implementación:** Las interfaces en `dominio/repositorios/` segregan responsabilidades. `RepositorioUsuario` expone métodos estrictamente relevantes para usuarios (`buscarPorCorreo`, `guardar`). Un controlador de autenticación accede a `RepositorioUsuario` sin depender de lógica de facturación, carritos ni inventario.
 
 #### D - Dependency Inversion Principle (Principio de Inversión de Dependencia)
 *Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones.*
-- **Implementación:** Es el pilar fundamental que hemos completado para lograr una arquitectura robusta, enfocado en el archivo `ApiServer.java` y los servicios:
-  1. La lógica principal (`AuthService`) **NUNCA** llama a la base de datos PostgreSQL de forma directa.
-  2. El servicio depende únicamente de una **Interfaz Abstracta** llamada `UserRepository`.
-  3. En `ApiServer.java`, realizamos la inyección total de dependencias desde "fuera" hacia "adentro":
+- **Implementación:** En `ServidorApi.java`, realizamos la inyección de dependencias desacoplando la persistencia de las reglas de negocio:
 
 ```java
-// 1. Instanciamos la conexión a PostgreSQL (Detalle de Bajo Nivel)
-UserRepository userRepository = new JdbcUserRepositoryImpl(); 
+// 1. Instanciamos la persistencia JDBC (Bajo Nivel)
+RepositorioUsuario repositorioUsuario = new JdbcRepositorioUsuarioImpl(); 
 
 // 2. Inyectamos la Interfaz al Servicio de Alto Nivel
-// El AuthService recibe el objeto, a él no le importa si es PostgreSQL, MySQL o Mongo.
-AuthService authService = new AuthService(userRepository); 
+ServicioAutenticacion servicioAutenticacion = new ServicioAutenticacion(repositorioUsuario); 
 
-// 3. Inyectamos el servicio al Controlador HTTP final
-AuthHandler authHandler = new AuthHandler(authService);
+// 3. Inyectamos el servicio al Manejador HTTP final
+ManejadorAutenticacion manejadorAutenticacion = new ManejadorAutenticacion(servicioAutenticacion);
 ```
-- **Resultado:** Si necesitas cambiar tu base de datos actual en PostgreSQL a MongoDB o Firebase, la clase `AuthService` permanece intocable y no colapsará. Simplemente programas un nuevo `MongoUserRepositoryImpl` y lo enchufas en la inyección de dependencias.
+- **Resultado:** Si se requiere migrar de base de datos relacional a otro motor, `ServicioAutenticacion` permanece intacto, bastando implementar un nuevo `RepositorioUsuario`.
 
 ---
 
@@ -762,13 +760,13 @@ Para solucionarlo y tener la base de datos idéntica al repositorio oficial:
    psql -U postgres -d tienda_digital_textiles_db -f "BASE DE DATOS/TIENDA DIGITAL TEXTIL.sql"
    ```
 
-> **💡 Consejo Pro (MockDataSeeder):**  
-> Alternativamente, en lugar de importar el archivo `.sql`, puedes usar nuestra herramienta nativa de Java para resetear y sembrar automáticamente la base de datos. Solo ve a la carpeta del backend y ejecuta el seeder:  
+> **💡 Consejo Pro (PobladorDatosPrueba):**  
+> Alternativamente, en lugar de importar el archivo `.sql`, puedes usar nuestra herramienta nativa de Java para resetear y sembrar automáticamente la base de datos con contraseñas encriptadas en SHA-256:  
 > ```bash
 > cd "backend-java/conexionPostgres"
-> java -cp "bin;lib/*" MockDataSeeder
+> java -cp "bin;lib/*" PobladorDatosPrueba
 > ```  
-> Esto truncará las tablas e insertará mágicamente usuarios, métricas, productos temporales y las **credenciales válidas**.
+> Esto truncará las tablas e insertará usuarios, métricas, productos temporales y las **credenciales válidas**.
 
 --- 
 
