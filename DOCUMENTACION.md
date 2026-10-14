@@ -42,3 +42,12 @@ Para consultar un apartado de interés, haz clic en el enlace correspondiente:
     *   Guía de resolución de errores comunes (solución a problemas de credenciales).
     *   Arquitectura y detalles de la aplicación móvil (Android Wrapper).
     *   Directrices de contribución al repositorio de código.
+
+7.  ### [07. Estándares Internacionales de Calidad (ISO/IEC 25010) y DevSecOps](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/07-estandares-calidad-iso25010-seguridad.md)
+    *   Evaluación y cumplimiento de la Norma ISO/IEC 25010 en comercio textil.
+    *   Estrategia de pirámide de pruebas (QA) y métricas de SonarQube / SAST.
+    *   Arquitectura de seguridad integral DevSecOps (API Gateway, Rate Limiting, OWASP ASVS).
+    *   Cumplimiento normativo de comercio electrónico: PCI-DSS y Ley 1581 de 2012 (Habeas Data).
+    *   Control de concurrencia y bloqueo pesimista (`SELECT ... FOR UPDATE`) en inventario textil.
+    *   Observabilidad: Endpoints de salud (`/health/live`, `/health/ready`), Correlation ID y logs JSON.
+

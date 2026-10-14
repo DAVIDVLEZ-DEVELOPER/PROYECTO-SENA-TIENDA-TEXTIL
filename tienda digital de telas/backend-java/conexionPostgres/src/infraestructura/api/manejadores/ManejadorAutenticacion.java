@@ -55,8 +55,17 @@ public class ManejadorAutenticacion extends ManejadorBase {
             String contrasena = jsonObjeto.has("password") ? jsonObjeto.get("password").getAsString()
                               : (jsonObjeto.has("contrasena") ? jsonObjeto.get("contrasena").getAsString() : null);
 
-            servicioAutenticacion.registrarCliente(nombre, correo, contrasena);
-            enviarRespuestaJson(intercambio, 201, "{\"success\": true, \"message\": \"Usuario registrado exitosamente\"}");
+            boolean aceptaHabeasData = true;
+            if (jsonObjeto.has("aceptaHabeasData")) {
+                aceptaHabeasData = jsonObjeto.get("aceptaHabeasData").getAsBoolean();
+            } else if (jsonObjeto.has("acceptsTerms")) {
+                aceptaHabeasData = jsonObjeto.get("acceptsTerms").getAsBoolean();
+            } else if (jsonObjeto.has("habeasData")) {
+                aceptaHabeasData = jsonObjeto.get("habeasData").getAsBoolean();
+            }
+
+            servicioAutenticacion.registrarCliente(nombre, correo, contrasena, aceptaHabeasData);
+            enviarRespuestaJson(intercambio, 201, "{\"success\": true, \"message\": \"Usuario registrado exitosamente con consentimiento de Habeas Data\"}");
 
         } else {
             enviarRespuestaJson(intercambio, 404, "{\"error\": \"Ruta no encontrada\"}");

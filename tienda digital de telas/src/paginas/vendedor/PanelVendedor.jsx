@@ -196,7 +196,7 @@ export default function PanelVendedor() {
     const updatedForm = { ...editForm };
 
     // Si se seleccionó una nueva imagen (Base64), subirla al servidor
-    if (updatedForm.images?.[0]?.startsWith('datos:')) {
+    if (updatedForm.images?.[0]?.startsWith('data:')) {
       try {
         const res = await fetch(getApiUrl(`/api/productos/${productId}/imagen`), {
           method: 'PUT',

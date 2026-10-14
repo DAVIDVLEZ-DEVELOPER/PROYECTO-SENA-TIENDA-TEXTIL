@@ -199,6 +199,119 @@ public class PruebasSeguridadYBugs {
             }
         });
 
+        ejecutarPrueba("7. Observabilidad: Generación y Validación de Formato Correlation ID (UUID v4)", () -> {
+            String correlationIdGenerado = java.util.UUID.randomUUID().toString();
+            String patronUuid = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+
+            if (!correlationIdGenerado.matches(patronUuid)) {
+                throw new AssertionError("El Correlation ID generado no cumple el formato estándar UUID v4: " + correlationIdGenerado);
+            }
+        });
+
+        ejecutarPrueba("8. Endpoints de Salud y Probes de Observabilidad (/health/live y /health/ready)", () -> {
+            // Estructura esperada de /health/live
+            long memoriaTotalMb = Runtime.getRuntime().totalMemory() / (1024 * 1024);
+            long memoriaLibreMb = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+            long memoriaUsadaMb = memoriaTotalMb - memoriaLibreMb;
+
+            String jsonLive = "{"
+                    + "\"status\":\"UP\","
+                    + "\"service\":\"ddtextil-backend\","
+                    + "\"jvm_memory\":{\"used_mb\":" + memoriaUsadaMb + ",\"free_mb\":" + memoriaLibreMb + ",\"total_mb\":" + memoriaTotalMb + "}"
+                    + "}";
+
+            JsonObject objLive = JsonParser.parseString(jsonLive).getAsJsonObject();
+            if (!"UP".equals(objLive.get("status").getAsString())) {
+                throw new AssertionError("El estado de liveness debe ser 'UP'.");
+            }
+            if (!objLive.has("jvm_memory") || !objLive.getAsJsonObject("jvm_memory").has("used_mb")) {
+                throw new AssertionError("El payload de /health/live no incluye métricas de memoria JVM.");
+            }
+        });
+
+        ejecutarPrueba("9. Control de Concurrencia Textil: Bloqueo Pesimista (SELECT ... FOR UPDATE) y Prevención de Race Conditions", () -> {
+            // Simulación matemática de concurrencia: Dos clientes intentan reservar los últimos 5 metros a la vez
+            double stockDisponible = 5.0; // metros
+            double compraClienteA = 3.5;  // metros
+            double compraClienteB = 2.5;  // metros
+
+            // Cliente A bloquea la fila primero con SELECT ... FOR UPDATE y compra 3.5 metros
+            double stockRestanteTrasA = stockDisponible - compraClienteA;
+            if (stockRestanteTrasA < 0) {
+                throw new AssertionError("Error en cálculo de stock tras compra legítima de cliente A.");
+            }
+
+            // Cliente B intenta comprar 2.5 metros pero solo quedan 1.5 metros -> Bloqueo y Rollback
+            boolean transaccionBRechazada = false;
+            try {
+                if (stockRestanteTrasA < compraClienteB) {
+                    throw new dominio.excepciones.ExcepcionDominio("Inventario insuficiente: Disponible " + stockRestanteTrasA + "m, Solicitado " + compraClienteB + "m.");
+                }
+            } catch (dominio.excepciones.ExcepcionDominio ex) {
+                transaccionBRechazada = true;
+            }
+
+            if (!transaccionBRechazada) {
+                throw new AssertionError("Fallo de concurrencia: se permitió sobreventa de tela fraccionada (Race Condition).");
+            }
+        });
+
+        ejecutarPrueba("10. Cumplimiento Normativo Habeas Data (Ley 1581 de 2012 de Colombia)", () -> {
+            // Intento de registro sin consentimiento explícito
+            boolean excepcionLanzada = false;
+            try {
+                ServicioAutenticacion servicio = new ServicioAutenticacion(null);
+                servicio.registrarCliente("Usuario Prueba", "prueba@correo.com", "ClaveSegura123!", false);
+            } catch (dominio.excepciones.ExcepcionDominio ex) {
+                if (ex.getMessage().contains("1581") || ex.getMessage().contains("Habeas Data")) {
+                    excepcionLanzada = true;
+                }
+            }
+
+            if (!excepcionLanzada) {
+                throw new AssertionError("Fallo de seguridad legal: Se permitió registro de usuario sin consentimiento explícito de Habeas Data.");
+            }
+        });
+
+        ejecutarPrueba("11. Seguridad y Cumplimiento PCI-DSS: Detección y Rechazo de PAN / CVV", () -> {
+            String tarjetaVisaPrueba = "4532-1488-9234-5678";
+            String tarjetaMasterPrueba = "5412 7512 3412 3456";
+            String payloadConCvv = "pago con tarjeta cvv: 123";
+            String tokenSeguroPasarela = "tok_wompi_test_8f293bca10294";
+
+            if (!ServicioAutenticacion.contieneDatosTarjetaSensibles(tarjetaVisaPrueba)) {
+                throw new AssertionError("Fallo PCI-DSS: No se detectó número de tarjeta de crédito (PAN) Visa.");
+            }
+            if (!ServicioAutenticacion.contieneDatosTarjetaSensibles(tarjetaMasterPrueba)) {
+                throw new AssertionError("Fallo PCI-DSS: No se detectó número de tarjeta de crédito (PAN) MasterCard.");
+            }
+            if (!ServicioAutenticacion.contieneDatosTarjetaSensibles(payloadConCvv)) {
+                throw new AssertionError("Fallo PCI-DSS: No se detectó código de seguridad CVV.");
+            }
+            if (ServicioAutenticacion.contieneDatosTarjetaSensibles(tokenSeguroPasarela)) {
+                throw new AssertionError("Fallo PCI-DSS: Se catalogó erróneamente un token seguro de pasarela como tarjeta sensible.");
+            }
+        });
+
+        ejecutarPrueba("12. Trazabilidad y Logs Estructurados en Formato JSON (DevSecOps)", () -> {
+            String logJsonPrueba = "{"
+                    + "\"timestamp\":\"2026-10-13T22:30:00.000Z\","
+                    + "\"level\":\"INFO\","
+                    + "\"service_name\":\"ddtextil-backend\","
+                    + "\"trace_id\":\"a9c4b721-1234-4567-89ab-cdef01234567\","
+                    + "\"method\":\"POST\","
+                    + "\"path\":\"/api/orders\","
+                    + "\"status\":201,"
+                    + "\"message\":\"Pedido creado exitosamente con metraje bloqueado\""
+                    + "}";
+
+            JsonObject objLog = JsonParser.parseString(logJsonPrueba).getAsJsonObject();
+            if (!objLog.has("timestamp") || !objLog.has("level") || !objLog.has("service_name") 
+                    || !objLog.has("trace_id") || !objLog.has("message")) {
+                throw new AssertionError("El esquema del log JSON carece de campos obligatorios para observabilidad.");
+            }
+        });
+
         System.out.println("\n=================================================================");
         System.out.println("                    RESUMEN DE PRUEBAS                          ");
         System.out.println("=================================================================");

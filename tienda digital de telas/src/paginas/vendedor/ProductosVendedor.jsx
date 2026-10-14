@@ -64,7 +64,7 @@ export default function ProductosVendedor() {
     const productId = editingId;
     const updatedForm = { ...editForm };
 
-    if (updatedForm.images?.[0]?.startsWith('datos:')) {
+    if (updatedForm.images?.[0]?.startsWith('data:')) {
       try {
         const res = await fetch(getApiUrl(`/api/productos/${productId}/imagen`), {
           method: 'PUT',

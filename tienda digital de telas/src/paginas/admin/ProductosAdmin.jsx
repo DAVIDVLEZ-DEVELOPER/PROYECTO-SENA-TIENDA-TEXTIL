@@ -187,7 +187,7 @@ export default function ProductosAdmin() {
     const updatedForm = { ...editForm };
 
     // Si hay imagen nueva en base64, súbela primero
-    if (updatedForm.images?.[0]?.startsWith('datos:')) {
+    if (updatedForm.images?.[0]?.startsWith('data:')) {
       try {
         const res = await fetch(
           getApiUrl(`/api/productos/${editingProduct.id}/imagen`),

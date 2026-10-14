@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS categorias_cupon (
 CREATE TABLE IF NOT EXISTS pedidos (
     id SERIAL PRIMARY KEY,
     usuario_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    vendedor_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
     nombre_cliente VARCHAR(150) NOT NULL,
     correo_cliente VARCHAR(150) NOT NULL,
     telefono_cliente VARCHAR(50),
@@ -286,7 +287,6 @@ CREATE TABLE IF NOT EXISTS actividad_reciente (
 -- DATOS INICIALES EN ESPAÑOL
 -- ============================================================================
 
--- Categorías iniciales
 INSERT INTO categorias (nombre, descripcion) VALUES
 ('Algodon', 'Telas de alta calidad tipo Algodon'),
 ('Seda', 'Telas de alta calidad tipo Seda'),
@@ -298,10 +298,6 @@ INSERT INTO categorias (nombre, descripcion) VALUES
 ('Mezclilla', 'Telas de alta calidad tipo Mezclilla')
 ON CONFLICT (nombre) DO NOTHING;
 
--- Usuarios de prueba iniciales (Contraseñas con hash SHA-256)
--- admin123 -> 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9
--- vendedor123 -> c95c735d5dd15e3ae1eb64e9a4f6cf70e30d7b2759e0a701d89da59d2a6a61b8
--- cliente123 -> 49f074d0e9fcb95ec70c2a71569931fc484fcde1e0e8e9ceeb5ad334a1ce2105
 INSERT INTO usuarios (nombre, correo, contrasena_hash, rol, activo) VALUES
 ('Anderson Moreno', 'admin@ddtextil.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'administrador', true),
 ('Carlos Pérez', 'vendedor@ddtextil.com', 'c95c735d5dd15e3ae1eb64e9a4f6cf70e30d7b2759e0a701d89da59d2a6a61b8', 'vendedor', true),
@@ -309,24 +305,43 @@ INSERT INTO usuarios (nombre, correo, contrasena_hash, rol, activo) VALUES
 ('Juan Cliente', 'cliente@gmail.com', '49f074d0e9fcb95ec70c2a71569931fc484fcde1e0e8e9ceeb5ad334a1ce2105', 'cliente', true)
 ON CONFLICT (correo) DO NOTHING;
 
--- Secciones del inicio
 INSERT INTO secciones_inicio (clave, titulo, subtitulo, activo, orden) VALUES
 ('nuevas', 'Nuevas Colecciones', 'Lo último en tendencias de moda y textiles', true, 1),
 ('exclusivas', 'Telas Exclusivas', 'Materiales de alta costura e importación especial', true, 2),
 ('ofertas', 'Ofertas Especiales', 'Descuentos por metraje y liquidación de inventario', true, 3)
 ON CONFLICT (clave) DO NOTHING;
 
--- Cupones iniciales
 INSERT INTO cupones (codigo, valor_descuento, usos_maximos, activo) VALUES
 ('DESCUENTO10', 10.0, 100, true),
 ('BIENVENIDA20', 20.0, 50, true)
 ON CONFLICT (codigo) DO NOTHING;
 
--- Banner global
 INSERT INTO banner_global (activo, mensaje, tipo_banner) VALUES
 (true, '¡Envío gratis en compras superiores a $200.000 COP a todo el país!', 'info');
 
--- Configuración del sistema
 INSERT INTO configuracion_sistema (clave, valor) VALUES
 ('system_config', '{"siteName":"D&D Textil","defaultDarkMode":false,"primaryColor":"#8B5CF6","secondaryColor":"#EC4899","accentColor":"#F59E0B","taxRate":0.19,"shippingCost":15000,"freeShippingThreshold":200000,"lowStockThreshold":20,"maintenanceMode":false}')
 ON CONFLICT (clave) DO NOTHING;
+
+-- 24. TABLA: notificaciones_sistema_erp
+CREATE TABLE IF NOT EXISTS notificaciones_sistema_erp (
+    id SERIAL PRIMARY KEY,
+    tipo VARCHAR(50) NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    mensaje TEXT NOT NULL,
+    leido BOOLEAN DEFAULT false,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 25. TABLA: inventario_telas_erp
+CREATE TABLE IF NOT EXISTS inventario_telas_erp (
+    id SERIAL PRIMARY KEY,
+    sku VARCHAR(50) NOT NULL UNIQUE,
+    nombre_tela VARCHAR(150) NOT NULL,
+    categoria VARCHAR(100),
+    proveedor VARCHAR(150),
+    metros_actuales NUMERIC(10,2) DEFAULT 0.00,
+    metros_minimos NUMERIC(10,2) DEFAULT 20.00,
+    costo_por_metro NUMERIC(12,2) DEFAULT 0.00,
+    fecha_ultima_reposicion DATE
+);

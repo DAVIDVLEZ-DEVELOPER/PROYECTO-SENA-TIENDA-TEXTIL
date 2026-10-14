@@ -46,12 +46,17 @@ public class ServicioAutenticacion {
     }
 
     /**
-     * Registra un nuevo usuario con rol de cliente.
+     * Registra un nuevo usuario con rol de cliente verificando consentimiento de Habeas Data.
      * @param nombre Nombre completo.
      * @param correo Correo electrónico.
      * @param contrasena Contraseña en texto plano.
+     * @param aceptaHabeasData Consentimiento explícito según Ley 1581 de 2012.
      */
-    public void registrarCliente(String nombre, String correo, String contrasena) {
+    public void registrarCliente(String nombre, String correo, String contrasena, boolean aceptaHabeasData) {
+        if (!aceptaHabeasData) {
+            throw new ExcepcionDominio("Es obligatorio aceptar expresamente la Política de Tratamiento de Datos Personales (Ley 1581 de 2012 - Habeas Data).");
+        }
+
         if (nombre == null || nombre.isBlank() || correo == null || correo.isBlank() || contrasena == null || contrasena.isBlank()) {
             throw new ExcepcionDominio("Todos los campos obligatorios deben ser completados.");
         }
@@ -63,6 +68,27 @@ public class ServicioAutenticacion {
         if (!guardadoExitoso) {
             throw new ExcepcionDominio("Error al registrar usuario. Es posible que el correo ya exista.");
         }
+    }
+
+    /**
+     * Sobrecarga de compatibilidad para registrar cliente.
+     */
+    public void registrarCliente(String nombre, String correo, String contrasena) {
+        registrarCliente(nombre, correo, contrasena, true);
+    }
+
+    /**
+     * Regla de Seguridad PCI-DSS:
+     * Verifica que ninguna cadena contenga números de tarjeta de crédito (PAN) ni códigos CVV.
+     * La arquitectura delega el procesamiento al SDK de la pasarela y solo admite tokens transaccionales.
+     */
+    public static boolean contieneDatosTarjetaSensibles(String texto) {
+        if (texto == null || texto.isBlank()) return false;
+        // Detección de posibles números de tarjeta de crédito (PAN entre 13 y 19 dígitos)
+        boolean contienePAN = texto.matches(".*\\b(?:\\d[ -]*?){13,19}\\b.*");
+        // Detección de claves de seguridad CVV/CVC
+        boolean contieneCVV = texto.toLowerCase().matches(".*(?:cvv|cvc|codigo_seguridad)[\\s:=]+[0-9]{3,4}.*");
+        return contienePAN || contieneCVV;
     }
 
     /**

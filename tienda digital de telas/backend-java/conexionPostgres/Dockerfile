@@ -2,7 +2,6 @@ FROM eclipse-temurin:17-jdk AS builder
 WORKDIR /app
 COPY src ./src
 COPY lib ./lib
-COPY sources.txt ./sources.txt
 RUN mkdir -p bin && \
     find src -name "*.java" > sources.txt && \
     javac -encoding UTF-8 -cp "lib/*" -d bin @sources.txt
@@ -13,4 +12,4 @@ COPY --from=builder /app/bin ./bin
 COPY --from=builder /app/lib ./lib
 RUN mkdir -p uploads
 EXPOSE 8081
-CMD ["java", "-cp", "bin:lib/*", "App"]
+CMD ["java", "-Djava.net.preferIPv4Stack=true", "-cp", "bin:lib/*", "App"]

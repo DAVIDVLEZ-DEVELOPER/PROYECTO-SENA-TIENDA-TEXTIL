@@ -45,7 +45,7 @@ function Beneficios() {
     ];
 
     useGSAP(() => {
-        const cards = gsap.utilidades.toArray('.benefit-card');
+        const cards = gsap.utils.toArray('.benefit-card');
         gsap.fromTo(cards, 
             { opacity: 0, y: 50, filter: 'blur(10px)' },
             { 

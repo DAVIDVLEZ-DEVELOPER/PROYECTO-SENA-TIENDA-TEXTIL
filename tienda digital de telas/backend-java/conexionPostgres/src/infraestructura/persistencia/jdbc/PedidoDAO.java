@@ -104,10 +104,16 @@ public class PedidoDAO {
                 }
 
                 if (idPedido > 0 && articulos != null) {
+                    // Consultas preparadas para control de concurrencia pesimista y reserva atómica
+                    String sqlBloqueoPesimista = "SELECT id, stock, nombre FROM productos WHERE id = ? FOR UPDATE";
+                    String sqlActualizarStock = "UPDATE productos SET stock = stock - ?, actualizado_en = NOW() WHERE id = ?";
                     String sqlArticulo = "INSERT INTO items_pedido (pedido_id, producto_id, cantidad, precio_por_metro, subtotal) VALUES (?, ?, ?, ?, ?)";
-                    try (PreparedStatement pst = con.prepareStatement(sqlArticulo)) {
+
+                    try (PreparedStatement pstBloqueo = con.prepareStatement(sqlBloqueoPesimista);
+                         PreparedStatement pstActualizarStock = con.prepareStatement(sqlActualizarStock);
+                         PreparedStatement pstItem = con.prepareStatement(sqlArticulo)) {
+
                         for (Map<String, Object> articulo : articulos) {
-                            pst.setInt(1, idPedido);
                             Object objProd = articulo.getOrDefault("productId", articulo.get("idProducto"));
                             Object objCant = articulo.getOrDefault("quantity", articulo.get("cantidad"));
                             Object objPrecio = articulo.getOrDefault("unitPrice", articulo.get("precioUnitario"));
@@ -116,13 +122,36 @@ public class PedidoDAO {
                             double cant = (objCant instanceof Number) ? ((Number) objCant).doubleValue() : Double.parseDouble(String.valueOf(objCant));
                             double precio = (objPrecio instanceof Number) ? ((Number) objPrecio).doubleValue() : Double.parseDouble(String.valueOf(objPrecio));
 
-                            pst.setInt(2, idProd);
-                            pst.setDouble(3, cant);
-                            pst.setDouble(4, precio);
-                            pst.setDouble(5, cant * precio);
-                            pst.addBatch();
+                            // 1. Bloqueo Pesimista (Pessimistic Locking): Bloquea la fila en BD para evitar Race Conditions
+                            pstBloqueo.setInt(1, idProd);
+                            try (ResultSet rsBloqueo = pstBloqueo.executeQuery()) {
+                                if (!rsBloqueo.next()) {
+                                    throw new SQLException("El producto con ID " + idProd + " no existe en el catálogo.");
+                                }
+                                double stockDisponible = rsBloqueo.getDouble("stock");
+                                String nombreTela = rsBloqueo.getString("nombre");
+
+                                // Validación estricta de metraje fraccionado
+                                if (stockDisponible < cant) {
+                                    throw new SQLException("Inventario insuficiente para la tela '" + nombreTela + "'. Metraje disponible: " 
+                                            + stockDisponible + " m, metraje solicitado: " + cant + " m.");
+                                }
+                            }
+
+                            // 2. Descuento atómico del inventario bajo la misma transacción
+                            pstActualizarStock.setDouble(1, cant);
+                            pstActualizarStock.setInt(2, idProd);
+                            pstActualizarStock.executeUpdate();
+
+                            // 3. Registro del ítem asociado al pedido
+                            pstItem.setInt(1, idPedido);
+                            pstItem.setInt(2, idProd);
+                            pstItem.setDouble(3, cant);
+                            pstItem.setDouble(4, precio);
+                            pstItem.setDouble(5, cant * precio);
+                            pstItem.addBatch();
                         }
-                        pst.executeBatch();
+                        pstItem.executeBatch();
                     }
                 }
 

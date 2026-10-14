@@ -109,3 +109,22 @@ Calcula el tamaño del mantel según las dimensiones de la mesa y la caída o vu
 $$\text{Ancho Mantel} = \text{Ancho Mesa} + (\text{Caída Lateral} \times 2) + \text{Dobladillo (4cm)}$$
 $$\text{Largo Mantel} = \text{Largo Mesa} + (\text{Caída Lateral} \times 2) + \text{Dobladillo (4cm)}$$
 $$\text{Tela Requerida} = \text{Largo Mantel} \times 1.10 \quad (\text{si el Ancho Mantel es menor al ancho de la tela})$$
+
+---
+
+## 6. Concurrencia y Bloqueo Pesimista en Inventario Textil
+
+La comercialización de telas presenta un desafío técnico de concurrencia: **la venta fraccionada por metros**. Si dos compradores intentan comprar los últimos metros del mismo lote o rollo en milisegundos idénticos, se produce una condición de carrera (*Race Condition*).
+
+### 6.1 Implementación de Bloqueo Pesimista (`Pessimistic Locking`)
+Para garantizar la consistencia ACID absoluta en `PedidoDAO.java`:
+1. La transacción inicia en modo atómico: `con.setAutoCommit(false);`
+2. Se adquiere un bloqueo exclusivo de fila en PostgreSQL:
+   ```sql
+   SELECT id, stock, nombre FROM productos WHERE id = ? FOR UPDATE;
+   ```
+3. PostgreSQL bloquea el registro impidiendo que cualquier otra transacción lea un stock desactualizado.
+4. Se evalúa la disponibilidad de metraje fraccionado (`stock >= cantidad_solicitada`).
+5. Se descuenta el stock: `UPDATE productos SET stock = stock - ? WHERE id = ?;`
+6. Se confirman los cambios con `con.commit();`. Si el metraje es insuficiente, se invoca `con.rollback();` de manera inmediata.
+

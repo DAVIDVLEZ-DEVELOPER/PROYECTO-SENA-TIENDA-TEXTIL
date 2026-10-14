@@ -70,10 +70,11 @@ El diseño del backend aplica estrictamente los principios de diseño orientado 
 
 La API REST del backend responde en el puerto `8081` (o según se configure por Docker) y cuenta con los siguientes endpoints principales:
 
-| Método | Ruta | Descripción | Rol Mínimo |
-| :--- | :--- | :--- | :--- |
+| **GET** | `/health/live` | Liveness probe: Verifica si el proceso JVM está activo y receptivo. | Público |
+| **GET** | `/health/ready`| Readiness probe: Valida la conectividad activa con PostgreSQL. | Público |
+| **GET** | `/api/health` | Reporte consolidado de salud, métricas de memoria y estado de dependencias. | Público |
 | **POST** | `/api/login` | Autenticación de usuario. Devuelve información del usuario. | Público |
-| **POST** | `/api/register` | Registro de nuevos clientes. | Público |
+| **POST** | `/api/register` | Registro de nuevos clientes con verificación de Habeas Data (Ley 1581). | Público |
 | **GET** | `/api/products` | Lista las telas activas del catálogo. | Público |
 | **GET** | `/api/products?sellerId=X` | Lista las telas publicadas por un vendedor en específico. | Vendedor |
 | **GET** | `/api/products/pending` | Lista productos a la espera de aprobación administrativa. | Administrador |
@@ -83,7 +84,8 @@ La API REST del backend responde en el puerto `8081` (o según se configure por 
 | **PUT** | `/api/products/{id}/image` | Subida de imágenes a través de formato Base64. | Vendedor |
 | **PUT** | `/api/products/{id}/moderate` | Aprobación o rechazo comercial de un producto. | Administrador |
 | **GET** | `/api/users` | Listado general de usuarios registrados. | Administrador |
-| **GET** | `/api/orders` | Consulta de facturas y pedidos. | Cliente / Admin |
+| **GET** | `/api/orders` | Consulta de facturas y pedidos con verificación BOLA. | Cliente / Admin |
+| **POST** | `/api/orders` | Creación de pedidos con bloqueo pesimista `SELECT FOR UPDATE`. | Cliente |
 | **PUT** | `/api/orders/{id}/status` | Modificación del estado del envío del pedido. | Admin / Vendedor |
 | **GET** | `/api/coupons` | Listado de cupones promocionales. | Cliente / Admin |
 | **POST** | `/api/coupons` | Creación de un nuevo cupón con validación de expiración. | Administrador |
@@ -91,3 +93,14 @@ La API REST del backend responde en el puerto `8081` (o según se configure por 
 | **GET** | `/api/support/tickets` | Consulta de reclamos y soporte técnico. | Cliente / Admin |
 | **POST** | `/api/support/tickets` | Apertura de un nuevo ticket de soporte. | Cliente |
 | **PUT** | `/api/support/tickets/{id}/status`| Cambio de estado y asignación de prioridad de un ticket.| Administrador |
+
+---
+
+## 5. DevSecOps y Trazabilidad Transversal
+
+El backend incorpora mecanismos nativos de nivel corporativo en su clase base `ManejadorBase`:
+* **Trazabilidad (`X-Correlation-ID`)**: Generación o propagación de UUID v4 en cabeceras de respuesta y logs.
+* **Logs Estructurados en JSON**: Emisión de eventos `{timestamp, level, service_name, trace_id, method, path, status, message}` para observabilidad.
+* **Protección Anti-DoS y Fuerza Bruta**: Rate Limiting en memoria (límite de 120 peticiones/minuto por IP) respondiendo HTTP 429 cuando se excede la tasa.
+* **Reserva Atómica de Metraje**: Control de concurrencia pesimista en `PedidoDAO` impidiendo sobreventas y discrepancias de inventario.
+
