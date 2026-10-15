@@ -10,6 +10,5 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=builder /app/bin ./bin
 COPY --from=builder /app/lib ./lib
-RUN mkdir -p uploads
 EXPOSE 8081
-CMD ["java", "-Djava.net.preferIPv4Stack=true", "-cp", "bin:lib/*", "App"]
+CMD ["java", "-cp", "bin:lib/*", "App"]

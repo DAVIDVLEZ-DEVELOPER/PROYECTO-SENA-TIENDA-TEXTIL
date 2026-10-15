@@ -31,10 +31,10 @@ public class SoporteDAO {
                 t.setId(rs.getInt("id"));
                 t.setIdCliente((Integer) rs.getObject("usuario_id"));
                 t.setNombreCliente(rs.getString("nombre_usuario"));
-                t.setCorreoCliente(rs.getString("user_email"));
+                t.setCorreoCliente(rs.getString("correo_usuario"));
                 t.setAsunto(rs.getString("asunto"));
                 t.setDescripcion(rs.getString("descripcion"));
-                t.setEstado(rs.getString("status"));
+                t.setEstado(rs.getString("estado"));
                 t.setPrioridad(rs.getString("prioridad"));
                 t.setAsignadoA((Integer) rs.getObject("asignado_a"));
                 
@@ -51,7 +51,7 @@ public class SoporteDAO {
     }
 
     public boolean agregarTicket(TicketSoporte t) {
-        String consulta = "INSERT INTO tickets_soporte (usuario_id, nombre_usuario, user_email, asunto, descripcion, status, prioridad, asignado_a) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String consulta = "INSERT INTO tickets_soporte (usuario_id, nombre_usuario, correo_usuario, asunto, descripcion, estado, prioridad, asignado_a) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.obtenerConexion();
              PreparedStatement pst = con.prepareStatement(consulta)) {
             if (t.getIdCliente() != null) pst.setInt(1, t.getIdCliente()); else pst.setNull(1, Types.INTEGER);
@@ -71,7 +71,7 @@ public class SoporteDAO {
     }
 
     public boolean actualizarEstadoTicket(int idTicket, String estado) {
-        String consulta = "UPDATE tickets_soporte SET status = ?, actualizado_en = CURRENT_TIMESTAMP " +
+        String consulta = "UPDATE tickets_soporte SET estado = ?, actualizado_en = CURRENT_TIMESTAMP " +
                        (estado.equals("resolved") || estado.equals("resuelto") ? ", resuelto_en = CURRENT_TIMESTAMP " : "") +
                        "WHERE id = ?";
         try (Connection con = Conexion.obtenerConexion();
@@ -96,14 +96,14 @@ public class SoporteDAO {
             while (rs.next()) {
                 ReporteError reporte = new ReporteError();
                 reporte.setId(rs.getInt("id"));
-                reporte.setIdVendedor((Integer) rs.getObject("seller_id"));
-                reporte.setNombreVendedor(rs.getString("seller_name"));
+                reporte.setIdVendedor((Integer) rs.getObject("vendedor_id"));
+                reporte.setNombreVendedor(rs.getString("nombre_vendedor"));
                 String areaReporte = rs.getString("area");
                 reporte.setArea(areaReporte);
                 reporte.setTitulo(areaReporte);
                 reporte.setDescripcion(rs.getString("descripcion"));
                 reporte.setPasos(rs.getString("pasos"));
-                reporte.setEstado(rs.getString("status"));
+                reporte.setEstado(rs.getString("estado"));
                 String prioridadReporte = rs.getString("prioridad");
                 reporte.setPrioridad(prioridadReporte);
                 reporte.setSeveridad(prioridadReporte);
@@ -121,7 +121,7 @@ public class SoporteDAO {
     }
 
     public boolean agregarReporteError(ReporteError reporte) {
-        String consulta = "INSERT INTO reportes_errores (seller_id, seller_name, area, descripcion, pasos, status, prioridad, asignado_a) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String consulta = "INSERT INTO reportes_errores (vendedor_id, nombre_vendedor, area, descripcion, pasos, estado, prioridad, asignado_a) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.obtenerConexion();
              PreparedStatement pst = con.prepareStatement(consulta)) {
             if (reporte.getIdVendedor() != null) pst.setInt(1, reporte.getIdVendedor()); else pst.setNull(1, Types.INTEGER);
@@ -143,7 +143,7 @@ public class SoporteDAO {
     }
 
     public boolean actualizarEstadoReporteError(int idReporte, String estado) {
-        String consulta = "UPDATE reportes_errores SET status = ? " +
+        String consulta = "UPDATE reportes_errores SET estado = ? " +
                        (estado.equals("resolved") || estado.equals("resuelto") ? ", resuelto_en = CURRENT_TIMESTAMP " : "") +
                        "WHERE id = ?";
         try (Connection con = Conexion.obtenerConexion();

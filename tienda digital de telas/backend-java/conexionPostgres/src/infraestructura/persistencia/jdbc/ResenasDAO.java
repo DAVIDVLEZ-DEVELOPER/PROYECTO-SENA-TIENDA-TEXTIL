@@ -21,9 +21,9 @@ public class ResenasDAO {
      */
     public List<Resena> obtenerResenasPorProducto(int idProducto) {
         List<Resena> resenas = new ArrayList<>();
-        String consulta = "SELECT r.*, u.name as nombre_usuario " +
+        String consulta = "SELECT r.*, u.nombre as nombre_usuario " +
                 "FROM resenas r " +
-                "JOIN users u ON u.id = r.usuario_id " +
+                "JOIN usuarios u ON u.id = r.usuario_id " +
                 "WHERE r.producto_id = ? " +
                 "ORDER BY r.creado_en DESC, r.id DESC";
 

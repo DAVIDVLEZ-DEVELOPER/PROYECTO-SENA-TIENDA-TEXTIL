@@ -13,7 +13,7 @@ services:
       - "./BASE DE DATOS:/docker-entrypoint-initdb.d:ro"
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     networks:
       - backend-net
     healthcheck:
@@ -36,7 +36,7 @@ services:
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "8081:8081"
+      - "${BACKEND_PORT:-8081}:8081"
     networks:
       - backend-net
       - frontend-net
@@ -59,7 +59,7 @@ services:
     container_name: ddtextil-frontend
     restart: unless-stopped
     ports:
-      - "3001:80"
+      - "${FRONTEND_PORT:-3001}:80"
     networks:
       - frontend-net
     healthcheck:

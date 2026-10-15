@@ -94,7 +94,7 @@ docker compose up -d
 
 | Servicio | Acceso |
 | :--- | :--- |
-| Frontend de la aplicacion | http://localhost:5173 |
+| Frontend de la aplicacion | http://localhost:3001 (Docker) / http://localhost:5173 (Dev) |
 | Backend API (REST) | http://localhost:8081 |
 | Base de Datos PostgreSQL | localhost:5432 |
 
@@ -144,7 +144,7 @@ El cuerpo documental oficial del sistema esta estructurado de forma modular en l
 * 01. **[Especificacion de Requerimientos de Software (IEEE 830 y BDD)](documentacion/01-especificacion-requerimientos-ieee830.md)**
 * 02. **[Arquitectura de Software, Modelo C4 y Backend Java](documentacion/02-arquitectura-software-c4-y-backend.md)**
 * 03. **[Arquitectura del Frontend y Gestion de Roles de Usuario](documentacion/03-arquitectura-frontend-y-roles.md)**
-* 04. **[Diseno, Estructura y Esquema de Base de Datos Relacional](documentacion/04-base-de-datos-diseno-y-esquema.md)**
+* 04. **[Diseno, Estructura y Esquema de Base de Datos Relacional](documentacion/04-base-de-datos-diseno-y-esquema.md)** | **[Esquema Relacional y Arquitectura MVC](BASE%20DE%20DATOS/README.md)**
 * 05. **[Politicas de Seguridad, Resiliencia y Calidad de Software](documentacion/05-politicas-seguridad-resiliencia-y-calidad.md)**
 * 06. **[Manual Tecnico de Instalacion, Configuracion y Despliegue](documentacion/06-manual-tecnico-instalacion-y-despliegue.md)**
 * 07. **[Motor Textil, Reglas de Negocio y Suite de Pruebas Automatizadas](documentacion/07-motor-textil-reglas-negocio-y-pruebas.md)**

@@ -61,17 +61,19 @@ public class CarruselDAO {
      * Inserta una nueva diapositiva en la base de datos.
      */
     public boolean agregarDiapositiva(DiapositivaCarrusel diapositiva) {
-        String consulta = "INSERT INTO diapositivas_carrusel (titulo, subtitulo, image, cta, clave_seccion, active, orden) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String consulta = "INSERT INTO diapositivas_carrusel (titulo, subtitulo, imagen, image, cta, clave_seccion, activo, active, orden) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.obtenerConexion();
              PreparedStatement pst = con.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, diapositiva.getTitulo());
             pst.setString(2, diapositiva.getSubtitulo());
             pst.setString(3, diapositiva.getImagen());
-            pst.setString(4, diapositiva.getTextoBoton());
-            pst.setString(5, diapositiva.getClaveSeccion());
-            pst.setBoolean(6, diapositiva.isActivo());
-            pst.setInt(7, diapositiva.getOrden());
+            pst.setString(4, diapositiva.getImagen());
+            pst.setString(5, diapositiva.getTextoBoton());
+            pst.setString(6, diapositiva.getClaveSeccion());
+            pst.setBoolean(7, diapositiva.isActivo());
+            pst.setBoolean(8, diapositiva.isActivo());
+            pst.setInt(9, diapositiva.getOrden());
             return pst.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,9 +88,11 @@ public class CarruselDAO {
         String consulta = "UPDATE diapositivas_carrusel SET " +
                 "titulo = COALESCE(?, titulo), " +
                 "subtitulo = COALESCE(?, subtitulo), " +
+                "imagen = COALESCE(?, imagen), " +
                 "image = COALESCE(?, image), " +
                 "cta = COALESCE(?, cta), " +
                 "clave_seccion = COALESCE(?, clave_seccion), " +
+                "activo = COALESCE(?, activo), " +
                 "active = COALESCE(?, active), " +
                 "orden = COALESCE(?, orden) " +
                 "WHERE id = ?";
@@ -97,11 +101,13 @@ public class CarruselDAO {
             pst.setString(1, diapositiva.getTitulo());
             pst.setString(2, diapositiva.getSubtitulo());
             pst.setString(3, diapositiva.getImagen());
-            pst.setString(4, diapositiva.getTextoBoton());
-            pst.setString(5, diapositiva.getClaveSeccion());
-            pst.setObject(6, activo);
-            pst.setObject(7, diapositiva.getOrden() > 0 ? diapositiva.getOrden() : null);
-            pst.setInt(8, id);
+            pst.setString(4, diapositiva.getImagen());
+            pst.setString(5, diapositiva.getTextoBoton());
+            pst.setString(6, diapositiva.getClaveSeccion());
+            pst.setObject(7, activo);
+            pst.setObject(8, activo);
+            pst.setObject(9, diapositiva.getOrden() > 0 ? diapositiva.getOrden() : null);
+            pst.setInt(10, id);
             return pst.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -129,10 +135,11 @@ public class CarruselDAO {
         slide.setId(rs.getInt("id"));
         slide.setTitulo(rs.getString("titulo"));
         slide.setSubtitulo(rs.getString("subtitulo"));
-        slide.setImagen(rs.getString("image"));
+        String img = rs.getString("imagen");
+        slide.setImagen(img != null && !img.isBlank() ? img : rs.getString("image"));
         slide.setTextoBoton(rs.getString("cta"));
         slide.setClaveSeccion(rs.getString("clave_seccion"));
-        slide.setActivo(rs.getBoolean("active"));
+        slide.setActivo(rs.getBoolean("activo"));
         slide.setOrden(rs.getInt("orden"));
         return slide;
     }

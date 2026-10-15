@@ -44,10 +44,14 @@ El cuerpo documental oficial del proyecto se encuentra centralizado en el direct
 *   **Calculadora de Metraje Inteligente:** Modelado matematico y formulas para cortinas, vestidos, faldas circulares, manteles y tapiceria con margen tecnico de confeccion del +10%.
 *   **Cliente Movil Hibrido (Android Wrapper):** Arquitectura en Kotlin con `WebViewAssetLoader`, ciclo de vida e integracion con el backend.
 
-### 4. [04. Diseno, Estructura y Esquema de Base de Datos Relacional](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/04-base-de-datos-diseno-y-esquema.md)
+### 4. [04. Diseno, Estructura y Esquema de Base de Datos Relacional](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/documentacion/04-base-de-datos-diseno-y-esquema.md) y [README de Base de Datos](file:///c:/Users/Anderson%20Moreno/Downloads/PROYECTO-SENA-TIENDA-TEXTIL-/BASE%20DE%20DATOS/README.md)
 *   **Diseno Arquitectonico:** PostgreSQL 17 en codificacion UTF-8, normalizacion en Tercera Forma Normal (3FN), precision decimal en moneda (`NUMERIC(12,2)`) y metrajes (`NUMERIC(10,2)`).
+*   **Modelo Relacional Formal:** Notacion relacional estricta para las 25 tablas con claves primarias (`PK`), claves foraneas (`FK`), restricciones de unicidad (`UK`) y de integridad referencial.
 *   **Diagrama Entidad-Relacion (DER):** Modelado conceptual completo en sintaxis Mermaid.
-*   **Diccionario de Datos Exhaustivo:** Especificacion columna por columna de las 23 tablas de la base de datos (tipos de datos, restricciones PK, FK, UK, nulabilidad y descripcion del proposito comercial).
+*   **Arquitectura Modelo-Vista-Controlador (MVC):** Desacoplamiento y mapeo integral del Modelo (PostgreSQL 17 + DAOs JDBC + Clases de Dominio Java), Vista (SPA React 18 + Tailwind CSS) y Controlador (Handlers HTTP nativos de Java 17).
+*   **Vistas de Base de Datos (SQL Views):** Definicion de vistas para catalogo consolidado, alertas de stock critico y resumen de comisiones de vendedores.
+*   **Ciclo de Vida Transaccional MVC:** Diagrama de secuencia Mermaid para el flujo de compra y descuento de inventario con bloqueo pesimista (`SELECT ... FOR UPDATE`).
+*   **Diccionario de Datos Exhaustivo:** Especificacion columna por columna de las tablas de la base de datos (tipos de datos, restricciones PK, FK, UK, nulabilidad y descripcion del proposito comercial).
 *   **Estrategia de Indexacion B-Tree:** Indices para busqueda de catalogo, ordenamiento de inventario por menor remanente y trazabilidad de ordenes de corte.
 *   **Transaccionalidad y Bloqueo Pesimista:** Aplicacion de `SELECT ... FOR UPDATE` para evitar condiciones de carrera en reservas simultaneas de rollos.
 

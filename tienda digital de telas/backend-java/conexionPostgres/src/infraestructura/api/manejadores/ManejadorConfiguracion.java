@@ -51,7 +51,7 @@ public class ManejadorConfiguracion extends ManejadorBase {
                         enviarRespuestaJson(intercambio, 200, gson.toJson(valor));
                     }
                 } else {
-                    enviarRespuestaJson(intercambio, 404, "{}");
+                    enviarRespuestaJson(intercambio, 200, "{}");
                 }
             }
 

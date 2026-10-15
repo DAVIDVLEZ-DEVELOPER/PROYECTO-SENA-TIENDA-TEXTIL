@@ -28,7 +28,7 @@ public class ServidorApi {
      * @throws IOException Si ocurre un error de red o de I/O al crear el servidor.
      */
     public static void iniciarServidor(int puerto) throws IOException {
-        HttpServer servidor = HttpServer.create(new InetSocketAddress("0.0.0.0", puerto), 0);
+        HttpServer servidor = HttpServer.create(new InetSocketAddress(puerto), 0);
 
         // Asegura que el directorio para archivos subidos exista
         File directorioSubidas = new File("uploads");
