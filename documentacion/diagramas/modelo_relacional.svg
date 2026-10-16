@@ -1,0 +1,754 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1750 1250" width="100%" height="100%" style="background:#0f172a; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;">
+
+    <defs>
+      <!-- Patrón de cuadrícula de fondo -->
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.8"/>
+      </pattern>
+      
+      <!-- Sombra suave para las tarjetas de tablas -->
+      <filter id="card-shadow" x="-5%" y="-5%" width="115%" height="115%">
+        <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+      </filter>
+
+      <!-- Marcador para claves foráneas (flecha) -->
+      <marker id="fk-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#38bdf8" />
+      </marker>
+      
+      <!-- Marcador de inicio (pata de gallo / circulo) -->
+      <marker id="circle-marker" markerWidth="8" markerHeight="8" refX="4" refY="4">
+        <circle cx="4" cy="4" r="3" fill="#38bdf8" />
+      </marker>
+
+      <!-- Gradientes para encabezados de módulos -->
+      <linearGradient id="grad-catalogo" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#0284c7" />
+        <stop offset="100%" stop-color="#0369a1" />
+      </linearGradient>
+      
+      <linearGradient id="grad-ventas" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#059669" />
+        <stop offset="100%" stop-color="#047857" />
+      </linearGradient>
+      
+      <linearGradient id="grad-usuarios" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#7c3aed" />
+        <stop offset="100%" stop-color="#6d28d9" />
+      </linearGradient>
+
+      <linearGradient id="grad-erp" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ea580c" />
+        <stop offset="100%" stop-color="#c2410c" />
+      </linearGradient>
+    </defs>
+    
+<rect width="1750" height="1250" fill="url(#grid)" />
+
+    <g transform="translate(60, 45)">
+      <rect x="0" y="0" width="1630" height="75" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5" filter="url(#card-shadow)"/>
+      <text x="30" y="34" font-size="22" font-weight="bold" fill="#f8fafc">MODELO RELACIONAL DE BASE DE DATOS (POSTGRESQL 17)</text>
+      <text x="30" y="58" font-size="14" fill="#94a3b8">Plataforma D&amp;D Textil · Normalización 3FN · Integridad Referencial PK/FK · 25 Entidades Relacionales</text>
+      
+      <!-- Badges informativos a la derecha -->
+      <g transform="translate(1100, 22)">
+        <rect x="0" y="0" width="120" height="30" rx="6" fill="#0369a1"/>
+        <text x="60" y="20" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">SENA ADSO</text>
+        
+        <rect x="135" y="0" width="170" height="30" rx="6" fill="#047857"/>
+        <text x="220" y="20" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">PostgreSQL 17 (UTF-8)</text>
+
+        <rect x="320" y="0" width="170" height="30" rx="6" fill="#7c3aed"/>
+        <text x="405" y="20" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Normalización 3FN</text>
+      </g>
+    </g>
+    
+<g transform="translate(60, 150)" filter="url(#card-shadow)">
+<rect width="240" height="144" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">CATEGORIAS</text>
+<line x1="0" y1="34" x2="240" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="228" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">nombre</text>
+<text x="228" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">descripcion</text>
+<text x="228" y="100" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">creado_en</text>
+<text x="228" y="124" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(340, 150)" filter="url(#card-shadow)">
+<rect width="280" height="360" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">PRODUCTOS</text>
+<line x1="0" y1="34" x2="280" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="268" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<circle cx="24" cy="72" r="2.5" fill="#64748b"/>
+<text x="36" y="76" font-size="12" font-weight="normal" fill="#cbd5e1">nombre</text>
+<text x="268" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(150)</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">categoria_id</text>
+<text x="268" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">precio</text>
+<text x="268" y="124" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(12,2)</text>
+<rect x="12" y="137" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="148" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="148" font-size="12" font-weight="normal" fill="#f8fafc">vendedor_id</text>
+<text x="268" y="148" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">descripcion</text>
+<text x="268" y="172" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">material</text>
+<text x="268" y="196" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="216" r="2.5" fill="#64748b"/>
+<text x="36" y="220" font-size="12" font-weight="normal" fill="#cbd5e1">ancho</text>
+<text x="268" y="220" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="240" r="2.5" fill="#64748b"/>
+<text x="36" y="244" font-size="12" font-weight="normal" fill="#cbd5e1">peso</text>
+<text x="268" y="244" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="264" r="2.5" fill="#64748b"/>
+<text x="36" y="268" font-size="12" font-weight="normal" fill="#cbd5e1">stock</text>
+<text x="268" y="268" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="288" r="2.5" fill="#64748b"/>
+<text x="36" y="292" font-size="12" font-weight="normal" fill="#cbd5e1">activo</text>
+<text x="268" y="292" font-size="11" fill="#94a3b8" text-anchor="end">BOOLEAN</text>
+<circle cx="24" cy="312" r="2.5" fill="#64748b"/>
+<text x="36" y="316" font-size="12" font-weight="normal" fill="#cbd5e1">estado_moderacion</text>
+<text x="268" y="316" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(20)</text>
+<circle cx="24" cy="336" r="2.5" fill="#64748b"/>
+<text x="36" y="340" font-size="12" font-weight="normal" fill="#cbd5e1">creado_en</text>
+<text x="268" y="340" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(60, 310)" filter="url(#card-shadow)">
+<rect width="240" height="144" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">IMAGENES_PRODUCTO</text>
+<line x1="0" y1="34" x2="240" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="228" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">producto_id</text>
+<text x="228" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">url_imagen</text>
+<text x="228" y="100" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">orden_visualizacion</text>
+<text x="228" y="124" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+</g>
+<g transform="translate(60, 470)" filter="url(#card-shadow)">
+<rect width="240" height="216" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">LOTES_INVENTARIO</text>
+<line x1="0" y1="34" x2="240" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="228" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">producto_id</text>
+<text x="228" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">numero_lote</text>
+<text x="228" y="100" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">metros_recibidos</text>
+<text x="228" y="124" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">costo_por_metro</text>
+<text x="228" y="148" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">proveedor</text>
+<text x="228" y="172" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">fecha_recepcion</text>
+<text x="228" y="196" font-size="11" fill="#94a3b8" text-anchor="end">DATE</text>
+</g>
+<g transform="translate(60, 710)" filter="url(#card-shadow)">
+<rect width="240" height="240" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">ROLLOS_TEXTIL</text>
+<line x1="0" y1="34" x2="240" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="228" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">producto_id</text>
+<text x="228" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">lote_id</text>
+<text x="228" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<rect x="12" y="113" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="124" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="124" font-size="12" font-weight="normal" fill="#f8fafc">codigo_rollo</text>
+<text x="228" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">metraje_inicial</text>
+<text x="228" y="148" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">metraje_remanente</text>
+<text x="228" y="172" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">lote_tintoreria</text>
+<text x="228" y="196" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="216" r="2.5" fill="#64748b"/>
+<text x="36" y="220" font-size="12" font-weight="normal" fill="#cbd5e1">estado</text>
+<text x="228" y="220" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(30)</text>
+</g>
+<g transform="translate(340, 560)" filter="url(#card-shadow)">
+<rect width="280" height="192" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">EVENTOS_MERMA</text>
+<line x1="0" y1="34" x2="280" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="268" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">producto_id</text>
+<text x="268" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">metros_perdidos</text>
+<text x="268" y="100" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">motivo</text>
+<text x="268" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">impacto_costo</text>
+<text x="268" y="148" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">creado_en</text>
+<text x="268" y="172" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(340, 780)" filter="url(#card-shadow)">
+<rect width="280" height="144" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">UMBRALES_STOCK</text>
+<line x1="0" y1="34" x2="280" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="268" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">tipo_tela</text>
+<text x="268" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">metros_minimos</text>
+<text x="268" y="100" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">alerta_activa</text>
+<text x="268" y="124" font-size="11" fill="#94a3b8" text-anchor="end">BOOLEAN</text>
+</g>
+<g transform="translate(60, 970)" filter="url(#card-shadow)">
+<rect width="560" height="216" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 552 0 Q 560 0 560 8 L 560 34 L 0 34 Z" fill="url(#grad-catalogo)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">INVENTARIO_TELAS_ERP</text>
+<line x1="0" y1="34" x2="560" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="548" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">sku</text>
+<text x="548" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">nombre_tela</text>
+<text x="548" y="100" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(150)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">categoria</text>
+<text x="548" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">metros_actuales</text>
+<text x="548" y="148" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">metros_minimos</text>
+<text x="548" y="172" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">costo_por_metro</text>
+<text x="548" y="196" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+</g>
+<g transform="translate(670, 150)" filter="url(#card-shadow)">
+<rect width="280" height="288" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="url(#grad-usuarios)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">USUARIOS</text>
+<line x1="0" y1="34" x2="280" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="268" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<circle cx="24" cy="72" r="2.5" fill="#64748b"/>
+<text x="36" y="76" font-size="12" font-weight="normal" fill="#cbd5e1">nombre</text>
+<text x="268" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">correo</text>
+<text x="268" y="100" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(150)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">contrasena_hash</text>
+<text x="268" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(255)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">rol</text>
+<text x="268" y="148" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(30)</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">activo</text>
+<text x="268" y="172" font-size="11" fill="#94a3b8" text-anchor="end">BOOLEAN</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">suspendido</text>
+<text x="268" y="196" font-size="11" fill="#94a3b8" text-anchor="end">BOOLEAN</text>
+<circle cx="24" cy="216" r="2.5" fill="#64748b"/>
+<text x="36" y="220" font-size="12" font-weight="normal" fill="#cbd5e1">tasa_comision</text>
+<text x="268" y="220" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(5,2)</text>
+<circle cx="24" cy="240" r="2.5" fill="#64748b"/>
+<text x="36" y="244" font-size="12" font-weight="normal" fill="#cbd5e1">registrado_en</text>
+<text x="268" y="244" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+<circle cx="24" cy="264" r="2.5" fill="#64748b"/>
+<text x="36" y="268" font-size="12" font-weight="normal" fill="#cbd5e1">ultimo_acceso</text>
+<text x="268" y="268" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(670, 460)" filter="url(#card-shadow)">
+<rect width="280" height="240" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="url(#grad-usuarios)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">TICKETS_SOPORTE</text>
+<line x1="0" y1="34" x2="280" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="268" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">usuario_id</text>
+<text x="268" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">correo_usuario</text>
+<text x="268" y="100" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(150)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">asunto</text>
+<text x="268" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(150)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">descripcion</text>
+<text x="268" y="148" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">estado</text>
+<text x="268" y="172" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(30)</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">prioridad</text>
+<text x="268" y="196" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(20)</text>
+<rect x="12" y="209" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="220" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="220" font-size="12" font-weight="normal" fill="#f8fafc">asignado_a</text>
+<text x="268" y="220" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+</g>
+<g transform="translate(670, 730)" filter="url(#card-shadow)">
+<rect width="280" height="216" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="url(#grad-usuarios)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">REPORTES_ERRORES</text>
+<line x1="0" y1="34" x2="280" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="268" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">vendedor_id</text>
+<text x="268" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">nombre_vendedor</text>
+<text x="268" y="100" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">area</text>
+<text x="268" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">descripcion</text>
+<text x="268" y="148" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">estado</text>
+<text x="268" y="172" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(30)</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">prioridad</text>
+<text x="268" y="196" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(20)</text>
+</g>
+<g transform="translate(670, 970)" filter="url(#card-shadow)">
+<rect width="280" height="192" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="url(#grad-usuarios)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">ACTIVIDAD_RECIENTE</text>
+<line x1="0" y1="34" x2="280" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="268" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<circle cx="24" cy="72" r="2.5" fill="#64748b"/>
+<text x="36" y="76" font-size="12" font-weight="normal" fill="#cbd5e1">tipo</text>
+<text x="268" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">usuario_id</text>
+<text x="268" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">nombre_usuario</text>
+<text x="268" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">accion</text>
+<text x="268" y="148" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">creado_en</text>
+<text x="268" y="172" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(1000, 150)" filter="url(#card-shadow)">
+<rect width="310" height="384" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-ventas)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">PEDIDOS</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">usuario_id</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">vendedor_id</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">nombre_cliente</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(150)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">correo_cliente</text>
+<text x="298" y="148" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(150)</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">direccion_envio</text>
+<text x="298" y="172" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">ciudad_envio</text>
+<text x="298" y="196" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="216" r="2.5" fill="#64748b"/>
+<text x="36" y="220" font-size="12" font-weight="normal" fill="#cbd5e1">monto_total</text>
+<text x="298" y="220" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(12,2)</text>
+<circle cx="24" cy="240" r="2.5" fill="#64748b"/>
+<text x="36" y="244" font-size="12" font-weight="normal" fill="#cbd5e1">costo_envio</text>
+<text x="298" y="244" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(12,2)</text>
+<circle cx="24" cy="264" r="2.5" fill="#64748b"/>
+<text x="36" y="268" font-size="12" font-weight="normal" fill="#cbd5e1">monto_descuento</text>
+<text x="298" y="268" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(12,2)</text>
+<circle cx="24" cy="288" r="2.5" fill="#64748b"/>
+<text x="36" y="292" font-size="12" font-weight="normal" fill="#cbd5e1">estado</text>
+<text x="298" y="292" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="312" r="2.5" fill="#64748b"/>
+<text x="36" y="316" font-size="12" font-weight="normal" fill="#cbd5e1">estado_pago</text>
+<text x="298" y="316" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="336" r="2.5" fill="#64748b"/>
+<text x="36" y="340" font-size="12" font-weight="normal" fill="#cbd5e1">numero_guia</text>
+<text x="298" y="340" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="360" r="2.5" fill="#64748b"/>
+<text x="36" y="364" font-size="12" font-weight="normal" fill="#cbd5e1">creado_en</text>
+<text x="298" y="364" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(1000, 560)" filter="url(#card-shadow)">
+<rect width="310" height="192" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-ventas)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">ITEMS_PEDIDO</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">pedido_id</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">producto_id</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">cantidad</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">precio_por_metro</text>
+<text x="298" y="148" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(12,2)</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">subtotal</text>
+<text x="298" y="172" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(12,2)</text>
+</g>
+<g transform="translate(1000, 770)" filter="url(#card-shadow)">
+<rect width="310" height="168" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-ventas)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">ITEMS_CARRITO</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">usuario_id</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">producto_id</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">cantidad</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">agregado_en</text>
+<text x="298" y="148" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(1000, 950)" filter="url(#card-shadow)">
+<rect width="310" height="192" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-ventas)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">RESENAS</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">producto_id</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">usuario_id</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">calificacion</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">comentario</text>
+<text x="298" y="148" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">creado_en</text>
+<text x="298" y="172" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(1360, 150)" filter="url(#card-shadow)">
+<rect width="310" height="216" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-erp)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">CUPONES</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">codigo</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(50)</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">tipo_descuento</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(20)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">valor_descuento</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(10,2)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">expira_en</text>
+<text x="298" y="148" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+<circle cx="24" cy="168" r="2.5" fill="#64748b"/>
+<text x="36" y="172" font-size="12" font-weight="normal" fill="#cbd5e1">compra_minima</text>
+<text x="298" y="172" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(12,2)</text>
+<circle cx="24" cy="192" r="2.5" fill="#64748b"/>
+<text x="36" y="196" font-size="12" font-weight="normal" fill="#cbd5e1">activo</text>
+<text x="298" y="196" font-size="11" fill="#94a3b8" text-anchor="end">BOOLEAN</text>
+</g>
+<g transform="translate(1360, 380)" filter="url(#card-shadow)">
+<rect width="310" height="120" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-erp)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">CATEGORIAS_CUPON</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">cupon_id</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+<rect x="12" y="89" width="24" height="15" rx="3" fill="#38bdf8"/>
+<text x="24" y="100" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+<text x="42" y="100" font-size="12" font-weight="normal" fill="#f8fafc">categoria_id</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+</g>
+<g transform="translate(1360, 510)" filter="url(#card-shadow)">
+<rect width="310" height="144" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-erp)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">CONFIGURACION_SISTEMA</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">clave</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">valor</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">TEXT</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">actualizado_en</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">TIMESTAMP</text>
+</g>
+<g transform="translate(1360, 680)" filter="url(#card-shadow)">
+<rect width="310" height="168" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-erp)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">METRICAS_VENTAS_ERP</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">fecha_registro</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">DATE</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">ventas_reales</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(14,2)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">ventas_objetivo</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(14,2)</text>
+<circle cx="24" cy="144" r="2.5" fill="#64748b"/>
+<text x="36" y="148" font-size="12" font-weight="normal" fill="#cbd5e1">margen_ganancia</text>
+<text x="298" y="148" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(5,2)</text>
+</g>
+<g transform="translate(1360, 870)" filter="url(#card-shadow)">
+<rect width="310" height="144" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-erp)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">VENTAS_REGION</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<circle cx="24" cy="72" r="2.5" fill="#64748b"/>
+<text x="36" y="76" font-size="12" font-weight="normal" fill="#cbd5e1">region</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">VARCHAR(100)</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">ventas_totales</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(14,2)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">porcentaje</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(5,2)</text>
+</g>
+<g transform="translate(1360, 1030)" filter="url(#card-shadow)">
+<rect width="310" height="144" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+<path d="M 0 8 Q 0 0 8 0 L 302 0 Q 310 0 310 8 L 310 34 L 0 34 Z" fill="url(#grad-erp)"/>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">VENTAS_DIARIAS</text>
+<line x1="0" y1="34" x2="310" y2="34" stroke="#475569" stroke-width="1"/>
+<rect x="12" y="41" width="24" height="15" rx="3" fill="#fbbf24"/>
+<text x="24" y="52" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+<text x="42" y="52" font-size="12" font-weight="bold" fill="#f8fafc">id</text>
+<text x="298" y="52" font-size="11" fill="#94a3b8" text-anchor="end">SERIAL</text>
+<rect x="12" y="65" width="24" height="15" rx="3" fill="#a78bfa"/>
+<text x="24" y="76" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+<text x="42" y="76" font-size="12" font-weight="normal" fill="#f8fafc">fecha_venta</text>
+<text x="298" y="76" font-size="11" fill="#94a3b8" text-anchor="end">DATE</text>
+<circle cx="24" cy="96" r="2.5" fill="#64748b"/>
+<text x="36" y="100" font-size="12" font-weight="normal" fill="#cbd5e1">ventas_totales</text>
+<text x="298" y="100" font-size="11" fill="#94a3b8" text-anchor="end">NUMERIC(14,2)</text>
+<circle cx="24" cy="120" r="2.5" fill="#64748b"/>
+<text x="36" y="124" font-size="12" font-weight="normal" fill="#cbd5e1">pedidos_totales</text>
+<text x="298" y="124" font-size="11" fill="#94a3b8" text-anchor="end">INTEGER</text>
+</g>
+
+    <!-- Relaciones (Lineas de conexion ortogonales con marcadores) -->
+    <g stroke="#38bdf8" stroke-width="1.8" fill="none" opacity="0.85">
+      <!-- CATEGORIAS -> PRODUCTOS -->
+      <path d="M 300 200 L 340 200" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      
+      <!-- USUARIOS -> PRODUCTOS (Vendedor) -->
+      <path d="M 670 250 L 620 250" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- PRODUCTOS -> IMAGENES_PRODUCTO -->
+      <path d="M 340 370 L 300 370" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- PRODUCTOS -> LOTES_INVENTARIO -->
+      <path d="M 340 500 L 300 500" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- LOTES_INVENTARIO -> ROLLOS_TEXTIL -->
+      <path d="M 180 655 L 180 710" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- PRODUCTOS -> EVENTOS_MERMA -->
+      <path d="M 480 480 L 480 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- USUARIOS -> PEDIDOS -->
+      <path d="M 950 200 L 1000 200" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- PEDIDOS -> ITEMS_PEDIDO -->
+      <path d="M 1150 505 L 1150 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- PRODUCTOS -> ITEMS_PEDIDO -->
+      <path d="M 620 400 L 980 400 L 980 620 L 1000 620" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- USUARIOS -> ITEMS_CARRITO -->
+      <path d="M 810 410 L 810 830 L 1000 830" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- PRODUCTOS -> ITEMS_CARRITO -->
+      <path d="M 500 480 L 500 850 L 1000 850" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- CUPONES -> CATEGORIAS_CUPON -->
+      <path d="M 1510 335 L 1510 380" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- CATEGORIAS -> CATEGORIAS_CUPON -->
+      <path d="M 200 150 L 200 130 L 1550 130 L 1550 380" stroke-dasharray="4,4" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- USUARIOS -> TICKETS_SOPORTE -->
+      <path d="M 810 410 L 810 460" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- USUARIOS -> REPORTES_ERRORES -->
+      <path d="M 750 410 L 750 730" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- USUARIOS -> ACTIVIDAD_RECIENTE -->
+      <path d="M 700 410 L 700 970" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+    </g>
+    
+
+    <g transform="translate(60, 1150)">
+      <rect width="680" height="70" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2" filter="url(#card-shadow)"/>
+      <text x="20" y="25" font-size="12" font-weight="bold" fill="#f8fafc">CONVENCIONES DEL MODELO RELACIONAL:</text>
+      
+      <!-- PK -->
+      <rect x="20" y="38" width="26" height="18" rx="3" fill="#fbbf24"/>
+      <text x="33" y="51" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
+      <text x="54" y="51" font-size="12" fill="#cbd5e1">Clave Primaria</text>
+
+      <!-- FK -->
+      <rect x="160" y="38" width="26" height="18" rx="3" fill="#38bdf8"/>
+      <text x="173" y="51" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
+      <text x="194" y="51" font-size="12" fill="#cbd5e1">Clave Foránea</text>
+
+      <!-- UK -->
+      <rect x="300" y="38" width="26" height="18" rx="3" fill="#a78bfa"/>
+      <text x="313" y="51" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
+      <text x="334" y="51" font-size="12" fill="#cbd5e1">Restricción Unique</text>
+
+      <!-- Línea FK -->
+      <line x1="470" y1="47" x2="510" y2="47" stroke="#38bdf8" stroke-width="2" marker-end="url(#fk-arrow)"/>
+      <circle cx="470" cy="47" r="3" fill="#38bdf8"/>
+      <text x="525" y="51" font-size="12" fill="#cbd5e1">Relación (1 a Muchos)</text>
+    </g>
+    
+</svg>

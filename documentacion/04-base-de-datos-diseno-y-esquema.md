@@ -21,7 +21,17 @@ El modelo de datos de **D&D Textil** esta implementado sobre el motor relacional
 
 El modelo relacional traduce los requerimientos del negocio textil a un conjunto de relaciones normalizadas en **Tercera Forma Normal (3FN)**, garantizando atomicidad, eliminación de redundancias y consistencia de claves primarias y foráneas.
 
-### 2.1. Notación Formal del Esquema Relacional
+### 2.1. Diagrama Gráfico Vectorial del Modelo Relacional
+
+A continuación se presenta el **esquema gráfico completo** de las 25 tablas relacionales organizadas por clústeres de negocio (Catálogo Textil, Usuarios y Seguridad, Ventas y Transacciones, Cupones y Métricas ERP), detallando claves primarias (PK en amarillo), claves foráneas (FK en celeste), restricciones únicas (UK en violeta) y líneas de integridad referencial:
+
+![Modelo Relacional de Base de Datos - D&D Textil](diagramas/modelo_relacional.svg)
+
+> **Nota:** Puedes hacer clic o abrir directamente el archivo vectorial en alta definición: [modelo_relacional.svg](diagramas/modelo_relacional.svg).
+
+---
+
+### 2.2. Notación Formal del Esquema Relacional
 
 En la notación relacional estándar (Codd / Date), cada entidad o tabla se define con sus atributos, identificando las claves primarias (**PK**) subrayadas y las claves foráneas (**FK**) que establecen integridad referencial hacia sus tablas destino:
 
@@ -397,42 +407,68 @@ Los scripts ejecutables de creacion de tablas, claves foraneas y datos iniciales
 
 El sistema **D&D Textil** implementa el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** desacoplado para aplicaciones web y móviles distribuidas (ADSO - SENA), garantizando una estricta separación de responsabilidades:
 
-```
-   ┌────────────────────────────────────────────────────────┐
-   │                        USUARIO                         │
-   └───────────────────────────┬────────────────────────────┘
-                               │ Interactúa (Clicks, Form)
-                               ▼
-   ┌────────────────────────────────────────────────────────┐
-   │                      VISTA (View)                      │
-   │  React 18 + Vite + Tailwind CSS                        │
-   │  - Catálogo de Telas (Catalogo.jsx)                    │
-   │  - Carrito y Checkout (CarritoDrawer.jsx, Pago.jsx)    │
-   │  - Paneles Admin / Vendedor / Cliente                  │
-   │  - Control de Inventario y Alertas (StockAlerts.jsx)   │
-   └─────────────────┬────────────────────▲─────────────────┘
-     Envía Petición  │                    │ Actualiza UI
-      HTTP / JSON    ▼                    │ con JSON
-   ┌────────────────────────────────────────────────────────┐
-   │                  CONTROLADOR (Controller)              │
-   │  Java 17 HTTP API Handlers                             │
-   │  - ManejadorProductos, ManejadorPedidos, ManejadorBase │
-   │  - ManejadorInventario, ManejadorAutenticacion         │
-   │  - ManejadorCarrito, ManejadorConfiguracion            │
-   │  (Valida datos, CORS, Rate Limit, Seguridad, Logs)     │
-   └─────────────────┬────────────────────▲─────────────────┘
-     Invoca Operación│                    │ Retorna Datos
-       del Negocio   ▼                    │ o Entidades
-   ┌────────────────────────────────────────────────────────┐
-   │                     MODELO (Model)                     │
-   │  1. Entidades de Dominio Java (Producto, Pedido, etc.) │
-   │  2. DAOs de Persistencia JDBC (ProductoDAO, etc.)      │
-   │  3. Base de Datos Relacional PostgreSQL 17             │
-   │     (25 Tablas, Vistas SQL, Bloqueo Transaccional)     │
-   └────────────────────────────────────────────────────────┘
+### 6.1. Diagrama Gráfico Vectorial de la Arquitectura MVC
+
+El siguiente diagrama visual ilustra la arquitectura de tres capas, los componentes de software de cada capa, los canales de comunicación HTTP REST/JSON y JDBC, y el flujo de datos transaccional:
+
+![Arquitectura Modelo-Vista-Controlador (MVC) - D&D Textil](diagramas/arquitectura_mvc.svg)
+
+> **Nota:** Puedes hacer clic o abrir directamente el archivo vectorial en alta definición: [arquitectura_mvc.svg](diagramas/arquitectura_mvc.svg).
+
+---
+
+### 6.2. Diagrama de Flujo Arquitectónico MVC (Interacción entre Capas)
+
+```mermaid
+flowchart TD
+    classDef vistaStyle fill:#065f46,stroke:#10b981,stroke-width:2px,color:#ffffff;
+    classDef controllerStyle fill:#1e40af,stroke:#3b82f6,stroke-width:2px,color:#ffffff;
+    classDef modelStyle fill:#581c87,stroke:#8b5cf6,stroke-width:2px,color:#ffffff;
+    classDef actorStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
+
+    User["👤 Usuario / Navegador Web / App Móvil"]:::actorStyle
+
+    subgraph VISTA ["1. CAPA VISTA (View - React 18 + Vite + TailwindCSS)"]
+        UI_Store["Tienda Pública<br/>(Catalogo.jsx, CarritoDrawer.jsx, Pago.jsx)"]:::vistaStyle
+        UI_Admin["Paneles de Gestión<br/>(ResumenAdmin.jsx, StockAlerts.jsx)"]:::vistaStyle
+        UI_Context["Estado Global y Peticiones<br/>(AuthContext.jsx, CartContext.jsx)"]:::vistaStyle
+    end
+
+    subgraph CONTROLADOR ["2. CAPA CONTROLADOR (Controller - Java 17 HTTPServer)"]
+        BaseHandler["ManejadorBase<br/>(CORS, Rate Limit 120 req/min, X-Correlation-ID)"]:::controllerStyle
+        Handlers["Controladores REST<br/>(ManejadorProductos, ManejadorPedidos, ManejadorInventario)"]:::controllerStyle
+        Gson["Serializador JSON<br/>(Google Gson DTOs en Español)"]:::controllerStyle
+    end
+
+    subgraph MODELO ["3. CAPA MODELO (Model - Java Domain + JDBC + PostgreSQL 17)"]
+        Domain["Entidades de Dominio<br/>(Producto, Pedido, Usuario, RolloTextil)"]:::modelStyle
+        DAOs["DAOs de Persistencia JDBC<br/>(ProductoDAO, PedidoDAO, InventarioDAO)"]:::modelStyle
+        Hikari["Pool de Conexiones<br/>(HikariCP 20 Conexiones)"]:::modelStyle
+        Postgres[("PostgreSQL 17<br/>25 Tablas, Índices B-Tree, Vistas SQL, Bloqueo FOR UPDATE")]:::modelStyle
+    end
+
+    User -->|"1. Clicks, Formularios, Eventos"| UI_Store
+    User -->|"Interactúa con Dashboard"| UI_Admin
+    UI_Store --> UI_Context
+    UI_Admin --> UI_Context
+    UI_Context -->|"2. HTTP REST / JSON (fetch)"| BaseHandler
+    BaseHandler --> Handlers
+    Handlers -->|"3. Invoca Reglas de Negocio"| Domain
+    Handlers -->|"4. Operación CRUD / Transaccional"| DAOs
+    DAOs --> Hikari
+    Hikari -->|"5. SQL Preparado (SELECT ... FOR UPDATE)"| Postgres
+    Postgres -->|"6. ResultSet Relacional"| DAOs
+    DAOs -->|"7. Mapeo a POJOs"| Domain
+    Domain -->|"8. Entidades POJO"| Handlers
+    Handlers --> Gson
+    Gson -->|"9. HTTP 200/201 JSON Response"| UI_Context
+    UI_Context -->|"10. Actualiza Estado Reactivo"| UI_Store
+    UI_Context -->|"Renderiza Gráficos"| UI_Admin
 ```
 
-### 6.1. Componente M: El Modelo (Model)
+---
+
+### 6.3. Componente M: El Modelo (Model)
 
 El **Modelo** es el núcleo de la lógica de negocio y la persistencia de datos. Contiene los datos puros, las reglas de integridad y el acceso a la base de datos:
 
@@ -445,7 +481,7 @@ El **Modelo** es el núcleo de la lógica de negocio y la persistencia de datos.
    * DAOs especializados (`ProductoDAO`, `PedidoDAO`, `InventarioDAO`, `CarritoDAO`, `UsuarioDAO`, `CuponDAO`).
    * Consultas SQL parametrizadas mediante `PreparedStatement` para mitigar ataques de inyección SQL (OWASP Top 10).
 
-### 6.2. Componente V: La Vista (View)
+### 6.4. Componente V: La Vista (View)
 
 La **Vista** es la interfaz visual reactiva con la que interactúan los diferentes actores del sistema (Clientes, Vendedores, Administradores):
 
@@ -460,7 +496,7 @@ La **Vista** es la interfaz visual reactiva con la que interactúan los diferent
 3. **Consumo Desacoplado:**
    * La Vista no accede jamás de forma directa a la base de datos; delega toda obtención de información mediante peticiones asíncronas `fetch()` hacia la API REST.
 
-### 6.3. Componente C: El Controlador (Controller)
+### 6.5. Componente C: El Controlador (Controller)
 
 El **Controlador** actúa como puente intermediario e inteligente entre la Vista y el Modelo. Recibe las peticiones HTTP, orquesta las validaciones de seguridad y coordina el flujo de respuesta:
 
@@ -474,7 +510,7 @@ El **Controlador** actúa como puente intermediario e inteligente entre la Vista
    * `ManejadorCarrito`: Gestiona las adiciones, actualizaciones y vaciado del carrito de compras.
    * `ManejadorSalud`: Expone `/health/live` y `/health/ready` para auditoría y observabilidad en Docker.
 
-### 6.4. Vistas de Base de Datos (SQL Views)
+### 6.6. Vistas de Base de Datos (SQL Views)
 
 En PostgreSQL, las **Vistas** encapsulan consultas complejas de agregación y reportes, optimizando la interfaz entre el Modelo y el Controlador:
 
@@ -539,7 +575,7 @@ WHERE u.rol = 'vendedor'
 GROUP BY u.id, u.nombre, u.correo;
 ```
 
-### 6.5. Ciclo de Vida Transaccional MVC (Ejemplo: Compra y Descuento de Stock)
+### 6.7. Ciclo de Vida Transaccional MVC (Ejemplo: Compra y Descuento de Stock)
 
 A continuación se ilustra la interacción coordinada entre la Vista, el Controlador, el Modelo y la Base de Datos PostgreSQL:
 

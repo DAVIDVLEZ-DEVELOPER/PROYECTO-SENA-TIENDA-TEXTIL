@@ -22,7 +22,17 @@ Este directorio contiene los artefactos de inicialización, definición DDL, dat
 
 El modelo de datos relacional de **D&D Textil** se encuentra normalizado hasta la **Tercera Forma Normal (3FN)**, eliminando redundancias atómicas y dependencias transitivas. Permite modelar el negocio textil con trazabilidad de compras por metro lineal, inventario fraccionado, alertas de stock mínimo y órdenes de pedido.
 
-### 2.1. Notación Formal del Esquema Relacional
+### 2.1. Diagrama Gráfico Vectorial del Modelo Relacional
+
+A continuación se presenta el **esquema gráfico completo** de las 25 tablas relacionales organizadas por clústeres de negocio (Catálogo Textil, Usuarios y Seguridad, Ventas y Transacciones, Cupones y Métricas ERP), detallando claves primarias (PK en amarillo), claves foráneas (FK en celeste), restricciones únicas (UK en violeta) y líneas de integridad referencial:
+
+![Modelo Relacional de Base de Datos - D&D Textil](diagramas/modelo_relacional.svg)
+
+> **Nota:** Puedes hacer clic o abrir directamente el archivo vectorial en alta definición: [modelo_relacional.svg](diagramas/modelo_relacional.svg).
+
+---
+
+### 2.2. Notación Formal del Esquema Relacional
 
 En la notación relacional, cada tabla se define con su nombre, atributos, claves primarias (**PK**) subrayadas y claves foráneas (**FK**) con indicación de la tabla referenciada:
 
@@ -241,39 +251,63 @@ GROUP BY u.id, u.nombre, u.correo;
 
 El sistema **D&D Textil** implementa una variante robusta y desacoplada del patrón arquitectónico **Modelo-Vista-Controlador (MVC)**, adecuada para plataformas web modernas y aplicaciones distribuidas (ADSO - SENA).
 
-```
-   ┌────────────────────────────────────────────────────────┐
-   │                        USUARIO                         │
-   └───────────────────────────┬────────────────────────────┘
-                               │ Interactúa (Clicks, Form)
-                               ▼
-   ┌────────────────────────────────────────────────────────┐
-   │                      VISTA (View)                      │
-   │  React 18 + Vite + Tailwind CSS                        │
-   │  - Catálogo de Telas (Catalogo.jsx)                    │
-   │  - Carrito y Checkout (CarritoDrawer.jsx, Pago.jsx)    │
-   │  - Paneles Admin / Vendedor / Cliente                  │
-   │  - Control de Inventario y Alertas (StockAlerts.jsx)   │
-   └─────────────────┬────────────────────▲─────────────────┘
-     Envía Petición  │                    │ Actualiza UI
-      HTTP / JSON    ▼                    │ con JSON
-   ┌────────────────────────────────────────────────────────┐
-   │                  CONTROLADOR (Controller)              │
-   │  Java 17 HTTP API Handlers                             │
-   │  - ManejadorProductos, ManejadorPedidos, ManejadorBase │
-   │  - ManejadorInventario, ManejadorAutenticacion         │
-   │  - ManejadorCarrito, ManejadorConfiguracion            │
-   │  (Valida datos, CORS, Rate Limit, Seguridad, Logs)     │
-   └─────────────────┬────────────────────▲─────────────────┘
-     Invoca Operación│                    │ Retorna Datos
-       del Negocio   ▼                    │ o Entidades
-   ┌────────────────────────────────────────────────────────┐
-   │                     MODELO (Model)                     │
-   │  1. Entidades de Dominio Java (Producto, Pedido, etc.) │
-   │  2. DAOs de Persistencia JDBC (ProductoDAO, etc.)      │
-   │  3. Base de Datos Relacional PostgreSQL 17             │
-   │     (25 Tablas, Vistas SQL, Bloqueo Transaccional)     │
-   └────────────────────────────────────────────────────────┘
+### 3.1. Diagrama Gráfico Vectorial de la Arquitectura MVC
+
+El siguiente diagrama visual ilustra la arquitectura de tres capas, los componentes de software de cada capa, los canales de comunicación HTTP REST/JSON y JDBC, y el flujo de datos transaccional:
+
+![Arquitectura Modelo-Vista-Controlador (MVC) - D&D Textil](diagramas/arquitectura_mvc.svg)
+
+> **Nota:** Puedes hacer clic o abrir directamente el archivo vectorial en alta definición: [arquitectura_mvc.svg](diagramas/arquitectura_mvc.svg).
+
+---
+
+### 3.2. Diagrama de Flujo Arquitectónico MVC (Interacción entre Capas)
+
+```mermaid
+flowchart TD
+    classDef vistaStyle fill:#065f46,stroke:#10b981,stroke-width:2px,color:#ffffff;
+    classDef controllerStyle fill:#1e40af,stroke:#3b82f6,stroke-width:2px,color:#ffffff;
+    classDef modelStyle fill:#581c87,stroke:#8b5cf6,stroke-width:2px,color:#ffffff;
+    classDef actorStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
+
+    User["👤 Usuario / Navegador Web / App Móvil"]:::actorStyle
+
+    subgraph VISTA ["1. CAPA VISTA (View - React 18 + Vite + TailwindCSS)"]
+        UI_Store["Tienda Pública<br/>(Catalogo.jsx, CarritoDrawer.jsx, Pago.jsx)"]:::vistaStyle
+        UI_Admin["Paneles de Gestión<br/>(ResumenAdmin.jsx, StockAlerts.jsx)"]:::vistaStyle
+        UI_Context["Estado Global y Peticiones<br/>(AuthContext.jsx, CartContext.jsx)"]:::vistaStyle
+    end
+
+    subgraph CONTROLADOR ["2. CAPA CONTROLADOR (Controller - Java 17 HTTPServer)"]
+        BaseHandler["ManejadorBase<br/>(CORS, Rate Limit 120 req/min, X-Correlation-ID)"]:::controllerStyle
+        Handlers["Controladores REST<br/>(ManejadorProductos, ManejadorPedidos, ManejadorInventario)"]:::controllerStyle
+        Gson["Serializador JSON<br/>(Google Gson DTOs en Español)"]:::controllerStyle
+    end
+
+    subgraph MODELO ["3. CAPA MODELO (Model - Java Domain + JDBC + PostgreSQL 17)"]
+        Domain["Entidades de Dominio<br/>(Producto, Pedido, Usuario, RolloTextil)"]:::modelStyle
+        DAOs["DAOs de Persistencia JDBC<br/>(ProductoDAO, PedidoDAO, InventarioDAO)"]:::modelStyle
+        Hikari["Pool de Conexiones<br/>(HikariCP 20 Conexiones)"]:::modelStyle
+        Postgres[("PostgreSQL 17<br/>25 Tablas, Índices B-Tree, Vistas SQL, Bloqueo FOR UPDATE")]:::modelStyle
+    end
+
+    User -->|"1. Clicks, Formularios, Eventos"| UI_Store
+    User -->|"Interactúa con Dashboard"| UI_Admin
+    UI_Store --> UI_Context
+    UI_Admin --> UI_Context
+    UI_Context -->|"2. HTTP REST / JSON (fetch)"| BaseHandler
+    BaseHandler --> Handlers
+    Handlers -->|"3. Invoca Reglas de Negocio"| Domain
+    Handlers -->|"4. Operación CRUD / Transaccional"| DAOs
+    DAOs --> Hikari
+    Hikari -->|"5. SQL Preparado (SELECT ... FOR UPDATE)"| Postgres
+    Postgres -->|"6. ResultSet Relacional"| DAOs
+    DAOs -->|"7. Mapeo a POJOs"| Domain
+    Domain -->|"8. Entidades POJO"| Handlers
+    Handlers --> Gson
+    Gson -->|"9. HTTP 200/201 JSON Response"| UI_Context
+    UI_Context -->|"10. Actualiza Estado Reactivo"| UI_Store
+    UI_Context -->|"Renderiza Gráficos"| UI_Admin
 ```
 
 ---
