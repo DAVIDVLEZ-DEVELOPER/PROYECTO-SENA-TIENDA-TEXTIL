@@ -25,6 +25,12 @@ Plataforma integral para la comercialización, distribución y gestión de inven
   <img src="https://img.shields.io/github/repo-size/Jhonmoreno000/PROYECTO-SENA-TIENDA-TEXTIL-" />
 </p>
 
+<br />
+
+<p align="center">
+  <img src="images/tienda-preview.png" alt="D&D Textil - Vista Principal de la Tienda" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
+</p>
+
 </div>
 
 ---

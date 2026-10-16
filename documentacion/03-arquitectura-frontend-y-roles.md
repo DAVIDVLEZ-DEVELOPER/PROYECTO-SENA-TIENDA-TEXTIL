@@ -17,6 +17,10 @@ El frontend de **D&D Textil** esta estructurado como una aplicacion de pagina un
 - **Context API de React:** Sistema nativo de propagacion de estado global para sesiones de usuario (`AuthContext`) y persistencia de articulos de compra (`CartContext`).
 - **React Router DOM 6.22.0:** Sistema de enrutamiento del lado del cliente con proteccion condicional de rutas segun el rol del usuario autenticado.
 
+### 1.2. Vista Previa de la Interfaz Principal (Landing Page)
+
+![D&D Textil - Vista Principal](../images/tienda-preview.png)
+
 ---
 
 ## 2. Estructura de Directorios del Frontend (`tienda digital de telas/src/`)

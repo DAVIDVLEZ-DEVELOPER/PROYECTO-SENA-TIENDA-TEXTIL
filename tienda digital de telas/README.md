@@ -10,6 +10,10 @@
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
 </p>
 
+<p align="center">
+  <img src="../images/tienda-preview.png" alt="D&D Textil - Vista Principal de la Tienda" width="100%" />
+</p>
+
 ---
 
 # Bienvenido a la documentación técnica de D&D Textil
