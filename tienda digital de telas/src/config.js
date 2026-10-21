@@ -11,6 +11,7 @@ export const RUTAS_API = {
     // Autenticación
     login: '/api/iniciar-sesion',
     registro: '/api/registro',
+    sso: '/api/autenticacion/sso',
     // Catálogo
     productos: '/api/productos',
     resenas: '/api/resenas',

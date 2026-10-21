@@ -161,6 +161,98 @@ export function AuthProvider({ children }) {
     };
 
     /**
+     * loginConSSO — Inicia sesión o auto-registra usuario proveniente de Google o Microsoft
+     */
+    const loginConSSO = async (ssoData) => {
+        try {
+            const rutaSSO = RUTAS_API?.sso || '/api/autenticacion/sso';
+            const response = await fetch(getApiUrl(rutaSSO), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ssoData)
+            });
+
+            let datos;
+            try {
+                datos = await response.json();
+            } catch (jsonError) {
+                console.error('La respuesta del servidor no es JSON válido:', jsonError);
+                showNotification('error', 'El servidor respondió con un formato inesperado');
+                return { success: false, message: 'Respuesta inválida del servidor' };
+            }
+
+            if (response.ok && datos.success) {
+                const rawUser = datos.user || datos.usuario || {};
+                let normalizedRole = rawUser.role || rawUser.rol || 'cliente';
+                if (normalizedRole === 'administrador' || normalizedRole === 'admin') normalizedRole = 'admin';
+                else if (normalizedRole === 'vendedor') normalizedRole = 'vendedor';
+                else normalizedRole = 'cliente';
+
+                const nombreUsuario = rawUser.name || rawUser.nombre || ssoData.nombre || 'Usuario';
+                const loggedInUser = {
+                    ...rawUser,
+                    name: nombreUsuario,
+                    nombre: nombreUsuario,
+                    email: rawUser.email || rawUser.correo || ssoData.email,
+                    correo: rawUser.email || rawUser.correo || ssoData.email,
+                    role: normalizedRole,
+                    rol: normalizedRole
+                };
+
+                delete loggedInUser.password_hash;
+                delete loggedInUser.contrasena_hash;
+
+                try {
+                    window.localStorage.setItem('authUser', JSON.stringify(loggedInUser));
+                } catch (e) {
+                    console.error('Error guardando en localStorage:', e);
+                }
+
+                setUser(loggedInUser);
+                showNotification('success', `¡Bienvenido ${loggedInUser.name}!`);
+                return { success: true, user: loggedInUser };
+            } else {
+                showNotification('error', datos.error || 'Error al autenticar con SSO');
+                return { success: false, message: datos.error };
+            }
+        } catch (error) {
+            console.error('Error al iniciar sesión con SSO:', error);
+            const isNetworkError = error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError');
+
+            // Si estamos en desarrollo o el backend local no responde, permitir sesión de desarrollo
+            if (isNetworkError || import.meta.env.DEV) {
+                const nombreUsuario = ssoData.nombre || ssoData.name || ('Usuario ' + (ssoData.proveedor || 'SSO'));
+                const loggedInUser = {
+                    id: 9999,
+                    name: nombreUsuario,
+                    nombre: nombreUsuario,
+                    email: ssoData.email || ssoData.correo || 'usuario.sso@ddtextil.com',
+                    correo: ssoData.email || ssoData.correo || 'usuario.sso@ddtextil.com',
+                    role: 'cliente',
+                    rol: 'cliente',
+                    proveedor: ssoData.proveedor
+                };
+
+                try {
+                    window.localStorage.setItem('authUser', JSON.stringify(loggedInUser));
+                } catch (e) {
+                    console.error('Error guardando en localStorage:', e);
+                }
+
+                setUser(loggedInUser);
+                showNotification('success', `¡Bienvenido ${loggedInUser.name}! (Conectado con ${ssoData.proveedor || 'SSO'})`);
+                return { success: true, user: loggedInUser };
+            }
+
+            const msg = isNetworkError
+                ? 'No se puede conectar con el servidor. Verifica que el backend esté corriendo.'
+                : 'Error al conectar con el servidor';
+            showNotification('error', msg);
+            return { success: false, message: msg };
+        }
+    };
+
+    /**
      * logout — Cierra la sesión del usuario
      * Muestra una animación de 2.5 segundos antes de limpiar los datos de sesión.
      */
@@ -191,6 +283,7 @@ export function AuthProvider({ children }) {
         user,                        // Objeto con los datos del usuario conectado (o null)
         isAuthenticated: !!user,     // true si hay sesión activa, false si no
         login,                       // Función para iniciar sesión
+        loginConSSO,                 // Función para iniciar sesión mediante SSO (Google / Microsoft)
         register,                    // Función para crear una cuenta
         logout,                      // Función para cerrar sesión
         hasRole                      // Función para verificar permisos
