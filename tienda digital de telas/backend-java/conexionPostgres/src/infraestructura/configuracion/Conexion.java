@@ -24,7 +24,7 @@ public class Conexion {
     /** Contraseña de la base de datos. */
     private static final String CONTRASENA_BD = System.getenv("DB_PASSWORD") != null 
         ? System.getenv("DB_PASSWORD") 
-        : "";
+        : "mysecretpassword";
 
     static {
         try {

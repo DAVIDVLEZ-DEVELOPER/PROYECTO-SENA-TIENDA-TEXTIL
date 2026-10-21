@@ -90,7 +90,7 @@ function CheckoutForm({ onSubmit, formData, setFormData }) {
                 </div>
             </div>
             <button type="submit" className="btn-primary w-full text-lg py-4 active:scale-[0.98] transition-transform">
-                Confirmar Pedido
+                Continuar a Pagar con Wompi / Tarjeta / PSE →
             </button>
             <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
                 Al confirmar tu pedido, aceptas nuestros términos y condiciones
