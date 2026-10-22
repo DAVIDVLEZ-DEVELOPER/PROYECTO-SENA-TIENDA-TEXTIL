@@ -1,4 +1,4 @@
-﻿# Diseno, Estructura y Esquema de Base de Datos Relacional
+# Diseno, Estructura y Esquema de Base de Datos Relacional
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Motor de Base de Datos:** PostgreSQL 17 (Codificacion UTF-8)  
@@ -122,9 +122,30 @@ A continuación se presenta el **Diagrama Entidad-Relación (DER)** modelado en 
 ```mermaid
 erDiagram
     %% Relaciones de Usuarios y Clientes
-    USUARIOS ||--o{ PRODUCTOS : "publica (vendedor)"USUARIOS ||--o{ PEDIDOS : "realiza (cliente)"USUARIOS ||--o{ PEDIDOS : "gestiona (vendedor)"USUARIOS ||--o{ ITEMS_CARRITO : "posee"USUARIOS ||--o{ RESENAS : "escribe"USUARIOS ||--o{ TICKETS_SOPORTE : "radica"%% Relaciones de Catálogo e Inventario
-    CATEGORIAS ||--o{ PRODUCTOS : "clasifica"PRODUCTOS ||--o{ IMAGENES_PRODUCTO : "contiene"PRODUCTOS ||--o{ LOTES_INVENTARIO : "abastecido_por"PRODUCTOS ||--o{ EVENTOS_MERMA : "registra"PRODUCTOS ||--o{ ITEMS_PEDIDO : "incluido_en"PRODUCTOS ||--o{ ITEMS_CARRITO : "agregado_en"PRODUCTOS ||--o{ RESENAS : "recibe"LOTES_INVENTARIO ||--o{ ROLLOS_TEXTIL : "genera_rollos"%% Relaciones Comerciales y Pagos
-    PEDIDOS ||--|{ ITEMS_PEDIDO : "contiene"PEDIDOS ||--o{ EVENTOS_PAGO_WOMPI : "audita_transacciones"CUPONES ||--o{ CATEGORIAS_CUPON : "restringe"CATEGORIAS ||--o{ CATEGORIAS_CUPON : "aplica_a"USUARIOS {
+    USUARIOS ||--o{ PRODUCTOS : "publica (vendedor)"
+    USUARIOS ||--o{ PEDIDOS : "realiza (cliente)"
+    USUARIOS ||--o{ PEDIDOS : "gestiona (vendedor)"
+    USUARIOS ||--o{ ITEMS_CARRITO : "posee"
+    USUARIOS ||--o{ RESENAS : "escribe"
+    USUARIOS ||--o{ TICKETS_SOPORTE : "radica"
+
+    %% Relaciones de Catalogo e Inventario
+    CATEGORIAS ||--o{ PRODUCTOS : "clasifica"
+    PRODUCTOS ||--o{ IMAGENES_PRODUCTO : "contiene"
+    PRODUCTOS ||--o{ LOTES_INVENTARIO : "abastecido_por"
+    PRODUCTOS ||--o{ EVENTOS_MERMA : "registra"
+    PRODUCTOS ||--o{ ITEMS_PEDIDO : "incluido_en"
+    PRODUCTOS ||--o{ ITEMS_CARRITO : "agregado_en"
+    PRODUCTOS ||--o{ RESENAS : "recibe"
+    LOTES_INVENTARIO ||--o{ ROLLOS_TEXTIL : "genera_rollos"
+
+    %% Relaciones Comerciales y Pagos
+    PEDIDOS ||--|{ ITEMS_PEDIDO : "contiene"
+    PEDIDOS ||--o{ EVENTOS_PAGO_WOMPI : "audita_transacciones"
+    CUPONES ||--o{ CATEGORIAS_CUPON : "restringe"
+    CATEGORIAS ||--o{ CATEGORIAS_CUPON : "aplica_a"
+
+    USUARIOS {
         int id PK
         string nombre
         string correo UK
@@ -584,7 +605,8 @@ sequenceDiagram
     participant Modelo as Modelo (PedidoDAO / ProductoDAO)
     participant BD as PostgreSQL 17 (DB)
 
-    Cliente->>Vista: Clic en "Confirmar Pedido"Vista->>Controlador: POST /api/pedidos (JSON: clienteId, articulos, total)
+    Cliente->>Vista: Clic en "Confirmar Pedido"
+    Vista->>Controlador: POST /api/pedidos (JSON: clienteId, articulos, total)
     Note over Controlador: ManejadorBase valida CORS, Rate Limit y genera Correlation-ID
     Controlador->>Modelo: crearPedido(clienteId, total, articulos)
     Modelo->>BD: BEGIN TRANSACTION

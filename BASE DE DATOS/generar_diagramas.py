@@ -347,6 +347,7 @@ def generar_svg_modelo_relacional():
 
     # -------------------------------------------------------------
     # LÍNEAS CONECTORAS DE RELACIONES (Claves Foráneas)
+    # Trazado ortogonal por canales despejados (sin cruce sobre tablas)
     # -------------------------------------------------------------
     svg.append('''
     <!-- Relaciones (Lineas de conexion ortogonales con marcadores) -->
@@ -364,40 +365,40 @@ def generar_svg_modelo_relacional():
       <path d="M 340 500 L 300 500" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
       <!-- LOTES_INVENTARIO -> ROLLOS_TEXTIL -->
-      <path d="M 180 655 L 180 710" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <path d="M 180 686 L 180 710" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
       <!-- PRODUCTOS -> EVENTOS_MERMA -->
-      <path d="M 480 480 L 480 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <path d="M 480 510 L 480 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
       <!-- USUARIOS -> PEDIDOS -->
       <path d="M 950 200 L 1000 200" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
       <!-- PEDIDOS -> ITEMS_PEDIDO -->
-      <path d="M 1150 505 L 1150 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <path d="M 1150 534 L 1150 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- PRODUCTOS -> ITEMS_PEDIDO -->
-      <path d="M 620 400 L 980 400 L 980 620 L 1000 620" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
-
-      <!-- USUARIOS -> ITEMS_CARRITO -->
-      <path d="M 810 410 L 810 830 L 1000 830" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
-
-      <!-- PRODUCTOS -> ITEMS_CARRITO -->
-      <path d="M 500 480 L 500 850 L 1000 850" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
-
-      <!-- CUPONES -> CATEGORIAS_CUPON -->
-      <path d="M 1510 335 L 1510 380" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
-
-      <!-- CATEGORIAS -> CATEGORIAS_CUPON -->
-      <path d="M 200 150 L 200 130 L 1550 130 L 1550 380" stroke-dasharray="4,4" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- PRODUCTOS -> ITEMS_PEDIDO (Canal despejado entre USUARIOS y TICKETS_SOPORTE) -->
+      <path d="M 620 420 L 645 420 L 645 448 L 975 448 L 975 620 L 1000 620" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
       <!-- USUARIOS -> TICKETS_SOPORTE -->
-      <path d="M 810 410 L 810 460" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <path d="M 780 438 L 780 460" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- USUARIOS -> REPORTES_ERRORES -->
-      <path d="M 750 410 L 750 730" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- USUARIOS -> REPORTES_ERRORES (Canal lateral izquierdo x=655) -->
+      <path d="M 670 320 L 655 320 L 655 760 L 670 760" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- USUARIOS -> ACTIVIDAD_RECIENTE -->
-      <path d="M 700 410 L 700 970" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- USUARIOS -> ACTIVIDAD_RECIENTE (Canal lateral izquierdo x=640) -->
+      <path d="M 670 360 L 640 360 L 640 1000 L 670 1000" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- USUARIOS -> ITEMS_CARRITO (Canal lateral derecho x=985) -->
+      <path d="M 950 260 L 985 260 L 985 810 L 1000 810" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- PRODUCTOS -> ITEMS_CARRITO (Canal despejado y1=454, x=965) -->
+      <path d="M 620 454 L 965 454 L 965 835 L 1000 835" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- CUPONES -> CATEGORIAS_CUPON -->
+      <path d="M 1510 366 L 1510 380" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+
+      <!-- CATEGORIAS -> CATEGORIAS_CUPON (Canal perimetral superior y lateral derecho) -->
+      <path d="M 200 150 L 200 130 L 1690 130 L 1690 420 L 1670 420" stroke-dasharray="4,4" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
     </g>
     ''')
 
