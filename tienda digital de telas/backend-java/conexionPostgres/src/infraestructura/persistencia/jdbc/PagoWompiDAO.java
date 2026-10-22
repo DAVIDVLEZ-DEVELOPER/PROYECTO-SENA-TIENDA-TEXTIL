@@ -336,7 +336,7 @@ public class PagoWompiDAO {
                     }
 
                     registrarEvento(con, tx.referencia(), tx.id(), nuevoEstadoWompi, "webhook", "PAGO_PROCESADO_EXITOSO", payloadRaw);
-                    System.out.println("[WOMPI] ✅ Pedido #" + idPedido + " (" + tx.referencia() + ") marcado como PAGADO e inventario descontado.");
+                    System.out.println("[WOMPI] [EXITO] Pedido #" + idPedido + " (" + tx.referencia() + ") marcado como PAGADO e inventario descontado.");
 
                 } else if ("DECLINED".equals(nuevoEstadoWompi) || "ERROR".equals(nuevoEstadoWompi) || "VOIDED".equals(nuevoEstadoWompi)) {
                     String sqlRechazar = "UPDATE pedidos SET estado = 'cancelled', estado_pago = ?, wompi_transaccion_id = ?, actualizado_en = NOW() WHERE id = ?";
@@ -347,7 +347,7 @@ public class PagoWompiDAO {
                         pst.executeUpdate();
                     }
                     registrarEvento(con, tx.referencia(), tx.id(), nuevoEstadoWompi, "webhook", "PAGO_RECHAZADO", payloadRaw);
-                    System.out.println("[WOMPI] ❌ Pedido #" + idPedido + " marcado como " + nuevoEstadoWompi);
+                    System.out.println("[WOMPI] [RECHAZADO] Pedido #" + idPedido + " marcado como " + nuevoEstadoWompi);
                 } else {
                     // PENDING u otro estado intermedio
                     registrarEvento(con, tx.referencia(), tx.id(), nuevoEstadoWompi, "webhook", "ESTADO_PENDIENTE", payloadRaw);
