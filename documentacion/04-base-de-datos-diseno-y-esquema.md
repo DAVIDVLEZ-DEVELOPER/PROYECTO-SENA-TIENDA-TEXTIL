@@ -117,30 +117,33 @@ En la notación relacional estándar (Codd / Date), cada entidad o tabla se defi
 
 ### 2.2. Diagrama Entidad-Relacion (DER)
 
+A continuación se presenta el **Diagrama Entidad-Relación (DER)** modelado en sintaxis Mermaid, organizado por clústeres de negocio y conectando el ciclo de compra con la auditoría de pasarela Wompi:
+
 ```mermaid
 erDiagram
-    USUARIOS ||--o{ PRODUCTOS : "publica"
+    %% Relaciones de Usuarios y Clientes
+    USUARIOS ||--o{ PRODUCTOS : "publica (vendedor)"
     USUARIOS ||--o{ PEDIDOS : "realiza (cliente)"
-    USUARIOS ||--o{ PEDIDOS : "atiende (vendedor)"
+    USUARIOS ||--o{ PEDIDOS : "gestiona (vendedor)"
     USUARIOS ||--o{ ITEMS_CARRITO : "posee"
     USUARIOS ||--o{ RESENAS : "escribe"
     USUARIOS ||--o{ TICKETS_SOPORTE : "radica"
-    USUARIOS ||--o{ REPORTES_ERRORES : "reporta"
 
+    %% Relaciones de Catálogo e Inventario
     CATEGORIAS ||--o{ PRODUCTOS : "clasifica"
-    CATEGORIAS ||--o{ CATEGORIAS_CUPON : "aplica_a"
-
     PRODUCTOS ||--o{ IMAGENES_PRODUCTO : "contiene"
     PRODUCTOS ||--o{ LOTES_INVENTARIO : "abastecido_por"
     PRODUCTOS ||--o{ EVENTOS_MERMA : "registra"
     PRODUCTOS ||--o{ ITEMS_PEDIDO : "incluido_en"
     PRODUCTOS ||--o{ ITEMS_CARRITO : "agregado_en"
     PRODUCTOS ||--o{ RESENAS : "recibe"
+    LOTES_INVENTARIO ||--o{ ROLLOS_TEXTIL : "genera_rollos"
 
-    LOTES_INVENTARIO ||--o{ ROLLOS_TEXTIL : "genera"
-
+    %% Relaciones Comerciales y Pagos
     PEDIDOS ||--|{ ITEMS_PEDIDO : "contiene"
+    PEDIDOS ||--o{ EVENTOS_PAGO_WOMPI : "audita_transacciones"
     CUPONES ||--o{ CATEGORIAS_CUPON : "restringe"
+    CATEGORIAS ||--o{ CATEGORIAS_CUPON : "aplica_a"
 
     USUARIOS {
         int id PK
@@ -150,10 +153,8 @@ erDiagram
         string rol
         boolean activo
         boolean suspendido
-        string motivo_suspension
         numeric tasa_comision
         timestamp registrado_en
-        timestamp ultimo_acceso
     }
 
     CATEGORIAS {
@@ -169,18 +170,12 @@ erDiagram
         int categoria_id FK
         numeric precio
         int vendedor_id FK
-        text descripcion
         string material
         string ancho
         string peso
-        text cuidados
         int stock
         boolean destacado
         boolean activo
-        string estado_moderacion
-        boolean es_nueva_coleccion
-        boolean es_exclusivo
-        boolean es_oferta
     }
 
     LOTES_INVENTARIO {
@@ -223,12 +218,9 @@ erDiagram
         string telefono_cliente
         text direccion_envio
         string ciudad_envio
-        string departamento_envio
         numeric monto_total
         numeric subtotal
         numeric costo_envio
-        numeric monto_descuento
-        string codigo_cupon
         string estado
         string estado_pago
         string numero_guia
@@ -242,6 +234,26 @@ erDiagram
         numeric cantidad
         numeric precio_por_metro
         numeric subtotal
+    }
+
+    EVENTOS_PAGO_WOMPI {
+        int id PK
+        string wompi_transaccion_id
+        string referencia FK
+        string estado
+        numeric monto_en_centavos
+        boolean checksum_valido
+        timestamp creado_en
+    }
+
+    CUPONES {
+        int id PK
+        string codigo UK
+        string tipo_descuento
+        numeric valor_descuento
+        numeric compra_minima
+        boolean activo
+        timestamp expira_en
     }
 ```
 
@@ -419,51 +431,56 @@ El siguiente diagrama visual ilustra la arquitectura de tres capas, los componen
 
 ### 6.2. Diagrama de Flujo Arquitectónico MVC (Interacción entre Capas)
 
+A continuación se ilustra la arquitectura de interacción desacoplada entre la **Vista**, el **Controlador**, el **Modelo** y el motor **PostgreSQL 17**, estructurada en un flujo bidireccional limpio (Petición descendente y Respuesta ascendente):
+
 ```mermaid
 flowchart TD
-    classDef vistaStyle fill:#065f46,stroke:#10b981,stroke-width:2px,color:#ffffff;
-    classDef controllerStyle fill:#1e40af,stroke:#3b82f6,stroke-width:2px,color:#ffffff;
-    classDef modelStyle fill:#581c87,stroke:#8b5cf6,stroke-width:2px,color:#ffffff;
-    classDef actorStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
+    classDef vistaStyle fill:#065f46,stroke:#10b981,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef controllerStyle fill:#1e40af,stroke:#3b82f6,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef modelStyle fill:#581c87,stroke:#8b5cf6,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef actorStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
     User["👤 Usuario / Navegador Web / App Móvil"]:::actorStyle
 
-    subgraph VISTA ["1. CAPA VISTA (View - React 18 + Vite + TailwindCSS)"]
-        UI_Store["Tienda Pública<br/>(Catalogo.jsx, CarritoDrawer.jsx, Pago.jsx)"]:::vistaStyle
-        UI_Admin["Paneles de Gestión<br/>(ResumenAdmin.jsx, StockAlerts.jsx)"]:::vistaStyle
-        UI_Context["Estado Global y Peticiones<br/>(AuthContext.jsx, CartContext.jsx)"]:::vistaStyle
+    subgraph VISTA ["1. CAPA VISTA (View - React 18 + TailwindCSS)"]
+        direction TB
+        UI_Store["Tienda Pública & Catálogo<br/>(Catalogo.jsx, Carrito.jsx, Payment.jsx)"]:::vistaStyle
+        UI_Admin["Paneles de Gestión por Rol<br/>(AdminDashboard, SellerDashboard, MesaCorte)"]:::vistaStyle
+        UI_Context["Estado Global Reactivo<br/>(AuthContext, CartContext)"]:::vistaStyle
+        UI_Store --> UI_Context
+        UI_Admin --> UI_Context
     end
 
-    subgraph CONTROLADOR ["2. CAPA CONTROLADOR (Controller - Java 17 HTTPServer)"]
-        BaseHandler["ManejadorBase<br/>(CORS, Rate Limit 120 req/min, X-Correlation-ID)"]:::controllerStyle
-        Handlers["Controladores REST<br/>(ManejadorProductos, ManejadorPedidos, ManejadorInventario)"]:::controllerStyle
-        Gson["Serializador JSON<br/>(Google Gson DTOs en Español)"]:::controllerStyle
+    subgraph CONTROLADOR ["2. CAPA CONTROLADOR (Controller - Java 17 HttpServer)"]
+        direction TB
+        BaseHandler["ManejadorBase<br/>(CORS, Rate Limit 120 req/min, Correlation-ID)"]:::controllerStyle
+        Handlers["Manejadores REST Especializados<br/>(ManejadorProductos, ManejadorPedidos, ManejadorInventario)"]:::controllerStyle
+        Gson["Transformador JSON<br/>(Google Gson DTOs Bidireccionales)"]:::controllerStyle
+        BaseHandler --> Handlers
+        Handlers --- Gson
     end
 
-    subgraph MODELO ["3. CAPA MODELO (Model - Java Domain + JDBC + PostgreSQL 17)"]
-        Domain["Entidades de Dominio<br/>(Producto, Pedido, Usuario, RolloTextil)"]:::modelStyle
-        DAOs["DAOs de Persistencia JDBC<br/>(ProductoDAO, PedidoDAO, InventarioDAO)"]:::modelStyle
+    subgraph MODELO ["3. CAPA MODELO (Model - Java Domain + JDBC DAOs)"]
+        direction TB
+        Domain["Entidades de Negocio y Servicios<br/>(Producto, Pedido, RolloTextil, ServicioCorteTextil)"]:::modelStyle
+        DAOs["DAOs de Persistencia JDBC<br/>(ProductoDAO, PedidoDAO, InventarioDAO, PagoWompiDAO)"]:::modelStyle
         Hikari["Pool de Conexiones<br/>(HikariCP 20 Conexiones)"]:::modelStyle
-        Postgres[("PostgreSQL 17<br/>25 Tablas, Índices B-Tree, Vistas SQL, Bloqueo FOR UPDATE")]:::modelStyle
+        Domain --> DAOs
+        DAOs --> Hikari
     end
 
-    User -->|"1. Clicks, Formularios, Eventos"| UI_Store
-    User -->|"Interactúa con Dashboard"| UI_Admin
-    UI_Store --> UI_Context
-    UI_Admin --> UI_Context
-    UI_Context -->|"2. HTTP REST / JSON (fetch)"| BaseHandler
-    BaseHandler --> Handlers
-    Handlers -->|"3. Invoca Reglas de Negocio"| Domain
-    Handlers -->|"4. Operación CRUD / Transaccional"| DAOs
-    DAOs --> Hikari
-    Hikari -->|"5. SQL Preparado (SELECT ... FOR UPDATE)"| Postgres
-    Postgres -->|"6. ResultSet Relacional"| DAOs
-    DAOs -->|"7. Mapeo a POJOs"| Domain
-    Domain -->|"8. Entidades POJO"| Handlers
-    Handlers --> Gson
-    Gson -->|"9. HTTP 200/201 JSON Response"| UI_Context
-    UI_Context -->|"10. Actualiza Estado Reactivo"| UI_Store
-    UI_Context -->|"Renderiza Gráficos"| UI_Admin
+    subgraph PERSISTENCIA ["4. CAPA DE BASE DE DATOS"]
+        Postgres[("🐘 PostgreSQL 17<br/>25 Tablas Relacionales, Índices B-Tree, SELECT FOR UPDATE")]:::modelStyle
+    end
+
+    %% Flujo ordenado de capas
+    User -->|"1. Eventos y Formularios"| VISTA
+    VISTA -->|"2. Peticiones HTTP REST / JSON"| CONTROLADOR
+    CONTROLADOR -->|"3. Ejecuta Casos de Uso y Validaciones"| MODELO
+    MODELO -->|"4. Sentencias SQL Transaccionales"| PERSISTENCIA
+    PERSISTENCIA -.->|"5. ResultSet Relacional"| MODELO
+    MODELO -.->|"6. Entidades POJO Validadas"| CONTROLADOR
+    CONTROLADOR -.->|"7. Respuestas JSON HTTP 200/201"| VISTA
 ```
 
 ---

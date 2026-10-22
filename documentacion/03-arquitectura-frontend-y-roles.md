@@ -98,14 +98,89 @@ La plataforma cuenta con cuatro roles de usuario claramente diferenciados, con p
 
 ## 4. Mapa de Navegacion del Ecosistema
 
+A continuación se presenta el **Diagrama del Mapa de Navegación del Frontend**, ilustrando la segmentación entre las rutas públicas de libre acceso, el filtro de protección RBAC (`ProtectedRoute`) y los tableros de control especializados para cada rol:
+
+```mermaid
+flowchart TD
+    classDef publicStyle fill:#1e293b,stroke:#475569,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef authStyle fill:#0284c7,stroke:#0369a1,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef clientStyle fill:#059669,stroke:#047857,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef sellerStyle fill:#d97706,stroke:#b45309,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef operStyle fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef adminStyle fill:#dc2626,stroke:#b91c1c,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+
+    subgraph ZonaPublica ["🌐 Zona Pública (Acceso Libre)"]
+        direction TB
+        Home["🏠 Inicio (/)<br/>Carrusel, Catálogo Destacado"]:::publicStyle
+        Catalogo["🧵 Catálogo (/catalogo)<br/>Filtros por fibra, ancho y precio"]:::publicStyle
+        Detalle["🔍 Ficha Técnica (/producto/:id)<br/>Simulador de metros y fotos"]:::publicStyle
+        Carrito["🛒 Carrito (/carrito)<br/>Cupones y subtotales"]:::publicStyle
+        Checkout["💳 Checkout (/checkout)<br/>Datos de envío y Pasarela Wompi"]:::publicStyle
+        Login["🔐 Autenticación (/login, /registro)<br/>OAuth y credenciales directas"]:::publicStyle
+        Institucional["ℹ️ Institucional (/nosotros, /contactos)"]:::publicStyle
+
+        Home --> Catalogo --> Detalle --> Carrito --> Checkout
+        Home --> Institucional
+        Home --> Login
+    end
+
+    subgraph GuardiaSeguridad ["🛡️ Middleware de Seguridad"]
+        ProtectedRoute["ProtectedRoute (React Router DOM)<br/>• Valida Token JWT en AuthContext<br/>• Verifica Rol RBAC"]:::authStyle
+    end
+
+    subgraph ZonaProtegida ["🔒 Zona Protegida (Paneles por Rol)"]
+        direction TB
+
+        subgraph PanelCliente ["👤 Rol: Cliente / Confeccionista (/cliente/*)"]
+            Cli1["📦 Historial de Pedidos"]:::clientStyle
+            Cli2["📍 Rastreo de Envío"]:::clientStyle
+            Cli3["📐 Calculadora de Metraje"]:::clientStyle
+            Cli4["🎫 Tickets de Soporte"]:::clientStyle
+        end
+
+        subgraph PanelVendedor ["💼 Rol: Vendedor (/vendedor/*)"]
+            Ven1["📊 Métricas Comerciales"]:::sellerStyle
+            Ven2["✂️ Publicación de Telas"]:::sellerStyle
+            Ven3["⚠️ Alertas Stock Crítico (< 5m)"]:::sellerStyle
+        end
+
+        subgraph PanelOperario ["🏭 Rol: Operario de Corte (/bodega/*)"]
+            Op1["📱 Lector QR de Rollos"]:::operStyle
+            Op2["📐 Registro de Metros Cortados"]:::operStyle
+            Op3["📉 Liquidación de Mermas"]:::operStyle
+        end
+
+        subgraph PanelAdmin ["👑 Rol: Administrador (/admin/*)"]
+            Adm1["📈 Tablero ERP Financiero"]:::adminStyle
+            Adm2["👥 Gestión y Suspensión Usuarios"]:::adminStyle
+            Adm3["🚚 Recepción de Lotes Textil"]:::adminStyle
+            Adm4["🏷️ Administración de Cupones"]:::adminStyle
+        end
+    end
+
+    Login -->|Sesión Iniciada| ProtectedRoute
+    ProtectedRoute -->|rol == 'cliente'| PanelCliente
+    ProtectedRoute -->|rol == 'vendedor'| PanelVendedor
+    ProtectedRoute -->|rol == 'operario'| PanelOperario
+    ProtectedRoute -->|rol == 'admin'| PanelAdmin
+```
+
+---
+
 ### 4.1. Vistas Publicas (Sin Autenticacion Requerida)
 - **Inicio (`/`):** Exposicion del catalogo destacado, colecciones de temporada y banner de anuncios superior.
 - **Catalogo de Telas (`/catalogo`):** Tarjetas interactivas con busqueda en tiempo real por texto y filtrado por categorias (Algodon, Seda, Lino, Dril, Terciopelo, etc.).
 - **Detalle de Producto (`/producto/:id`):** Visualizacion de fotografia en alta resolucion, ancho util, peso, cuidados textiles y selector dinamico de metros con validacion de disponibilidad.
 - **Carrito de Compras (`/carrito`):** Administracion de items seleccionados, calculo de subtotales y aplicacion de cupones de descuento.
 - **Proceso de Pago (`/checkout` y `/checkout/success`):** Formulario de datos de despacho, confirmacion de pasarela de pago y generacion del comprobante con numero de orden.
-- **Sobre Nosotros (`/nosotros`) y Contacto (`/contactos`):** Paginas institucionales y formulario de contacto.
-- **Acceso (`/login` y `/registro`):** Formularios con validacion de campos y manejo de errores devueltos por el backend.
+- **Sobre Nosotros (`/nosotros`) y Contacto (`/contactos`):** Paginas institucionales y formulario de contacto interactivo con mapa de ubicación.
+- **Acceso (`/login` y `/registro`):** Formularios con validacion de campos y soporte OAuth con Google/Microsoft.
+
+### 4.2. Vistas Protegidas por Rol (Requieren Sesión Activa)
+- **Cliente (`/cliente/*`):** Panel de gestión de compras, descarga de facturas simuladas, seguimiento en tiempo real y calculadora textil.
+- **Vendedor (`/vendedor/*`):** Publicación de telas, catálogo personal, liquidación de comisiones y control de inventario local.
+- **Operario de Corte (`/bodega/*`):** Estación de corte móvil con lector de códigos QR para rollos físicos y registro de mermas.
+- **Administrador (`/admin/*`):** Panel integral de supervisión, auditoría de usuarios, aprobación de lotes textiles y configuración global.
 
 ---
 

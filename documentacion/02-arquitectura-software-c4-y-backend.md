@@ -103,103 +103,176 @@ src/
 
 ### 3.1. Nivel 1: Diagrama de Contexto del Sistema
 
+A continuación se presenta el **Diagrama de Contexto (Nivel 1)** del Ecosistema D&D Textil, organizado formalmente con delimitación de límites, roles de usuario, plataforma central y servicios externos integrados:
+
 ```mermaid
-C4Context
-    title Diagrama de Contexto del Sistema - D&D Textil (Nivel 1)
+flowchart TD
+    classDef personStyle fill:#08427B,stroke:#052e56,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef coreSystem fill:#1168BD,stroke:#0b4884,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef extSystem fill:#4B5563,stroke:#374151,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    Person(cliente, "Cliente / Confeccionista", "Consulta catalogo textil, calcula metrajes, realiza compras fraccionadas y rastrea envios.")
-    Person(vendedor, "Asesor Comercial / Vendedor", "Publica telas en catalogo, monitorea inventario y analiza metricas de ventas.")
-    Person(operario, "Operario de Mesa de Corte", "Escanea ordenes de corte con codigo QR, ejecuta cortes fisicos y reporta mermas.")
-    Person(admin, "Administrador del Sistema", "Monitorea finanzas, modera telas, administra cupones y audita seguridad.")
+    subgraph Actores ["👥 Actores del Sistema (Usuarios)"]
+        direction LR
+        cliente["👤 Cliente / Confeccionista<br/><b>[Persona]</b><br/>Consulta catálogo textil, calcula metrajes,<br/>realiza compras fraccionadas y rastrea envíos."]:::personStyle
+        vendedor["👤 Asesor Comercial / Vendedor<br/><b>[Persona]</b><br/>Publica telas en catálogo, monitorea inventario<br/>y analiza comisiones y métricas."]:::personStyle
+        operario["👤 Operario de Mesa de Corte<br/><b>[Persona]</b><br/>Escanea órdenes de corte QR, ejecuta cortes<br/>físicos y registra retazos y mermas."]:::personStyle
+        admin["👤 Administrador del Sistema<br/><b>[Persona]</b><br/>Monitorea finanzas, modera catálogo,<br/>gestiona cupones y audita seguridad."]:::personStyle
+    end
 
-    System(sistemaTextil, "Ecosistema D&D Textil", "Plataforma web y movil para comercializacion, reserva concurrente de rollos fisicos y gestion logistica textil.")
+    subgraph Plataforma ["🏢 Plataforma Central"]
+        sistemaTextil["🛍️ Ecosistema D&D Textil<br/><b>[Sistema de Software]</b><br/>Plataforma web y móvil para comercialización textil,<br/>reserva concurrente de rollos físicos y gestión logística."]:::coreSystem
+    end
 
-    System_Ext(pasarelaPagos, "Pasarela de Pagos (Wompi / PSE / PayU)", "Procesa pagos seguros por tarjetas y transferencias; notifica via webhooks.")
-    System_Ext(servicioMensajeria, "Servicio de Notificaciones (Twilio / SendGrid)", "Transmite correos electronicos y mensajes SMS con ordenes de corte y guias de despacho.")
+    subgraph Externos ["🌐 Sistemas Externos"]
+        direction LR
+        pasarelaPagos["💳 Pasarela de Pagos (Wompi Bancolombia / PSE)<br/><b>[Sistema Externo]</b><br/>Procesa pagos seguros con tarjeta y transferencias;<br/>notifica confirmación mediante Webhooks SHA-256."]:::extSystem
+        servicioMensajeria["📲 Servicio de Notificaciones (Twilio / SendGrid)<br/><b>[Sistema Externo]</b><br/>Transmite correos electrónicos y mensajes SMS<br/>con órdenes de corte y guías de despacho."]:::extSystem
+    end
 
-    Rel(cliente, sistemaTextil, "Navega catalogo, compra metrajes y radica tickets", "HTTPS / JSON")
-    Rel(vendedor, sistemaTextil, "Publica productos y gestiona inventario", "HTTPS / JSON")
-    Rel(operario, sistemaTextil, "Confirma cortes fisicos y registra retazos", "App Movil / HTTPS")
-    Rel(admin, sistemaTextil, "Supervisa transacciones y usuarios", "HTTPS / JSON")
+    cliente -->|"1. Navega catálogo, compra telas y radica tickets<br/>[HTTPS / JSON]"| sistemaTextil
+    vendedor -->|"2. Publica telas y gestiona inventario<br/>[HTTPS / JSON]"| sistemaTextil
+    operario -->|"3. Confirma cortes físicos y registra mermas<br/>[App Móvil / HTTPS]"| sistemaTextil
+    admin -->|"4. Supervisa transacciones, finanzas y usuarios<br/>[HTTPS / JSON]"| sistemaTextil
 
-    Rel(sistemaTextil, pasarelaPagos, "Solicita cobros y procesa confirmaciones", "HTTPS REST / Webhooks")
-    Rel(sistemaTextil, servicioMensajeria, "Envia notificaciones transaccionales", "API REST Asincrona")
+    sistemaTextil -->|"5. Solicita cobros y procesa confirmaciones<br/>[HTTPS REST / Webhooks]"| pasarelaPagos
+    sistemaTextil -->|"6. Envía notificaciones de corte y despacho<br/>[API REST Asíncrona]"| servicioMensajeria
 ```
 
 ---
 
 ### 3.2. Nivel 2: Diagrama de Contenedores
 
+A continuación se ilustra la interacción entre los contenedores de software que conforman el ecosistema (SPA en React, App Móvil en Android/Kotlin, Backend en Java 17, Base de Datos PostgreSQL 17 y Almacenamiento Multimedia):
+
 ```mermaid
-C4Container
-    title Diagrama de Contenedores - D&D Textil (Nivel 2)
+flowchart TD
+    classDef actorStyle fill:#08427B,stroke:#052e56,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef containerStyle fill:#1168BD,stroke:#0b4884,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef dbStyle fill:#1e3a8a,stroke:#172554,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef extStyle fill:#4B5563,stroke:#374151,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    Person(usuario, "Usuario Final", "Cliente, Vendedor, Operario o Administrador.")
+    subgraph Usuarios ["👥 Capa de Usuarios"]
+        direction LR
+        userWeb["👤 Clientes, Vendedores y Administradores<br/><b>[Navegadores de Escritorio / Móviles]</b>"]:::actorStyle
+        userBodega["👤 Operarios de Mesa de Corte<br/><b>[Dispositivos Móviles / Tablets en Bodega]</b>"]:::actorStyle
+    end
 
-    Container(frontendWeb, "Single Page Application (SPA)", "React 18, Vite, TailwindCSS", "Interfaz de usuario reactiva con simulador de metraje, catalogo y paneles de administracion (Puerto 3001).")
-    Container(appMovil, "Aplicacion Movil Bodega", "Android WebView / Kotlin", "Cliente movil para operarios de bodega con capacidad de escaneo de codigos QR.")
+    subgraph CapaPresentacion ["💻 1. Capa de Presentación (Frontend & Móvil)"]
+        direction LR
+        frontendWeb["🌐 Single Page Application (SPA)<br/><b>[React 18 + Vite + TailwindCSS]</b><br/>Interfaz reactiva con catálogo interactivo,<br/>simulador de metraje, carrito y paneles de rol.<br/><i>Puerto 5173 / 3001</i>"]:::containerStyle
+        appMovil["📱 Aplicación Móvil Bodega<br/><b>[Android / Kotlin + WebView]</b><br/>Cliente optimizado con lector QR para mesa de corte<br/>y confirmación física de fraccionamiento."]:::containerStyle
+    end
 
-    Container(backendApi, "Backend Java Corporativo", "Java 17, HttpServer, Pool 32 Hilos", "Procesa logica de negocio, aplica tarifas escalonadas, valida cortes continuos y expone API REST (Puerto 8081).")
+    subgraph CapaLogica ["⚙️ 2. Capa de Lógica de Negocio (Backend)"]
+        backendApi["☕ Backend Java Corporativo<br/><b>[Java 17 Vanilla + HttpServer]</b><br/>Servidor HTTP con pool concurrente de 32 hilos,<br/>Clean Architecture, motor de corte textil y autenticación SHA-256.<br/><i>Puerto 8081</i>"]:::containerStyle
+    end
 
-    ContainerDb(postgresDb, "Base de Datos Relacional", "PostgreSQL 17", "Almacena usuarios, productos, rollos fisicos, lotes, cupones, pedidos y mermas (Puerto 5432).")
-    Container(volumenUploads, "Almacenamiento de Multimedia", "Volumen Persistente Docker", "Persistencia de imagenes de productos en formato Base64/PNG en ruta local /app/uploads.")
+    subgraph CapaPersistencia ["🗄️ 3. Capa de Almacenamiento y Datos"]
+        direction LR
+        postgresDb[("🐘 Base de Datos Relacional<br/><b>[PostgreSQL 17]</b><br/>25 tablas normalizadas en 3FN, transacciones ACID,<br/>bloqueos pesimistas SELECT FOR UPDATE e índices B-Tree.<br/><i>Puerto 5432</i>")]:::dbStyle
+        volumenUploads[("📁 Almacenamiento Multimedia<br/><b>[Volumen Persistente Docker]</b><br/>Persistencia en disco de imágenes de telas y recibos.<br/><i>Ruta: /app/uploads</i>")]:::dbStyle
+    end
 
-    Rel(usuario, frontendWeb, "Interactua mediante navegador", "HTTPS")
-    Rel(usuario, appMovil, "Interactua en terminal de bodega", "HTTPS")
+    subgraph CapaIntegraciones ["🌐 4. Servicios Externos Integrados"]
+        direction LR
+        pasarelaWompi["💳 Pasarela de Pagos (Wompi Bancolombia)<br/><b>[Servicio Externo]</b><br/>Cobro seguro con tarjetas/PSE y webhooks."]:::extStyle
+        notificaciones["📲 Servicio de Notificaciones<br/><b>[Servicio Externo]</b><br/>SendGrid / Twilio para correos y SMS."]:::extStyle
+    end
 
-    Rel(frontendWeb, backendApi, "Consume endpoints REST", "JSON sobre HTTPS (CORS)")
-    Rel(appMovil, backendApi, "Envia lecturas de QR y cortes", "JSON sobre HTTPS")
+    userWeb -->|"Interactúa vía interfaz web<br/>[HTTPS]"| frontendWeb
+    userBodega -->|"Escanea códigos QR en rollos<br/>[HTTPS]"| appMovil
 
-    Rel(backendApi, postgresDb, "Consultas relacionales y bloqueos pesimistas", "JDBC / Pool HikariCP")
-    Rel(backendApi, volumenUploads, "Escritura y lectura de archivos", "I/O Sistema de Archivos")
+    frontendWeb -->|"Peticiones HTTP REST<br/>[JSON / HTTPS con CORS]"| backendApi
+    appMovil -->|"Lecturas de corte y mermas<br/>[JSON / HTTPS]"| backendApi
+
+    backendApi -->|"Consultas relacionales y reservas atómicas<br/>[JDBC / Pool HikariCP]"| postgresDb
+    backendApi -->|"Lectura y escritura de fotografías<br/>[I/O Sistema de Archivos]"| volumenUploads
+
+    backendApi -->|"Solicitudes de pago y validación de firma<br/>[HTTPS REST]"| pasarelaWompi
+    backendApi -->|"Envío de guías y alertas automáticas<br/>[API REST Asíncrona]"| notificaciones
 ```
 
 ---
 
 ### 3.3. Nivel 3: Diagrama de Componentes (Modulo de Inventario y Corte Textil)
 
+A continuación se detalla la arquitectura de componentes interna del Backend Java, reflejando estrictamente la separación de responsabilidades de **Clean Architecture** (Infraestructura HTTP, Casos de Uso, Entidades de Dominio, Persistencia JDBC y Base de Datos):
+
 ```mermaid
-graph TD
-    subgraph Infraestructura_HTTP ["Infraestructura: API HTTP"]
-        ManejadorInv["ManejadorInventario"]
-        ManejadorPed["ManejadorPedidos"]
-        ManejadorBase["ManejadorBase<br/>(RateLimiting 60 req/min, CORS, Logs JSON)"]
-        ManejadorInv -.->|Extiende| ManejadorBase
-        ManejadorPed -.->|Extiende| ManejadorBase
+flowchart TD
+    classDef httpStyle fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef appStyle fill:#065f46,stroke:#10b981,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef domainStyle fill:#581c87,stroke:#a855f7,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef daoStyle fill:#7c2d12,stroke:#f97316,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef dbStyle fill:#0f172a,stroke:#64748b,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+
+    subgraph CapaHTTP ["1. Capa de Infraestructura HTTP (Controladores REST)"]
+        direction TB
+        ManejadorBase["ManejadorBase<br/>• RateLimiting (120 req/min)<br/>• Validación CORS y Encabezados<br/>• Filtro X-Correlation-ID"]:::httpStyle
+        
+        subgraph HandlersEspecializados ["Manejadores Especializados (Extienden ManejadorBase)"]
+            direction LR
+            ManejadorAuth["ManejadorAutenticacion<br/>(/api/login, /api/register)"]:::httpStyle
+            ManejadorProd["ManejadorProductos<br/>(/api/products, filtros)"]:::httpStyle
+            ManejadorPed["ManejadorPedidos<br/>(/api/orders, checkout)"]:::httpStyle
+            ManejadorInv["ManejadorInventario<br/>(/api/inventory, rollos, mermas)"]:::httpStyle
+        end
+        HandlersEspecializados -.->|Heredan control| ManejadorBase
     end
 
-    subgraph Aplicacion_CasosDeUso ["Aplicacion: Servicios y Casos de Uso"]
-        ServicioCorte["ServicioCorteTextil<br/>• validarMetrajeContinuo()<br/>• procesarCorteYRemanente()<br/>• calcularPrecioEscalonado()"]
-        ServicioAuth["ServicioAutenticacion<br/>• generarHashContrasena()<br/>• iniciarSesion()"]
-        ServicioFac["ServicioFactura<br/>• generarFacturaXmlSimulada()"]
+    subgraph CapaAplicacion ["2. Capa de Aplicación (Servicios y Casos de Uso)"]
+        direction LR
+        ServicioAuth["ServicioAutenticacion<br/>• hashearContrasena()<br/>• validarCredenciales()"]:::appStyle
+        ServicioCorte["ServicioCorteTextil<br/>• validarMetrajeContinuo()<br/>• procesarCorteYRemanente()<br/>• calcularTarifaEscalonada()"]:::appStyle
+        ServicioWompi["ServicioCriptoWompi<br/>• generarFirmaIntegridad()<br/>• validarChecksumWebhook()"]:::appStyle
+        ServicioFac["ServicioFactura<br/>• generarFacturaXmlSimulada()"]:::appStyle
     end
 
-    subgraph Dominio_Entidades ["Dominio: Modelos y Excepciones"]
-        Rollo["RolloTextil (id, metraje, tintoreria)"]
-        Merma["EventoMerma"]
-        Producto["Producto"]
-        Pedido["Pedido"]
+    subgraph CapaDominio ["3. Capa de Dominio (Entidades de Negocio Puras)"]
+        direction LR
+        Rollo["RolloTextil<br/>(codigo, metros, lote_tintoreria)"]:::domainStyle
+        Producto["Producto<br/>(precio, ancho, peso, stock)"]:::domainStyle
+        Pedido["Pedido<br/>(items, total, estado_pago)"]:::domainStyle
+        Merma["EventoMerma<br/>(metros_perdidos, motivo, costo)"]:::domainStyle
     end
 
-    subgraph Infraestructura_JDBC ["Infraestructura: Persistencia JDBC"]
-        InventarioDAO["InventarioDAO"]
-        PedidoDAO["PedidoDAO (SELECT FOR UPDATE)"]
-        ProductoDAO["ProductoDAO"]
-        ConexionPool["Conexion (HikariCP)"]
+    subgraph CapaPersistencia ["4. Capa de Persistencia (DAOs y Pool HikariCP)"]
+        direction LR
+        UsuarioDAO["UsuarioDAO<br/>(Cuentas RBAC)"]:::daoStyle
+        ProductoDAO["ProductoDAO<br/>(Fichas Textiles)"]:::daoStyle
+        PedidoDAO["PedidoDAO<br/>(Transacciones Atómicas)"]:::daoStyle
+        InventarioDAO["InventarioDAO<br/>(Rollos y Lotes)"]:::daoStyle
+        PagoWompiDAO["PagoWompiDAO<br/>(Auditoría Webhooks)"]:::daoStyle
+        ConexionPool[("Conexion (HikariCP)<br/>Pool de 20 conexiones")]:::daoStyle
     end
 
-    ManejadorInv -->|Invoca| ServicioCorte
-    ManejadorPed -->|Invoca| ServicioCorte
-    ManejadorPed -->|Invoca| ServicioFac
+    subgraph MotorPostgres ["5. Base de Datos"]
+        PostgresDB[("🐘 PostgreSQL 17<br/>Bloqueo SELECT FOR UPDATE")]:::dbStyle
+    end
 
-    ServicioCorte -->|Manipula| Rollo
-    ServicioCorte -->|Genera| Merma
-    ServicioCorte -->|Persiste en| InventarioDAO
-    ManejadorPed -->|Ejecuta transaccion| PedidoDAO
+    %% Invocaciones entre capas
+    ManejadorAuth -->|Invoca| ServicioAuth
+    ManejadorProd -->|Consulta catálogo| ProductoDAO
+    ManejadorPed -->|Ejecuta validación y corte| ServicioCorte
+    ManejadorPed -->|Calcula firma y valida pago| ServicioWompi
+    ManejadorPed -->|Genera XML| ServicioFac
+    ManejadorInv -->|Aplica reglas de fraccionamiento| ServicioCorte
 
-    InventarioDAO -->|Solicita conexion| ConexionPool
-    PedidoDAO -->|Solicita conexion| ConexionPool
-    ProductoDAO -->|Solicita conexion| ConexionPool
+    ServicioCorte -->|Manipula ciclo de vida| Rollo
+    ServicioCorte -->|Genera registro| Merma
+    ServicioCorte -->|Actualiza metros| InventarioDAO
+    ServicioAuth -->|Consulta usuarios| UsuarioDAO
+    ServicioWompi -->|Registra evento con Savepoint| PagoWompiDAO
+
+    ManejadorPed -->|Persiste orden y detalle| PedidoDAO
+
+    UsuarioDAO --> ConexionPool
+    ProductoDAO --> ConexionPool
+    PedidoDAO --> ConexionPool
+    InventarioDAO --> ConexionPool
+    PagoWompiDAO --> ConexionPool
+
+    ConexionPool -->|Sentencias SQL Preparadas| PostgresDB
 ```
 
 ---
@@ -241,39 +314,44 @@ ManejadorAutenticacion manejadorAutenticacion = new ManejadorAutenticacion(servi
 
 ## 5. Orquestacion Transaccional Saga y Eventos Asincronos
 
-Para gestionar la consistencia en el proceso de compra de tela continua y fraccionada, el sistema implementa una maquina de estados tipo Saga con transacciones compensatorias ante fallos:
+Para gestionar la consistencia en el proceso de compra de tela continua y fraccionada, el sistema implementa una máquina de estados tipo **Saga Coreografiada** con transacciones compensatorias automáticas ante fallos de pago o cancelación:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Cliente
-    participant Gateway as ServidorApi / Pedidos
-    participant Motor as ServicioCorteTextil
-    participant DB as PostgreSQL (PedidoDAO / InventarioDAO)
-    participant Pasarela as Pasarela de Pagos Externa
+    actor Cliente as 👤 Cliente (Navegador)
+    participant Gateway as 🌐 ServidorApi / ManejadorPedidos
+    participant Motor as ⚙️ ServicioCorteTextil
+    participant DB as 🐘 PostgreSQL (PedidoDAO / InventarioDAO)
+    participant Pasarela as 💳 Pasarela Wompi Bancolombia
 
-    Cliente->>Gateway: POST /api/orders (compra 6m Lino continuo)
+    Cliente->>Gateway: POST /api/orders (Compra 6.0m Lino continuo)
     Gateway->>Motor: validarMetrajeContinuo(rollos, 6.0m, "LOT-A")
-    Motor-->>Gateway: Validacion Exitosa (Rollo asignado ROL-502)
+    Motor-->>Gateway: Validación Exitosa (Rollo asignado ROL-502)
     
-    Gateway->>DB: Iniciar Transaccion (SELECT ... FOR UPDATE en ROL-502)
-    DB-->>Gateway: Bloqueo Pesimista Confirmado
+    Gateway->>DB: Iniciar Transacción (SELECT ... FOR UPDATE en ROL-502)
+    DB-->>Gateway: Bloqueo Pesimista Confirmado (Fila reservada)
     Gateway->>DB: Descontar 6.0m (Remanente pasa de 12.0m a 6.0m)
     Gateway->>DB: Crear Pedido en estado 'pending'
     
-    Gateway->>Pasarela: Procesar Pago ($180.000 COP)
+    Gateway->>Pasarela: Solicitar Sesión de Pago ($180.000 COP)
+    Pasarela-->>Gateway: Sesión creada (TransactionId: TX-8874)
+    Gateway-->>Cliente: Redirección / Apertura Widget Wompi
     
-    alt Pago Aprobado
-        Pasarela-->>Gateway: Confirmacion Exitosa (TransactionId: TX-8874)
+    alt Pago Aprobado por el Banco (Flujo Exitoso)
+        Pasarela->>Gateway: Webhook POST /api/pagos/wompi/webhook (Firma SHA-256 válida)
         Gateway->>DB: Actualizar Pedido (estado='cutting', estado_pago='paid')
-        Gateway->>DB: COMMIT Transaccion
-        Gateway-->>Cliente: HTTP 201 Created (Pedido confirmado y orden de corte generada)
-    else Pago Rechazado o Timeout (Compensacion Saga)
-        Pasarela-->>Gateway: Error de Pago (Fondos Insuficientes / Declinado)
-        Gateway->>DB: Transaccion Compensatoria: Reintegrar 6.0m al Rollo ROL-502
+        Gateway->>DB: Registrar Evento Auditoría en Savepoint
+        Gateway->>DB: COMMIT Transacción
+        Gateway-->>Pasarela: HTTP 200 OK
+        Gateway-->>Cliente: Redirección a Confirmación (Orden generada)
+    else Pago Rechazado o Cancelado (Compensación Saga)
+        Pasarela->>Gateway: Webhook POST /api/pagos/wompi/webhook (Estado: DECLINED)
+        Gateway->>DB: Transacción Compensatoria: Reintegrar 6.0m al Rollo ROL-502
         Gateway->>DB: Actualizar Pedido (estado='cancelled', estado_pago='failed')
-        Gateway->>DB: COMMIT Transaccion Compensatoria
-        Gateway-->>Cliente: HTTP 400 Bad Request (Pago declinado y stock liberado)
+        Gateway->>DB: COMMIT Transacción Compensatoria
+        Gateway-->>Pasarela: HTTP 200 OK
+        Gateway-->>Cliente: Notificación de Pago Declinado (Metraje liberado)
     end
 ```
 

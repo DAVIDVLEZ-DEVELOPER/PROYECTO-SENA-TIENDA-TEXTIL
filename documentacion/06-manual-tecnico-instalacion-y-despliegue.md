@@ -39,6 +39,50 @@ Para garantizar el desempeno optimo, la estabilidad y la resiliencia operativa d
 
 La arquitectura de despliegue mediante Docker Compose implementa el principio de aislamiento defensivo mediante dos redes virtuales independientes de tipo puente (*bridge*):
 
+```mermaid
+flowchart TD
+    classDef hostStyle fill:#0f172a,stroke:#334155,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef frontStyle fill:#0284c7,stroke:#0369a1,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef backStyle fill:#059669,stroke:#047857,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef dbStyle fill:#4338ca,stroke:#3730a3,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef volStyle fill:#d97706,stroke:#b45309,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+
+    subgraph Host ["🖥️ HOST ANFITRIÓN (Docker Engine 24+)"]
+        direction TB
+
+        subgraph ClientesExternos ["Dispositivos y Clientes"]
+            UserWeb["🌐 Navegador Web / Cliente"]:::hostStyle
+            UserApp["📱 Terminal Bodega / Móvil"]:::hostStyle
+        end
+
+        subgraph RedFrontend ["🌐 RED BRIDGE: frontend-net (Red Pública Expuesta)"]
+            ContFrontend["📦 Contenedor: frontend<br/>• Imagen: node:18-alpine<br/>• SPA React 18 / Vite<br/>• Puerto Mapeado: 5173:5173"]:::frontStyle
+        end
+
+        subgraph RedesCompartidas ["🔄 Enlace Inter-Red (Puertos Internos)"]
+            ContBackend["☕ Contenedor: backend-java<br/>• Imagen: openjdk:17-slim<br/>• Vanilla Java 17 HttpServer (Pool 32 Hilos)<br/>• Puerto Mapeado: 8081:8081"]:::backStyle
+        end
+
+        subgraph RedBackend ["🔒 RED BRIDGE: backend-net (Red Aislada No Expuesta)"]
+            ContPostgres[("🐘 Contenedor: postgres<br/>• Imagen: postgres:17-alpine<br/>• PostgreSQL 17 (UTF-8)<br/>• Puerto Interno: 5432 (Sin mapeo al host)")]:::dbStyle
+        end
+
+        subgraph VolumenesDocker ["💾 Almacenamiento Persistente"]
+            VolData[("📁 postgres_data<br/>Volumen Docker Persistente<br/>Ruta: /var/lib/postgresql/data")]:::volStyle
+            VolUploads[("📁 uploads_data<br/>Volumen Docker Persistente<br/>Ruta: /app/uploads")]:::volStyle
+        end
+    end
+
+    UserWeb -->|"HTTP / Puerto 5173"| ContFrontend
+    UserApp -->|"HTTP / Puerto 8081"| ContBackend
+
+    ContFrontend -->|"HTTP REST / Proxy: 8081<br/>[frontend-net]"| ContBackend
+    ContBackend -->|"JDBC HikariCP / Puerto 5432<br/>[backend-net]"| ContPostgres
+
+    ContPostgres --- VolData
+    ContBackend --- VolUploads
+```
+
 ```
 +-----------------------------------------------------------------------------------+
 |                                HOST ANFITRION                                     |
