@@ -1,4 +1,4 @@
-# Arquitectura de Software, Modelo C4 y Backend Java
+﻿# Arquitectura de Software, Modelo C4 y Backend Java
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Estandares:** Clean Architecture, Domain-Driven Design (DDD), Modelo C4 (Simon Brown), Principios SOLID  
@@ -111,22 +111,22 @@ flowchart TD
     classDef coreSystem fill:#1168BD,stroke:#0b4884,stroke-width:2px,color:#ffffff,font-family:sans-serif;
     classDef extSystem fill:#4B5563,stroke:#374151,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    subgraph Actores ["👥 Actores del Sistema (Usuarios)"]
+    subgraph Actores ["Actores del Sistema (Usuarios)"]
         direction LR
-        cliente["👤 Cliente / Confeccionista<br/><b>[Persona]</b><br/>Consulta catálogo textil, calcula metrajes,<br/>realiza compras fraccionadas y rastrea envíos."]:::personStyle
-        vendedor["👤 Asesor Comercial / Vendedor<br/><b>[Persona]</b><br/>Publica telas en catálogo, monitorea inventario<br/>y analiza comisiones y métricas."]:::personStyle
-        operario["👤 Operario de Mesa de Corte<br/><b>[Persona]</b><br/>Escanea órdenes de corte QR, ejecuta cortes<br/>físicos y registra retazos y mermas."]:::personStyle
-        admin["👤 Administrador del Sistema<br/><b>[Persona]</b><br/>Monitorea finanzas, modera catálogo,<br/>gestiona cupones y audita seguridad."]:::personStyle
+        cliente["Cliente / Confeccionista<br/><b>[Persona]</b><br/>Consulta catálogo textil, calcula metrajes,<br/>realiza compras fraccionadas y rastrea envíos."]:::personStyle
+        vendedor["Asesor Comercial / Vendedor<br/><b>[Persona]</b><br/>Publica telas en catálogo, monitorea inventario<br/>y analiza comisiones y métricas."]:::personStyle
+        operario["Operario de Mesa de Corte<br/><b>[Persona]</b><br/>Escanea órdenes de corte QR, ejecuta cortes<br/>físicos y registra retazos y mermas."]:::personStyle
+        admin["Administrador del Sistema<br/><b>[Persona]</b><br/>Monitorea finanzas, modera catálogo,<br/>gestiona cupones y audita seguridad."]:::personStyle
     end
 
-    subgraph Plataforma ["🏢 Plataforma Central"]
-        sistemaTextil["🛍️ Ecosistema D&D Textil<br/><b>[Sistema de Software]</b><br/>Plataforma web y móvil para comercialización textil,<br/>reserva concurrente de rollos físicos y gestión logística."]:::coreSystem
+    subgraph Plataforma ["Plataforma Central"]
+        sistemaTextil["Ecosistema D&D Textil<br/><b>[Sistema de Software]</b><br/>Plataforma web y móvil para comercialización textil,<br/>reserva concurrente de rollos físicos y gestión logística."]:::coreSystem
     end
 
-    subgraph Externos ["🌐 Sistemas Externos"]
+    subgraph Externos ["Sistemas Externos"]
         direction LR
-        pasarelaPagos["💳 Pasarela de Pagos (Wompi Bancolombia / PSE)<br/><b>[Sistema Externo]</b><br/>Procesa pagos seguros con tarjeta y transferencias;<br/>notifica confirmación mediante Webhooks SHA-256."]:::extSystem
-        servicioMensajeria["📲 Servicio de Notificaciones (Twilio / SendGrid)<br/><b>[Sistema Externo]</b><br/>Transmite correos electrónicos y mensajes SMS<br/>con órdenes de corte y guías de despacho."]:::extSystem
+        pasarelaPagos["Pasarela de Pagos (Wompi Bancolombia / PSE)<br/><b>[Sistema Externo]</b><br/>Procesa pagos seguros con tarjeta y transferencias;<br/>notifica confirmación mediante Webhooks SHA-256."]:::extSystem
+        servicioMensajeria["Servicio de Notificaciones (Twilio / SendGrid)<br/><b>[Sistema Externo]</b><br/>Transmite correos electrónicos y mensajes SMS<br/>con órdenes de corte y guías de despacho."]:::extSystem
     end
 
     cliente -->|"1. Navega catálogo, compra telas y radica tickets<br/>[HTTPS / JSON]"| sistemaTextil
@@ -151,32 +151,32 @@ flowchart TD
     classDef dbStyle fill:#1e3a8a,stroke:#172554,stroke-width:2px,color:#ffffff,font-family:sans-serif;
     classDef extStyle fill:#4B5563,stroke:#374151,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    subgraph Usuarios ["👥 Capa de Usuarios"]
+    subgraph Usuarios ["Capa de Usuarios"]
         direction LR
-        userWeb["👤 Clientes, Vendedores y Administradores<br/><b>[Navegadores de Escritorio / Móviles]</b>"]:::actorStyle
-        userBodega["👤 Operarios de Mesa de Corte<br/><b>[Dispositivos Móviles / Tablets en Bodega]</b>"]:::actorStyle
+        userWeb["Clientes, Vendedores y Administradores<br/><b>[Navegadores de Escritorio / Móviles]</b>"]:::actorStyle
+        userBodega["Operarios de Mesa de Corte<br/><b>[Dispositivos Móviles / Tablets en Bodega]</b>"]:::actorStyle
     end
 
-    subgraph CapaPresentacion ["💻 1. Capa de Presentación (Frontend & Móvil)"]
+    subgraph CapaPresentacion ["1. Capa de Presentación (Frontend & Móvil)"]
         direction LR
-        frontendWeb["🌐 Single Page Application (SPA)<br/><b>[React 18 + Vite + TailwindCSS]</b><br/>Interfaz reactiva con catálogo interactivo,<br/>simulador de metraje, carrito y paneles de rol.<br/><i>Puerto 5173 / 3001</i>"]:::containerStyle
-        appMovil["📱 Aplicación Móvil Bodega<br/><b>[Android / Kotlin + WebView]</b><br/>Cliente optimizado con lector QR para mesa de corte<br/>y confirmación física de fraccionamiento."]:::containerStyle
+        frontendWeb["Single Page Application (SPA)<br/><b>[React 18 + Vite + TailwindCSS]</b><br/>Interfaz reactiva con catálogo interactivo,<br/>simulador de metraje, carrito y paneles de rol.<br/><i>Puerto 5173 / 3001</i>"]:::containerStyle
+        appMovil["Aplicación Móvil Bodega<br/><b>[Android / Kotlin + WebView]</b><br/>Cliente optimizado con lector QR para mesa de corte<br/>y confirmación física de fraccionamiento."]:::containerStyle
     end
 
-    subgraph CapaLogica ["⚙️ 2. Capa de Lógica de Negocio (Backend)"]
-        backendApi["☕ Backend Java Corporativo<br/><b>[Java 17 Vanilla + HttpServer]</b><br/>Servidor HTTP con pool concurrente de 32 hilos,<br/>Clean Architecture, motor de corte textil y autenticación SHA-256.<br/><i>Puerto 8081</i>"]:::containerStyle
+    subgraph CapaLogica ["2. Capa de Lógica de Negocio (Backend)"]
+        backendApi["Backend Java Corporativo<br/><b>[Java 17 Vanilla + HttpServer]</b><br/>Servidor HTTP con pool concurrente de 32 hilos,<br/>Clean Architecture, motor de corte textil y autenticación SHA-256.<br/><i>Puerto 8081</i>"]:::containerStyle
     end
 
-    subgraph CapaPersistencia ["🗄️ 3. Capa de Almacenamiento y Datos"]
+    subgraph CapaPersistencia ["3. Capa de Almacenamiento y Datos"]
         direction LR
-        postgresDb[("🐘 Base de Datos Relacional<br/><b>[PostgreSQL 17]</b><br/>25 tablas normalizadas en 3FN, transacciones ACID,<br/>bloqueos pesimistas SELECT FOR UPDATE e índices B-Tree.<br/><i>Puerto 5432</i>")]:::dbStyle
-        volumenUploads[("📁 Almacenamiento Multimedia<br/><b>[Volumen Persistente Docker]</b><br/>Persistencia en disco de imágenes de telas y recibos.<br/><i>Ruta: /app/uploads</i>")]:::dbStyle
+        postgresDb[("Base de Datos Relacional<br/><b>[PostgreSQL 17]</b><br/>25 tablas normalizadas en 3FN, transacciones ACID,<br/>bloqueos pesimistas SELECT FOR UPDATE e índices B-Tree.<br/><i>Puerto 5432</i>")]:::dbStyle
+        volumenUploads[("Almacenamiento Multimedia<br/><b>[Volumen Persistente Docker]</b><br/>Persistencia en disco de imágenes de telas y recibos.<br/><i>Ruta: /app/uploads</i>")]:::dbStyle
     end
 
-    subgraph CapaIntegraciones ["🌐 4. Servicios Externos Integrados"]
+    subgraph CapaIntegraciones ["4. Servicios Externos Integrados"]
         direction LR
-        pasarelaWompi["💳 Pasarela de Pagos (Wompi Bancolombia)<br/><b>[Servicio Externo]</b><br/>Cobro seguro con tarjetas/PSE y webhooks."]:::extStyle
-        notificaciones["📲 Servicio de Notificaciones<br/><b>[Servicio Externo]</b><br/>SendGrid / Twilio para correos y SMS."]:::extStyle
+        pasarelaWompi["Pasarela de Pagos (Wompi Bancolombia)<br/><b>[Servicio Externo]</b><br/>Cobro seguro con tarjetas/PSE y webhooks."]:::extStyle
+        notificaciones["Servicio de Notificaciones<br/><b>[Servicio Externo]</b><br/>SendGrid / Twilio para correos y SMS."]:::extStyle
     end
 
     userWeb -->|"Interactúa vía interfaz web<br/>[HTTPS]"| frontendWeb
@@ -247,7 +247,7 @@ flowchart TD
     end
 
     subgraph MotorPostgres ["5. Base de Datos"]
-        PostgresDB[("🐘 PostgreSQL 17<br/>Bloqueo SELECT FOR UPDATE")]:::dbStyle
+        PostgresDB[("PostgreSQL 17<br/>Bloqueo SELECT FOR UPDATE")]:::dbStyle
     end
 
     %% Invocaciones entre capas
@@ -290,39 +290,39 @@ flowchart TD
     classDef volNode fill:#d97706,stroke:#b45309,stroke-width:2px,color:#ffffff,font-family:sans-serif;
     classDef cloudNode fill:#4B5563,stroke:#374151,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    subgraph DispositivosClientes ["📱 1. Nodos de Cliente y Dispositivos de Acceso"]
+    subgraph DispositivosClientes ["1. Nodos de Cliente y Dispositivos de Acceso"]
         direction LR
-        cliWeb["💻 PC / Portátil Cliente<br/><b>[Navegador Web: Chrome/Firefox/Safari]</b><br/>React 18 SPA, Catálogo interactivo,<br/>simulador de metraje y Checkout."]:::clientNode
-        cliMovil["📱 Smartphone Cliente / Operario<br/><b>[Navegador Móvil / App Android]</b><br/>Android WebView + Kotlin con<br/>escaneo de códigos QR en bodega."]:::clientNode
-        cliAdmin["🖥️ Terminal Administrativa<br/><b>[Navegador de Gestión]</b><br/>Paneles ERP, analítica comercial,<br/>gestión de inventario y moderación."]:::clientNode
+        cliWeb["PC / Portátil Cliente<br/><b>[Navegador Web: Chrome/Firefox/Safari]</b><br/>React 18 SPA, Catálogo interactivo,<br/>simulador de metraje y Checkout."]:::clientNode
+        cliMovil["Smartphone Cliente / Operario<br/><b>[Navegador Móvil / App Android]</b><br/>Android WebView + Kotlin con<br/>escaneo de códigos QR en bodega."]:::clientNode
+        cliAdmin["Terminal Administrativa<br/><b>[Navegador de Gestión]</b><br/>Paneles ERP, analítica comercial,<br/>gestión de inventario y moderación."]:::clientNode
     end
 
-    subgraph HostDocker ["🏢 2. Servidor Host de Aplicación (Docker Host / VPS / Cloud)"]
+    subgraph HostDocker ["2. Servidor Host de Aplicación (Docker Host / VPS / Cloud)"]
         direction TB
 
-        subgraph RedFrontend ["🌐 RED DOCKER: frontend-net (Bridge Público - Puertos 5173 / 3001)"]
-            contFrontend["🌐 Contenedor: frontend<br/><b>[Node 18 / Nginx Alpine]</b><br/>Sirve la Single Page Application (SPA React 18 / Vite).<br/><i>Puerto Expuesto al Host: 5173:5173</i>"]:::containerNode
+        subgraph RedFrontend ["RED DOCKER: frontend-net (Bridge Público - Puertos 5173 / 3001)"]
+            contFrontend["Contenedor: frontend<br/><b>[Node 18 / Nginx Alpine]</b><br/>Sirve la Single Page Application (SPA React 18 / Vite).<br/><i>Puerto Expuesto al Host: 5173:5173</i>"]:::containerNode
         end
 
-        subgraph RedBackend ["⚙️ RED DOCKER: backend-net (Bridge Interno Defensivo Aislado)"]
+        subgraph RedBackend ["RED DOCKER: backend-net (Bridge Interno Defensivo Aislado)"]
             direction TB
-            contBackend["☕ Contenedor: backend-java<br/><b>[OpenJDK 17 Slim]</b><br/>Vanilla Java 17 HttpServer (Pool 32 Hilos Concurrentes)<br/>Clean Architecture, motor de corte textil y firma criptográfica.<br/><i>Puerto Expuesto al Host: 8081:8081</i>"]:::containerNode
+            contBackend["Contenedor: backend-java<br/><b>[OpenJDK 17 Slim]</b><br/>Vanilla Java 17 HttpServer (Pool 32 Hilos Concurrentes)<br/>Clean Architecture, motor de corte textil y firma criptográfica.<br/><i>Puerto Expuesto al Host: 8081:8081</i>"]:::containerNode
 
-            contPostgres[("🐘 Contenedor: postgres<br/><b>[PostgreSQL 17 Alpine]</b><br/>25 tablas relacionales 3FN, transacciones ACID,<br/>bloqueos pesimistas SELECT FOR UPDATE e índices B-Tree.<br/><i>Puerto Interno: 5432 (Sin exposición externa)</i>")]:::dbNode
+            contPostgres[("Contenedor: postgres<br/><b>[PostgreSQL 17 Alpine]</b><br/>25 tablas relacionales 3FN, transacciones ACID,<br/>bloqueos pesimistas SELECT FOR UPDATE e índices B-Tree.<br/><i>Puerto Interno: 5432 (Sin exposición externa)</i>")]:::dbNode
         end
 
-        subgraph AlmacenamientoPersistente ["💾 Volúmenes Persistentes de Host"]
+        subgraph AlmacenamientoPersistente ["Volúmenes Persistentes de Host"]
             direction LR
-            volData[("📁 postgres_data<br/>Persistencia física de base de datos<br/>/var/lib/postgresql/data")]:::volNode
-            volUploads[("📁 uploads_media<br/>Fotografías de telas y comprobantes Base64/PNG<br/>/app/uploads")]:::volNode
+            volData[("postgres_data<br/>Persistencia física de base de datos<br/>/var/lib/postgresql/data")]:::volNode
+            volUploads[("uploads_media<br/>Fotografías de telas y comprobantes Base64/PNG<br/>/app/uploads")]:::volNode
         end
     end
 
-    subgraph ServiciosNube ["☁️ 3. Servicios Externos e Infraestructura Cloud"]
+    subgraph ServiciosNube ["3. Servicios Externos e Infraestructura Cloud"]
         direction TB
-        wompiCloud["💳 Pasarela de Pagos Wompi Bancolombia<br/><b>[Servidor Externo PCI-DSS]</b><br/>Procesamiento de pagos con tarjetas y PSE.<br/>Callbacks y Webhooks firmados con SHA-256."]:::cloudNode
-        ssoCloud["🔐 Proveedores de Identidad (SSO)<br/><b>[Google Cloud & Microsoft Entra ID]</b><br/>Autenticación federada OAuth 2.0 / OpenID Connect."]:::cloudNode
-        notifCloud["📲 Pasarela de Notificaciones Transaccionales<br/><b>[SendGrid Email & Twilio SMS]</b><br/>Envío de facturas por correo y alertas de despacho SMS."]:::cloudNode
+        wompiCloud["Pasarela de Pagos Wompi Bancolombia<br/><b>[Servidor Externo PCI-DSS]</b><br/>Procesamiento de pagos con tarjetas y PSE.<br/>Callbacks y Webhooks firmados con SHA-256."]:::cloudNode
+        ssoCloud["Proveedores de Identidad (SSO)<br/><b>[Google Cloud & Microsoft Entra ID]</b><br/>Autenticación federada OAuth 2.0 / OpenID Connect."]:::cloudNode
+        notifCloud["Pasarela de Notificaciones Transaccionales<br/><b>[SendGrid Email & Twilio SMS]</b><br/>Envío de facturas por correo y alertas de despacho SMS."]:::cloudNode
     end
 
     %% Enlaces clientes a host
@@ -361,23 +361,23 @@ flowchart TD
     classDef sistemaStyle fill:#1168BD,stroke:#0b4884,stroke-width:2px,color:#ffffff,font-family:sans-serif;
     classDef salidaStyle fill:#059669,stroke:#047857,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    Cliente["👤 Cliente / Confeccionista"]:::clienteStyle
+    Cliente["Cliente / Confeccionista"]:::clienteStyle
 
-    subgraph CanalesEntrada ["📥 Canales de Interacción Cliente &rarr; Sistema"]
-        CanalWeb["🌐 Plataforma Web SPA (React 18)<br/>Catálogo, Carrito, Simulador y Checkout"]:::canalStyle
-        CanalSSO["🔐 Autenticación Federada SSO<br/>Inicio de sesión con Google / Microsoft"]:::canalStyle
-        CanalWidget["💳 Widget Wompi Seguro (iFrame)<br/>Captura de tarjetas y PSE sin intermediarios"]:::canalStyle
+    subgraph CanalesEntrada ["Canales de Interacción Cliente &rarr; Sistema"]
+        CanalWeb["Plataforma Web SPA (React 18)<br/>Catálogo, Carrito, Simulador y Checkout"]:::canalStyle
+        CanalSSO["Autenticación Federada SSO<br/>Inicio de sesión con Google / Microsoft"]:::canalStyle
+        CanalWidget["Widget Wompi Seguro (iFrame)<br/>Captura de tarjetas y PSE sin intermediarios"]:::canalStyle
     end
 
-    subgraph NucleoDAndD ["⚙️ Núcleo Transaccional D&D Textil"]
-        BackendJava["☕ Backend Java 17 + PostgreSQL 17<br/>Validación continua de metraje, transacciones ACID<br/>y orquestación de pedidos"]:::sistemaStyle
+    subgraph NucleoDAndD ["Núcleo Transaccional D&D Textil"]
+        BackendJava["Backend Java 17 + PostgreSQL 17<br/>Validación continua de metraje, transacciones ACID<br/>y orquestación de pedidos"]:::sistemaStyle
     end
 
-    subgraph CanalesSalida ["📤 Canales de Comunicación Sistema &rarr; Cliente (Notificaciones)"]
-        CanalEmail["📧 Correo Electrónico (SendGrid / SMTP)<br/>• Confirmación de pedido y resumen de metraje<br/>• Factura comercial XML simulada"]:::salidaStyle
-        CanalSMS["💬 Mensajería Celular (Twilio SMS / WhatsApp)<br/>• Alerta de rollo en corte<br/>• Número de guía de transporte nacional"]:::salidaStyle
-        CanalTracking["📍 Portal de Rastreo en Línea (/cliente/rastreo)<br/>• Línea de tiempo interactiva en tiempo real<br/>• Estados: pending &rarr; cutting &rarr; shipped &rarr; delivered"]:::salidaStyle
-        CanalSoporte["🎫 Módulo de Garantías (/cliente/soporte)<br/>• Radicación y seguimiento de tickets postventa"]:::salidaStyle
+    subgraph CanalesSalida ["Canales de Comunicación Sistema &rarr; Cliente (Notificaciones)"]
+        CanalEmail["Correo Electrónico (SendGrid / SMTP)<br/>• Confirmación de pedido y resumen de metraje<br/>• Factura comercial XML simulada"]:::salidaStyle
+        CanalSMS["Mensajería Celular (Twilio SMS / WhatsApp)<br/>• Alerta de rollo en corte<br/>• Número de guía de transporte nacional"]:::salidaStyle
+        CanalTracking["Portal de Rastreo en Línea (/cliente/rastreo)<br/>• Línea de tiempo interactiva en tiempo real<br/>• Estados: pending &rarr; cutting &rarr; shipped &rarr; delivered"]:::salidaStyle
+        CanalSoporte["Módulo de Garantías (/cliente/soporte)<br/>• Radicación y seguimiento de tickets postventa"]:::salidaStyle
     end
 
     Cliente -->|"1. Navegación, selección y compra"| CanalWeb
@@ -406,13 +406,13 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Cliente as 👤 Cliente / Confeccionista
-    participant UI as 🌐 SPA React 18 (Frontend Web / Móvil)
-    participant Auth as 🔐 Proveedor SSO / Auth (Google/Microsoft)
-    participant API as ☕ Backend Java (ServidorApi / Handlers)
-    participant Wompi as 💳 Pasarela Wompi Bancolombia
-    participant DB as 🐘 PostgreSQL 17 (Transacciones ACID)
-    participant Notif as 📲 Servicio de Notificaciones (Email & SMS)
+    actor Cliente as Cliente / Confeccionista
+    participant UI as SPA React 18 (Frontend Web / Móvil)
+    participant Auth as Proveedor SSO / Auth (Google/Microsoft)
+    participant API as Backend Java (ServidorApi / Handlers)
+    participant Wompi as Pasarela Wompi Bancolombia
+    participant DB as PostgreSQL 17 (Transacciones ACID)
+    participant Notif as Servicio de Notificaciones (Email & SMS)
 
     %% FASE 1: Exploración y Cálculo
     rect rgb(240, 248, 255)
@@ -426,7 +426,7 @@ sequenceDiagram
     %% FASE 2: Autenticación
     rect rgb(245, 245, 250)
     Note over Cliente, Auth: FASE 2: Identificación y Autenticación Segura (SSO / Directa)
-    Cliente->>UI: Clic en "Iniciar Sesión" (Google / Microsoft / Email)
+    Cliente->>UI: Clic en "Iniciar Sesión"(Google / Microsoft / Email)
     UI->>Auth: Redirección OAuth 2.0 / OpenID Connect
     Auth-->>UI: Retorno con Token de Acceso
     UI->>API: POST /api/login (Validación de credenciales / perfil SSO)
@@ -436,7 +436,7 @@ sequenceDiagram
     %% FASE 3: Compra y Pasarela
     rect rgb(255, 250, 240)
     Note over Cliente, Wompi: FASE 3: Checkout y Transacción Bancaria con Wompi
-    Cliente->>UI: Clic en "Finalizar Compra" en /checkout
+    Cliente->>UI: Clic en "Finalizar Compra"en /checkout
     UI->>API: POST /api/pagos/intencion (Items, metros y datos de envío)
     API->>DB: Validar stock continuo y calcular total en servidor
     API-->>UI: Respuesta con Referencia, Monto en centavos y Firma SHA-256
@@ -460,8 +460,8 @@ sequenceDiagram
     rect rgb(255, 245, 245)
     Note over API, Cliente: FASE 5: Notificaciones Multicanal y Seguimiento Postventa
     API->>Notif: Despachar Notificaciones Transaccionales
-    Notif-->>Cliente: 📧 Envío de Correo Electrónico: Confirmación de Pedido y Factura XML
-    Notif-->>Cliente: 💬 Envío de SMS: Notificación de orden de corte y guía de despacho
+    Notif-->>Cliente: Envío de Correo Electrónico: Confirmación de Pedido y Factura XML
+    Notif-->>Cliente: Envío de SMS: Notificación de orden de corte y guía de despacho
     Cliente->>UI: Ingresa a /cliente/rastreo
     UI->>API: GET /api/orders/{id}
     API-->>UI: Estado en tiempo real ('cutting' -> 'shipped' -> 'delivered')
@@ -513,11 +513,11 @@ Para gestionar la consistencia en el proceso de compra de tela continua y fracci
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Cliente as 👤 Cliente (Navegador)
-    participant Gateway as 🌐 ServidorApi / ManejadorPedidos
-    participant Motor as ⚙️ ServicioCorteTextil
-    participant DB as 🐘 PostgreSQL (PedidoDAO / InventarioDAO)
-    participant Pasarela as 💳 Pasarela Wompi Bancolombia
+    actor Cliente as Cliente (Navegador)
+    participant Gateway as ServidorApi / ManejadorPedidos
+    participant Motor as ServicioCorteTextil
+    participant DB as PostgreSQL (PedidoDAO / InventarioDAO)
+    participant Pasarela as Pasarela Wompi Bancolombia
 
     Cliente->>Gateway: POST /api/orders (Compra 6.0m Lino continuo)
     Gateway->>Motor: validarMetrajeContinuo(rollos, 6.0m, "LOT-A")

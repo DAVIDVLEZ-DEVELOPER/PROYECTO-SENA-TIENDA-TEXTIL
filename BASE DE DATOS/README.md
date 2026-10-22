@@ -1,4 +1,4 @@
-# Documentación Técnica de Base de Datos y Arquitectura MVC
+﻿# Documentación Técnica de Base de Datos y Arquitectura MVC
 **Proyecto:** Plataforma Digital de Telas y Control Logístico (D&D Textil)  
 **Programa de Formación:** Tecnólogo en Análisis y Desarrollo de Software (ADSO) - SENA  
 **Motor de Base de Datos:** PostgreSQL 17 (UTF-8)  
@@ -118,30 +118,9 @@ En la notación relacional, cada tabla se define con su nombre, atributos, clave
 ```mermaid
 erDiagram
     %% Relaciones de Usuarios y Clientes
-    USUARIOS ||--o{ PRODUCTOS : "publica (vendedor)"
-    USUARIOS ||--o{ PEDIDOS : "realiza (cliente)"
-    USUARIOS ||--o{ PEDIDOS : "gestiona (vendedor)"
-    USUARIOS ||--o{ ITEMS_CARRITO : "posee"
-    USUARIOS ||--o{ RESENAS : "escribe"
-    USUARIOS ||--o{ TICKETS_SOPORTE : "radica"
-
-    %% Relaciones de Catálogo e Inventario
-    CATEGORIAS ||--o{ PRODUCTOS : "clasifica"
-    PRODUCTOS ||--o{ IMAGENES_PRODUCTO : "contiene"
-    PRODUCTOS ||--o{ LOTES_INVENTARIO : "abastecido_por"
-    PRODUCTOS ||--o{ EVENTOS_MERMA : "registra"
-    PRODUCTOS ||--o{ ITEMS_PEDIDO : "incluido_en"
-    PRODUCTOS ||--o{ ITEMS_CARRITO : "agregado_en"
-    PRODUCTOS ||--o{ RESENAS : "recibe"
-    LOTES_INVENTARIO ||--o{ ROLLOS_TEXTIL : "genera_rollos"
-
-    %% Relaciones Comerciales y Pagos
-    PEDIDOS ||--|{ ITEMS_PEDIDO : "contiene"
-    PEDIDOS ||--o{ EVENTOS_PAGO_WOMPI : "audita_transacciones"
-    CUPONES ||--o{ CATEGORIAS_CUPON : "restringe"
-    CATEGORIAS ||--o{ CATEGORIAS_CUPON : "aplica_a"
-
-    USUARIOS {
+    USUARIOS ||--o{ PRODUCTOS : "publica (vendedor)"USUARIOS ||--o{ PEDIDOS : "realiza (cliente)"USUARIOS ||--o{ PEDIDOS : "gestiona (vendedor)"USUARIOS ||--o{ ITEMS_CARRITO : "posee"USUARIOS ||--o{ RESENAS : "escribe"USUARIOS ||--o{ TICKETS_SOPORTE : "radica"%% Relaciones de Catálogo e Inventario
+    CATEGORIAS ||--o{ PRODUCTOS : "clasifica"PRODUCTOS ||--o{ IMAGENES_PRODUCTO : "contiene"PRODUCTOS ||--o{ LOTES_INVENTARIO : "abastecido_por"PRODUCTOS ||--o{ EVENTOS_MERMA : "registra"PRODUCTOS ||--o{ ITEMS_PEDIDO : "incluido_en"PRODUCTOS ||--o{ ITEMS_CARRITO : "agregado_en"PRODUCTOS ||--o{ RESENAS : "recibe"LOTES_INVENTARIO ||--o{ ROLLOS_TEXTIL : "genera_rollos"%% Relaciones Comerciales y Pagos
+    PEDIDOS ||--|{ ITEMS_PEDIDO : "contiene"PEDIDOS ||--o{ EVENTOS_PAGO_WOMPI : "audita_transacciones"CUPONES ||--o{ CATEGORIAS_CUPON : "restringe"CATEGORIAS ||--o{ CATEGORIAS_CUPON : "aplica_a"USUARIOS {
         int id PK
         string nombre
         string correo UK
@@ -294,7 +273,7 @@ flowchart TD
     classDef modelStyle fill:#581c87,stroke:#8b5cf6,stroke-width:2px,color:#ffffff,font-family:sans-serif;
     classDef actorStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    User["👤 Usuario / Navegador Web / App Móvil"]:::actorStyle
+    User["Usuario / Navegador Web / App Móvil"]:::actorStyle
 
     subgraph VISTA ["1. CAPA VISTA (View - React 18 + TailwindCSS)"]
         direction TB
@@ -324,7 +303,7 @@ flowchart TD
     end
 
     subgraph PERSISTENCIA ["4. CAPA DE BASE DE DATOS"]
-        Postgres[("🐘 PostgreSQL 17<br/>25 Tablas Relacionales, Índices B-Tree, SELECT FOR UPDATE")]:::modelStyle
+        Postgres[("PostgreSQL 17<br/>25 Tablas Relacionales, Índices B-Tree, SELECT FOR UPDATE")]:::modelStyle
     end
 
     %% Flujo ordenado de capas
@@ -400,8 +379,7 @@ sequenceDiagram
     participant Modelo as Modelo (PedidoDAO / ProductoDAO)
     participant BD as PostgreSQL 17 (DB)
 
-    Cliente->>Vista: Clic en "Confirmar Pedido"
-    Vista->>Controlador: POST /api/pedidos (JSON: clienteId, articulos, total)
+    Cliente->>Vista: Clic en "Confirmar Pedido"Vista->>Controlador: POST /api/pedidos (JSON: clienteId, articulos, total)
     Note over Controlador: ManejadorBase valida CORS, Rate Limit y genera Correlation-ID
     Controlador->>Modelo: crearPedido(clienteId, total, articulos)
     Modelo->>BD: BEGIN TRANSACTION

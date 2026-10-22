@@ -1,4 +1,4 @@
-# Indice General de Documentacion Tecnica - D&D Textil
+﻿# Indice General de Documentacion Tecnica - D&D Textil
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Estandares Aplicados:** IEEE 830, ISO/IEC 25010, Modelo C4 (Simon Brown), BDD (Gherkin), Clean Architecture, Domain-Driven Design (DDD), OWASP API Security, PCI-DSS v4.0, Ley 1581 de 2012 (Habeas Data)  

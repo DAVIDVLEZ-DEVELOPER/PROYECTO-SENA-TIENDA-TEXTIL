@@ -1,4 +1,4 @@
-# Manual Tecnico de Instalacion, Configuracion y Despliegue
+﻿# Manual Tecnico de Instalacion, Configuracion y Despliegue
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Version:** 2.0.0 - Documentacion Tecnica Oficial  
@@ -47,29 +47,29 @@ flowchart TD
     classDef dbStyle fill:#4338ca,stroke:#3730a3,stroke-width:2px,color:#ffffff,font-family:sans-serif;
     classDef volStyle fill:#d97706,stroke:#b45309,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    subgraph Host ["🖥️ HOST ANFITRIÓN (Docker Engine 24+)"]
+    subgraph Host ["HOST ANFITRIÓN (Docker Engine 24+)"]
         direction TB
 
         subgraph ClientesExternos ["Dispositivos y Clientes"]
-            UserWeb["🌐 Navegador Web / Cliente"]:::hostStyle
-            UserApp["📱 Terminal Bodega / Móvil"]:::hostStyle
+            UserWeb["Navegador Web / Cliente"]:::hostStyle
+            UserApp["Terminal Bodega / Móvil"]:::hostStyle
         end
 
-        subgraph RedFrontend ["🌐 RED BRIDGE: frontend-net (Red Pública Expuesta)"]
-            ContFrontend["📦 Contenedor: frontend<br/>• Imagen: node:18-alpine<br/>• SPA React 18 / Vite<br/>• Puerto Mapeado: 5173:5173"]:::frontStyle
+        subgraph RedFrontend ["RED BRIDGE: frontend-net (Red Pública Expuesta)"]
+            ContFrontend["Contenedor: frontend<br/>• Imagen: node:18-alpine<br/>• SPA React 18 / Vite<br/>• Puerto Mapeado: 5173:5173"]:::frontStyle
         end
 
-        subgraph RedesCompartidas ["🔄 Enlace Inter-Red (Puertos Internos)"]
-            ContBackend["☕ Contenedor: backend-java<br/>• Imagen: openjdk:17-slim<br/>• Vanilla Java 17 HttpServer (Pool 32 Hilos)<br/>• Puerto Mapeado: 8081:8081"]:::backStyle
+        subgraph RedesCompartidas ["Enlace Inter-Red (Puertos Internos)"]
+            ContBackend["Contenedor: backend-java<br/>• Imagen: openjdk:17-slim<br/>• Vanilla Java 17 HttpServer (Pool 32 Hilos)<br/>• Puerto Mapeado: 8081:8081"]:::backStyle
         end
 
-        subgraph RedBackend ["🔒 RED BRIDGE: backend-net (Red Aislada No Expuesta)"]
-            ContPostgres[("🐘 Contenedor: postgres<br/>• Imagen: postgres:17-alpine<br/>• PostgreSQL 17 (UTF-8)<br/>• Puerto Interno: 5432 (Sin mapeo al host)")]:::dbStyle
+        subgraph RedBackend ["RED BRIDGE: backend-net (Red Aislada No Expuesta)"]
+            ContPostgres[("Contenedor: postgres<br/>• Imagen: postgres:17-alpine<br/>• PostgreSQL 17 (UTF-8)<br/>• Puerto Interno: 5432 (Sin mapeo al host)")]:::dbStyle
         end
 
-        subgraph VolumenesDocker ["💾 Almacenamiento Persistente"]
-            VolData[("📁 postgres_data<br/>Volumen Docker Persistente<br/>Ruta: /var/lib/postgresql/data")]:::volStyle
-            VolUploads[("📁 uploads_data<br/>Volumen Docker Persistente<br/>Ruta: /app/uploads")]:::volStyle
+        subgraph VolumenesDocker ["Almacenamiento Persistente"]
+            VolData[("postgres_data<br/>Volumen Docker Persistente<br/>Ruta: /var/lib/postgresql/data")]:::volStyle
+            VolUploads[("uploads_data<br/>Volumen Docker Persistente<br/>Ruta: /app/uploads")]:::volStyle
         end
     end
 
@@ -92,7 +92,7 @@ flowchart TD
 |         +-----------------------+ +-----------------------+                       |
 |                                 | |                                               |
 |                                 v v                                               |
-|                         [ Puerto 5173 ]                                           |
+|                         [Puerto 5173]                                           |
 |                                 |                                                 |
 |   +-----------------------------v---------------------------------------------+   |
 |   | RED: frontend-net                                                         |   |
@@ -117,7 +117,7 @@ flowchart TD
 |   |                                                         |                 |   |
 |   +---------------------------------------------------------|-----------------+   |
 |                                                             v                     |
-|                                                   [ postgres_data ]               |
+|                                                   [postgres_data]               |
 |                                                   Volumen Persistente             |
 +-----------------------------------------------------------------------------------+
 ```
@@ -156,8 +156,7 @@ LOG_LEVEL=INFO
 # VARIABLES DE CONFIGURACION DEL FRONTEND (VITE / REACT)
 # =============================================================================
 VITE_API_URL=http://localhost:8081
-VITE_APP_TITLE="D&D Textil - Tienda Digital de Telas"
-```
+VITE_APP_TITLE="D&D Textil - Tienda Digital de Telas"```
 
 ---
 
@@ -193,9 +192,9 @@ docker compose ps
 Salida esperada:
 ```text
 NAME                IMAGE               COMMAND                  SERVICE             STATUS                    PORTS
-textil-backend      openjdk:17-slim     "java -cp target:lib…"   backend             Up (healthy)              0.0.0.0:8081->8081/tcp
-textil-frontend     node:18-alpine      "npm run dev -- --ho…"   frontend            Up                        0.0.0.0:5173->5173/tcp
-textil-postgres     postgres:17-alpine  "docker-entrypoint.s…"   postgres            Up (healthy)              0.0.0.0:5432->5432/tcp
+textil-backend      openjdk:17-slim     "java -cp target:lib…"backend             Up (healthy)              0.0.0.0:8081->8081/tcp
+textil-frontend     node:18-alpine      "npm run dev -- --ho…"frontend            Up                        0.0.0.0:5173->5173/tcp
+textil-postgres     postgres:17-alpine  "docker-entrypoint.s…"postgres            Up (healthy)              0.0.0.0:5432->5432/tcp
 ```
 
 ### Paso 5: Verificacion de Bitacoras y Logs de Inicio
@@ -221,14 +220,12 @@ En estaciones de trabajo para desarrollo local donde no se disponga de Docker, l
    ```
 3. Ejecutar los scripts de estructura DDL y datos de prueba:
    ```bash
-   psql -U postgres -d tienda_textil -f "tienda digital de telas/backend-java/conexionPostgres/schema.sql"
-   ```
+   psql -U postgres -d tienda_textil -f "tienda digital de telas/backend-java/conexionPostgres/schema.sql"```
 
 ### 5.2. Compilacion y Ejecucion del Backend Java
 1. Ubicarse en la carpeta del backend:
    ```bash
-   cd "tienda digital de telas/backend-java/conexionPostgres"
-   ```
+   cd "tienda digital de telas/backend-java/conexionPostgres"```
 2. Crear la carpeta para los binarios compilados:
    ```bash
    mkdir -p bin
@@ -236,22 +233,21 @@ En estaciones de trabajo para desarrollo local donde no se disponga de Docker, l
 3. Compilar todas las clases del codigo fuente incluyendo las librerias JAR de dependencias (`postgresql-*.jar`, `gson-*.jar`, `HikariCP-*.jar`, `slf4j-*.jar`):
    - En sistemas Linux / macOS:
      ```bash
-     javac -encoding UTF-8 -cp "lib/*:src" -d bin $(find src -name "*.java")
+     javac -encoding UTF-8 -cp "lib/*:src"-d bin $(find src -name "*.java")
      ```
    - En sistemas Microsoft Windows (PowerShell):
      ```powershell
-     $jars = (Get-ChildItem -Path "lib\*.jar" | ForEach-Object { $_.FullName }) -join ";"
-     $sources = (Get-ChildItem -Path "src" -Recurse -Filter "*.java" | ForEach-Object { $_.FullName })
-     javac -encoding UTF-8 -cp "$jars;src" -d bin $sources
+     $jars = (Get-ChildItem -Path "lib\*.jar"| ForEach-Object { $_.FullName }) -join ";"$sources = (Get-ChildItem -Path "src"-Recurse -Filter "*.java"| ForEach-Object { $_.FullName })
+     javac -encoding UTF-8 -cp "$jars;src"-d bin $sources
      ```
 4. Iniciar el servidor HTTP del backend:
    - En Linux / macOS:
      ```bash
-     java -cp "bin:lib/*" Servidor
+     java -cp "bin:lib/*"Servidor
      ```
    - En Windows (PowerShell):
      ```powershell
-     java -cp "bin;$jars" Servidor
+     java -cp "bin;$jars"Servidor
      ```
 5. Salida de inicio exitoso:
    ```text
@@ -266,8 +262,7 @@ En estaciones de trabajo para desarrollo local donde no se disponga de Docker, l
 ### 5.3. Instalacion y Ejecucion del Frontend React
 1. Ubicarse en el directorio del cliente web:
    ```bash
-   cd "tienda digital de telas"
-   ```
+   cd "tienda digital de telas"```
 2. Instalar las dependencias de paquetes de Node.js:
    ```bash
    npm install
@@ -329,7 +324,7 @@ El backend incluye suites de pruebas unitarias y de seguridad sin dependencias e
 
 ### 7.1. Pruebas del Motor Textil y Reglas de Negocio
 ```powershell
-java -cp "bin;$jars" PruebasReglasNegocioTextil
+java -cp "bin;$jars"PruebasReglasNegocioTextil
 ```
 Salida certificada:
 ```text
@@ -358,7 +353,7 @@ TASA DE EXITO: 100.0%
 
 ### 7.2. Pruebas de Seguridad y Correccion de Concurrencia
 ```powershell
-java -cp "bin;$jars" PruebasSeguridadYBugs
+java -cp "bin;$jars"PruebasSeguridadYBugs
 ```
 Salida certificada:
 ```text

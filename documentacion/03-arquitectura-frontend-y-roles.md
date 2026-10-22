@@ -1,4 +1,4 @@
-# Arquitectura del Frontend y Gestion de Roles de Usuario
+﻿# Arquitectura del Frontend y Gestion de Roles de Usuario
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Tecnologias:** React 18, Vite 5, TailwindCSS 3, Context API, React Router DOM v6  
@@ -109,52 +109,52 @@ flowchart TD
     classDef operStyle fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#ffffff,font-family:sans-serif;
     classDef adminStyle fill:#dc2626,stroke:#b91c1c,stroke-width:2px,color:#ffffff,font-family:sans-serif;
 
-    subgraph ZonaPublica ["🌐 Zona Pública (Acceso Libre)"]
+    subgraph ZonaPublica ["Zona Pública (Acceso Libre)"]
         direction TB
-        Home["🏠 Inicio (/)<br/>Carrusel, Catálogo Destacado"]:::publicStyle
-        Catalogo["🧵 Catálogo (/catalogo)<br/>Filtros por fibra, ancho y precio"]:::publicStyle
-        Detalle["🔍 Ficha Técnica (/producto/:id)<br/>Simulador de metros y fotos"]:::publicStyle
-        Carrito["🛒 Carrito (/carrito)<br/>Cupones y subtotales"]:::publicStyle
-        Checkout["💳 Checkout (/checkout)<br/>Datos de envío y Pasarela Wompi"]:::publicStyle
-        Login["🔐 Autenticación (/login, /registro)<br/>OAuth y credenciales directas"]:::publicStyle
-        Institucional["ℹ️ Institucional (/nosotros, /contactos)"]:::publicStyle
+        Home["Inicio (/)<br/>Carrusel, Catálogo Destacado"]:::publicStyle
+        Catalogo["Catálogo (/catalogo)<br/>Filtros por fibra, ancho y precio"]:::publicStyle
+        Detalle["Ficha Técnica (/producto/:id)<br/>Simulador de metros y fotos"]:::publicStyle
+        Carrito["Carrito (/carrito)<br/>Cupones y subtotales"]:::publicStyle
+        Checkout["Checkout (/checkout)<br/>Datos de envío y Pasarela Wompi"]:::publicStyle
+        Login["Autenticación (/login, /registro)<br/>OAuth y credenciales directas"]:::publicStyle
+        Institucional["ℹInstitucional (/nosotros, /contactos)"]:::publicStyle
 
         Home --> Catalogo --> Detalle --> Carrito --> Checkout
         Home --> Institucional
         Home --> Login
     end
 
-    subgraph GuardiaSeguridad ["🛡️ Middleware de Seguridad"]
+    subgraph GuardiaSeguridad ["Middleware de Seguridad"]
         ProtectedRoute["ProtectedRoute (React Router DOM)<br/>• Valida Token JWT en AuthContext<br/>• Verifica Rol RBAC"]:::authStyle
     end
 
-    subgraph ZonaProtegida ["🔒 Zona Protegida (Paneles por Rol)"]
+    subgraph ZonaProtegida ["Zona Protegida (Paneles por Rol)"]
         direction TB
 
-        subgraph PanelCliente ["👤 Rol: Cliente / Confeccionista (/cliente/*)"]
-            Cli1["📦 Historial de Pedidos"]:::clientStyle
-            Cli2["📍 Rastreo de Envío"]:::clientStyle
-            Cli3["📐 Calculadora de Metraje"]:::clientStyle
-            Cli4["🎫 Tickets de Soporte"]:::clientStyle
+        subgraph PanelCliente ["Rol: Cliente / Confeccionista (/cliente/*)"]
+            Cli1["Historial de Pedidos"]:::clientStyle
+            Cli2["Rastreo de Envío"]:::clientStyle
+            Cli3["Calculadora de Metraje"]:::clientStyle
+            Cli4["Tickets de Soporte"]:::clientStyle
         end
 
-        subgraph PanelVendedor ["💼 Rol: Vendedor (/vendedor/*)"]
-            Ven1["📊 Métricas Comerciales"]:::sellerStyle
-            Ven2["✂️ Publicación de Telas"]:::sellerStyle
-            Ven3["⚠️ Alertas Stock Crítico (< 5m)"]:::sellerStyle
+        subgraph PanelVendedor ["Rol: Vendedor (/vendedor/*)"]
+            Ven1["Métricas Comerciales"]:::sellerStyle
+            Ven2["Publicación de Telas"]:::sellerStyle
+            Ven3["Alertas Stock Crítico (< 5m)"]:::sellerStyle
         end
 
-        subgraph PanelOperario ["🏭 Rol: Operario de Corte (/bodega/*)"]
-            Op1["📱 Lector QR de Rollos"]:::operStyle
-            Op2["📐 Registro de Metros Cortados"]:::operStyle
-            Op3["📉 Liquidación de Mermas"]:::operStyle
+        subgraph PanelOperario ["Rol: Operario de Corte (/bodega/*)"]
+            Op1["Lector QR de Rollos"]:::operStyle
+            Op2["Registro de Metros Cortados"]:::operStyle
+            Op3["Liquidación de Mermas"]:::operStyle
         end
 
-        subgraph PanelAdmin ["👑 Rol: Administrador (/admin/*)"]
-            Adm1["📈 Tablero ERP Financiero"]:::adminStyle
-            Adm2["👥 Gestión y Suspensión Usuarios"]:::adminStyle
-            Adm3["🚚 Recepción de Lotes Textil"]:::adminStyle
-            Adm4["🏷️ Administración de Cupones"]:::adminStyle
+        subgraph PanelAdmin ["Rol: Administrador (/admin/*)"]
+            Adm1["Tablero ERP Financiero"]:::adminStyle
+            Adm2["Gestión y Suspensión Usuarios"]:::adminStyle
+            Adm3["Recepción de Lotes Textil"]:::adminStyle
+            Adm4["Administración de Cupones"]:::adminStyle
         end
     end
 
