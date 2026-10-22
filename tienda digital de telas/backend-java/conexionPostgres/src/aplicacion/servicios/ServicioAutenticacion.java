@@ -78,6 +78,42 @@ public class ServicioAutenticacion {
     }
 
     /**
+     * Autentica o auto-registra un usuario validado por SSO (Google / Microsoft).
+     * Si el usuario ya existe, actualiza su último acceso.
+     * Si no existe, se crea con rol 'cliente'.
+     * @param correo Correo electrónico validado por el proveedor SSO.
+     * @param nombre Nombre devuelto por el proveedor SSO.
+     * @return Objeto Usuario autenticado.
+     */
+    public Usuario autenticarOAutoRegistrarSSO(String correo, String nombre) {
+        if (correo == null || correo.isBlank()) {
+            throw new ExcepcionDominio("El correo electrónico del proveedor SSO es obligatorio.");
+        }
+
+        Optional<Usuario> usuarioOpt = repositorioUsuario.buscarPorCorreoYActivo(correo);
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            if (usuario.isSuspendido()) {
+                throw new ExcepcionDominio("Cuenta suspendida: " + usuario.getMotivoSuspension());
+            }
+            repositorioUsuario.actualizarUltimoAcceso(usuario.getId());
+            return usuario;
+        }
+
+        String nombreFinal = (nombre != null && !nombre.isBlank()) ? nombre : correo.split("@")[0];
+        Usuario nuevoUsuario = new Usuario(0, nombreFinal, correo, "cliente", true, false, null, null, null, null, null);
+        String contrasenaSeguraSSO = generarHashContrasena("oauth-sso-" + java.util.UUID.randomUUID().toString());
+
+        boolean creado = repositorioUsuario.guardar(nuevoUsuario, contrasenaSeguraSSO);
+        if (!creado) {
+            throw new ExcepcionDominio("No fue posible crear la cuenta para el usuario de SSO.");
+        }
+
+        return repositorioUsuario.buscarPorCorreoYActivo(correo)
+            .orElseThrow(() -> new ExcepcionDominio("Error al recuperar el usuario de SSO recién registrado."));
+    }
+
+    /**
      * Regla de Seguridad PCI-DSS:
      * Verifica que ninguna cadena contenga números de tarjeta de crédito (PAN) ni códigos CVV.
      * La arquitectura delega el procesamiento al SDK de la pasarela y solo admite tokens transaccionales.

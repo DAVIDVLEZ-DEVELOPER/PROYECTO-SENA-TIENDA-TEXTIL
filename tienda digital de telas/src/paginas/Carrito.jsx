@@ -319,10 +319,10 @@ export default function Carrito() {
 
                                 {/* Botón checkout */}
                                 <button
-                                    onClick={() => navigate('/checkout')}
+                                    onClick={() => navigate('/pago')}
                                     className="w-full btn-primary flex items-center justify-center gap-2 py-3 text-base hover:scale-[1.02] active:scale-[0.98] transition-transform"
                                 >
-                                    Proceder al Pago
+                                    Pagar con Wompi / Tarjeta / PSE
                                     <ArrowRight className="w-5 h-5" />
                                 </button>
 

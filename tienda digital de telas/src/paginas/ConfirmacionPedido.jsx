@@ -7,6 +7,7 @@ import Encabezado from '../componentes/Encabezado';
 import PieDePagina from '../componentes/PieDePagina';
 import { useCarrito } from '../contextos/ContextoCarrito';
 import { formatCurrency, formatDate } from '../utilidades/formateadores';
+import { consultarEstadoPagoWompi } from '../servicios/servicioWompi';
 
 gsap.registerPlugin(useGSAP);
 
@@ -14,15 +15,72 @@ function ConfirmacionPedido() {
     const navigate = useNavigate();
     const { clearCart } = useCarrito();
     const [orderData, setOrderData] = useState(null);
+    const [cargando, setCargando] = useState(true);
     const containerRef = useRef(null);
 
     useEffect(() => {
-        const savedOrder = localStorage.getItem('lastOrder');
-        if (!savedOrder) { navigate('/'); return; }
-        const order = JSON.parse(savedOrder);
-        setOrderData(order);
-        clearCart();
-        return () => { localStorage.removeItem('lastOrder'); };
+        const params = new URLSearchParams(window.location.search);
+        const referencia = params.get('referencia') || params.get('reference') || params.get('id');
+
+        const cargarPedido = async () => {
+            if (referencia && referencia.startsWith('DD-')) {
+                try {
+                    const datos = await consultarEstadoPagoWompi(referencia);
+                    if (datos) {
+                        let items = [];
+                        try {
+                            items = typeof datos.itemsRaw === 'string' ? JSON.parse(datos.itemsRaw) : (datos.itemsRaw || []);
+                        } catch {
+                            items = [];
+                        }
+                        setOrderData({
+                            orderNumber: datos.orderNumber || datos.reference,
+                            reference: datos.reference,
+                            status: datos.status,
+                            paymentStatus: datos.paymentStatus,
+                            paymentMethod: datos.paymentMethod,
+                            wompiTransactionId: datos.wompiTransactionId,
+                            subtotal: datos.subtotal || 0,
+                            discount: datos.discount || 0,
+                            shipping: datos.shipping || 0,
+                            tax: datos.tax || 0,
+                            total: datos.total || 0,
+                            date: datos.date || new Date().toISOString(),
+                            customerInfo: datos.customerInfo || {},
+                            items: items.map(it => ({
+                                id: it.id,
+                                name: it.name || 'Tela',
+                                quantity: it.quantity || 1,
+                                price: it.price || 0,
+                                images: Array.isArray(it.images) && it.images.length > 0 ? it.images : ['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300']
+                            }))
+                        });
+                        clearCart();
+                        setCargando(false);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('[Confirmacion] No se pudo cargar pedido remoto:', e);
+                }
+            }
+
+            const savedOrder = localStorage.getItem('lastOrder');
+            if (savedOrder) {
+                try {
+                    const order = JSON.parse(savedOrder);
+                    setOrderData(order);
+                    clearCart();
+                } catch (e) {
+                    console.error('Error parseando lastOrder', e);
+                }
+                localStorage.removeItem('lastOrder');
+            } else if (!referencia) {
+                navigate('/');
+            }
+            setCargando(false);
+        };
+
+        cargarPedido();
     }, [clearCart, navigate]);
 
     useGSAP(() => {
@@ -38,7 +96,25 @@ function ConfirmacionPedido() {
         tl.fromTo(sections, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 }, "-=0.2");
     }, { scope: containerRef, dependencies: [orderData] });
 
+    if (cargando) {
+        return (
+            <div className="min-h-screen flex flex-col">
+                <Encabezado />
+                <main className="flex-1 flex items-center justify-center py-20">
+                    <div className="text-center">
+                        <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-gray-600 dark:text-gray-300 font-medium">Consultando estado de la transacción con Wompi...</p>
+                    </div>
+                </main>
+                <PieDePagina />
+            </div>
+        );
+    }
+
     if (!orderData) return null;
+
+    const esAprobado = orderData.paymentStatus === 'APPROVED' || orderData.status === 'paid';
+    const esPendiente = orderData.paymentStatus === 'pending' || orderData.status === 'pending';
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -47,28 +123,46 @@ function ConfirmacionPedido() {
             <main className="flex-1 section-container">
                 <div ref={containerRef} className="max-w-3xl mx-auto text-center">
                     {/* Success Icon */}
-                    <div className="success-icon w-24 h-24 mx-auto mb-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
+                    <div className={`success-icon w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${
+                        esAprobado ? 'bg-green-100 dark:bg-green-900/30' : 'bg-amber-100 dark:bg-amber-900/30'
+                    }`}>
+                        <CheckCircle className={`w-12 h-12 ${
+                            esAprobado ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400'
+                        }`} />
                     </div>
 
                     {/* Title */}
-                    <h1 className="reveal-section text-3xl md:text-4xl font-display font-bold mb-4">
-                        ¡Pedido Confirmado!
+                    <h1 className="reveal-section text-3xl md:text-4xl font-display font-bold mb-2">
+                        {esAprobado ? '¡Pago Aprobado y Pedido Confirmado!' : (esPendiente ? '¡Pedido en Proceso de Pago!' : 'Estado del Pedido')}
                     </h1>
 
+                    <div className="reveal-section mb-6">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                            esAprobado ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' :
+                            (esPendiente ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' : 'bg-red-100 text-red-800')
+                        }`}>
+                            {esAprobado ? 'Wompi: Transacción Aprobada' : (esPendiente ? 'Wompi: Esperando confirmación bancaria' : 'Transacción ' + orderData.paymentStatus)}
+                        </span>
+                    </div>
+
                     <p className="reveal-section text-xl text-gray-600 dark:text-gray-400 mb-8">
-                        Gracias por tu compra, {orderData.customerInfo.fullName}
+                        Gracias por tu compra, {orderData.customerInfo?.fullName || 'estimado cliente'}
                     </p>
 
                     {/* Order Number */}
                     <div className="reveal-section card p-6 mb-8">
                         <div className="flex items-center justify-center gap-3 mb-4">
                             <Package className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                            <h2 className="text-2xl font-bold">Número de Orden</h2>
+                            <h2 className="text-2xl font-bold">Referencia de Pago</h2>
                         </div>
                         <div className="text-4xl font-mono font-bold text-primary-600 dark:text-primary-400 mb-2">
                             {orderData.orderNumber}
                         </div>
+                        {orderData.wompiTransactionId && (
+                            <p className="text-xs text-gray-500 font-mono mb-2">
+                                ID Transacción Wompi: {orderData.wompiTransactionId}
+                            </p>
+                        )}
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                             Fecha: {formatDate(orderData.date)}
                         </p>

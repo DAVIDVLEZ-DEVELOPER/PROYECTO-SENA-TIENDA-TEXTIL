@@ -56,6 +56,10 @@ public class ServidorApi {
         ManejadorInventario manejadorInventario = new ManejadorInventario();
         ManejadorArchivosEstaticos manejadorArchivosEstaticos = new ManejadorArchivosEstaticos();
         ManejadorSalud manejadorSalud = new ManejadorSalud();
+        ManejadorPagosWompi manejadorPagosWompi = new ManejadorPagosWompi();
+
+        // Ejecutar migración de columnas y tablas de Wompi de manera segura
+        infraestructura.persistencia.jdbc.MigradorEsquemaPagos.ejecutar();
 
         // --- Registro de Rutas (Bilingüe para compatibilidad gradual con frontend) ---
         // Observabilidad y Health Checks (SENA / Kubernetes / Docker)
@@ -68,6 +72,8 @@ public class ServidorApi {
         servidor.createContext("/api/iniciar-sesion", manejadorAutenticacion);
         servidor.createContext("/api/register", manejadorAutenticacion);
         servidor.createContext("/api/registro", manejadorAutenticacion);
+        servidor.createContext("/api/autenticacion/sso", manejadorAutenticacion);
+        servidor.createContext("/api/sso", manejadorAutenticacion);
 
         // Productos
         servidor.createContext("/api/products", manejadorProductos);
@@ -92,6 +98,10 @@ public class ServidorApi {
         // Pedidos
         servidor.createContext("/api/orders", manejadorPedidos);
         servidor.createContext("/api/pedidos", manejadorPedidos);
+
+        // Pasarela de Pagos Wompi (Intención, Webhook, Estado, Config)
+        servidor.createContext("/api/payments", manejadorPagosWompi);
+        servidor.createContext("/api/pagos", manejadorPagosWompi);
 
         // Facturación
         servidor.createContext("/api/invoices", manejadorFactura);

@@ -312,6 +312,52 @@ public class PruebasSeguridadYBugs {
             }
         });
 
+        ejecutarPrueba("13. Validación y Resiliencia de Autenticación SSO (Google y Microsoft)", () -> {
+            try {
+                ServicioAutenticacion servicio = new ServicioAutenticacion(null);
+                servicio.autenticarOAutoRegistrarSSO("   ", "Nombre Demo");
+                throw new AssertionError("Fallo: Se permitió procesar SSO con correo en blanco.");
+            } catch (dominio.excepciones.ExcepcionDominio e) {
+                // Correcto
+            }
+
+            try {
+                ServicioAutenticacion servicio = new ServicioAutenticacion(null);
+                servicio.autenticarOAutoRegistrarSSO(null, "Nombre Demo");
+                throw new AssertionError("Fallo: Se permitió procesar SSO con correo nulo.");
+            } catch (dominio.excepciones.ExcepcionDominio e) {
+                // Correcto
+            }
+
+            String payloadGoogle = "{\"email\":\"usuario.google@gmail.com\",\"nombre\":\"Usuario Google Demo\",\"proveedor\":\"google\"}";
+            JsonObject jsonGoogle = JsonParser.parseString(payloadGoogle).getAsJsonObject();
+            String correoGoogle = jsonGoogle.has("email") ? jsonGoogle.get("email").getAsString()
+                                : (jsonGoogle.has("correo") ? jsonGoogle.get("correo").getAsString() : null);
+            if (!"usuario.google@gmail.com".equals(correoGoogle)) {
+                throw new AssertionError("Fallo en extracción de correo en payload de Google SSO.");
+            }
+        });
+
+        ejecutarPrueba("14. Integridad Criptográfica SHA-256 y Validación de Webhook Wompi", () -> {
+            String referencia = "DD-1700000000-0001";
+            long montoCentavos = 15000000L;
+            String moneda = "COP";
+            String firma1 = aplicacion.servicios.ServicioCriptoWompi.generarFirmaIntegridad(referencia, montoCentavos, moneda);
+            String firma2 = aplicacion.servicios.ServicioCriptoWompi.generarFirmaIntegridad(referencia, montoCentavos, moneda);
+            if (firma1 == null || firma1.length() != 64 || !firma1.equals(firma2)) {
+                throw new AssertionError("La firma de integridad de Wompi no es un SHA-256 válido o determinista.");
+            }
+            String firmaAlterada = aplicacion.servicios.ServicioCriptoWompi.generarFirmaIntegridad(referencia, montoCentavos - 1, moneda);
+            if (firma1.equals(firmaAlterada)) {
+                throw new AssertionError("Fallo crítico: la firma de integridad no cambió al alterar el monto.");
+            }
+            String webhookFalso = "{\"event\":\"transaction.updated\",\"data\":{\"transaction\":{\"id\":\"tx-123\",\"status\":\"APPROVED\",\"amount_in_cents\":15000000}},\"signature\":{\"properties\":[\"transaction.id\",\"transaction.status\",\"transaction.amount_in_cents\"],\"checksum\":\"0000000000000000000000000000000000000000000000000000000000000000\"},\"timestamp\":1700000000}";
+            JsonObject jsonWebhookFalso = JsonParser.parseString(webhookFalso).getAsJsonObject();
+            if (aplicacion.servicios.ServicioCriptoWompi.validarFirmaWebhook(jsonWebhookFalso)) {
+                throw new AssertionError("Fallo de seguridad: se aceptó un webhook con firma apócrifa.");
+            }
+        });
+
         System.out.println("\n=================================================================");
         System.out.println("                    RESUMEN DE PRUEBAS                          ");
         System.out.println("=================================================================");

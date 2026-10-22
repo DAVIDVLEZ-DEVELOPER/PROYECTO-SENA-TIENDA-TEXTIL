@@ -67,6 +67,17 @@ public class ManejadorAutenticacion extends ManejadorBase {
             servicioAutenticacion.registrarCliente(nombre, correo, contrasena, aceptaHabeasData);
             enviarRespuestaJson(intercambio, 201, "{\"success\": true, \"message\": \"Usuario registrado exitosamente con consentimiento de Habeas Data\"}");
 
+        // --- POST /api/autenticacion/sso o /api/sso ---
+        } else if (ruta.endsWith("/sso")) {
+            String correo = jsonObjeto.has("email") ? jsonObjeto.get("email").getAsString()
+                          : (jsonObjeto.has("correo") ? jsonObjeto.get("correo").getAsString() : null);
+            String nombre = jsonObjeto.has("nombre") ? jsonObjeto.get("nombre").getAsString()
+                          : (jsonObjeto.has("name") ? jsonObjeto.get("name").getAsString() : null);
+
+            Usuario usuario = servicioAutenticacion.autenticarOAutoRegistrarSSO(correo, nombre);
+            String jsonUsuario = gson.toJson(usuario);
+            enviarRespuestaJson(intercambio, 200, "{\"success\": true, \"user\": " + jsonUsuario + "}");
+
         } else {
             enviarRespuestaJson(intercambio, 404, "{\"error\": \"Ruta no encontrada\"}");
         }
