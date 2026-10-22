@@ -29,10 +29,12 @@ El cuerpo documental oficial del proyecto se encuentra centralizado en el direct
 *   **Vision General del Backend:** Diseno en Vanilla Java 17 de alto desempeno, servidor HTTP nativo con pool de 32 hilos concurrentes, pool de conexiones HikariCP y Google Gson.
 *   **Estructura Exhaustiva de Capas y Paquetes:** Distribucion Clean Architecture en capas `dominio`, `aplicacion` e `infraestructura` con correspondencia exacta de clases en idioma espanol.
 *   **Principios SOLID con Ejemplos de Codigo:** Demostracion de SRP, OCP, LSP, ISP y DIP en el contexto textil.
-*   **Diagramas de Arquitectura bajo el Modelo C4:**
+*   **Diagramas de Arquitectura bajo el Modelo C4 y Despliegue:**
     *   Nivel 1: Diagrama de Contexto del Sistema (Mermaid estructurado sin solapamientos, con actores, límites y servicios externos).
     *   Nivel 2: Diagrama de Contenedores (Mermaid con capas ordenadas de cliente web, app móvil, backend Java, persistencia y pasarela Wompi).
     *   Nivel 3: Diagrama de Componentes del Backend (Mermaid con capas Clean Architecture desacopladas y dependencias descendentes).
+    *   Nivel 4: Diagrama de Despliegue del Sistema (Mapa de Despliegue de nodos clientes, host Docker, redes aisladas, volúmenes y nube).
+    *   Flujo Omnicanal de Comunicación: Diagramas de canales y secuencia de interacción completa entre el Sistema y el Cliente (Catálogo, Checkout, Wompi, Facturación, SMS, Email y Rastreo).
 *   **Orquestacion Transaccional (Patron Saga Coreografiado):** Diagrama de secuencia Mermaid para reserva de metraje, procesamiento en pasarela Wompi y compensacion de inventario ante fallos.
 *   **Catalogo Completo de Endpoints REST:** Definicion de metodos, rutas, codigos de estado HTTP y politicas de autorizacion RBAC.
 

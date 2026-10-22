@@ -277,6 +277,200 @@ flowchart TD
 
 ---
 
+### 3.4. Nivel 4: Diagrama de Despliegue del Sistema (Mapa de Despliegue)
+
+A continuación se ilustra la **Topología Física y de Red del Despliegue**, detallando los nodos de hardware, contenedores Docker, puertos de comunicación, políticas de aislamiento y servicios en la nube:
+
+```mermaid
+flowchart TD
+    classDef clientNode fill:#08427B,stroke:#052e56,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef hostNode fill:#0f172a,stroke:#334155,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef containerNode fill:#1168BD,stroke:#0b4884,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef dbNode fill:#1e3a8a,stroke:#172554,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef volNode fill:#d97706,stroke:#b45309,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef cloudNode fill:#4B5563,stroke:#374151,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+
+    subgraph DispositivosClientes ["📱 1. Nodos de Cliente y Dispositivos de Acceso"]
+        direction LR
+        cliWeb["💻 PC / Portátil Cliente<br/><b>[Navegador Web: Chrome/Firefox/Safari]</b><br/>React 18 SPA, Catálogo interactivo,<br/>simulador de metraje y Checkout."]:::clientNode
+        cliMovil["📱 Smartphone Cliente / Operario<br/><b>[Navegador Móvil / App Android]</b><br/>Android WebView + Kotlin con<br/>escaneo de códigos QR en bodega."]:::clientNode
+        cliAdmin["🖥️ Terminal Administrativa<br/><b>[Navegador de Gestión]</b><br/>Paneles ERP, analítica comercial,<br/>gestión de inventario y moderación."]:::clientNode
+    end
+
+    subgraph HostDocker ["🏢 2. Servidor Host de Aplicación (Docker Host / VPS / Cloud)"]
+        direction TB
+
+        subgraph RedFrontend ["🌐 RED DOCKER: frontend-net (Bridge Público - Puertos 5173 / 3001)"]
+            contFrontend["🌐 Contenedor: frontend<br/><b>[Node 18 / Nginx Alpine]</b><br/>Sirve la Single Page Application (SPA React 18 / Vite).<br/><i>Puerto Expuesto al Host: 5173:5173</i>"]:::containerNode
+        end
+
+        subgraph RedBackend ["⚙️ RED DOCKER: backend-net (Bridge Interno Defensivo Aislado)"]
+            direction TB
+            contBackend["☕ Contenedor: backend-java<br/><b>[OpenJDK 17 Slim]</b><br/>Vanilla Java 17 HttpServer (Pool 32 Hilos Concurrentes)<br/>Clean Architecture, motor de corte textil y firma criptográfica.<br/><i>Puerto Expuesto al Host: 8081:8081</i>"]:::containerNode
+
+            contPostgres[("🐘 Contenedor: postgres<br/><b>[PostgreSQL 17 Alpine]</b><br/>25 tablas relacionales 3FN, transacciones ACID,<br/>bloqueos pesimistas SELECT FOR UPDATE e índices B-Tree.<br/><i>Puerto Interno: 5432 (Sin exposición externa)</i>")]:::dbNode
+        end
+
+        subgraph AlmacenamientoPersistente ["💾 Volúmenes Persistentes de Host"]
+            direction LR
+            volData[("📁 postgres_data<br/>Persistencia física de base de datos<br/>/var/lib/postgresql/data")]:::volNode
+            volUploads[("📁 uploads_media<br/>Fotografías de telas y comprobantes Base64/PNG<br/>/app/uploads")]:::volNode
+        end
+    end
+
+    subgraph ServiciosNube ["☁️ 3. Servicios Externos e Infraestructura Cloud"]
+        direction TB
+        wompiCloud["💳 Pasarela de Pagos Wompi Bancolombia<br/><b>[Servidor Externo PCI-DSS]</b><br/>Procesamiento de pagos con tarjetas y PSE.<br/>Callbacks y Webhooks firmados con SHA-256."]:::cloudNode
+        ssoCloud["🔐 Proveedores de Identidad (SSO)<br/><b>[Google Cloud & Microsoft Entra ID]</b><br/>Autenticación federada OAuth 2.0 / OpenID Connect."]:::cloudNode
+        notifCloud["📲 Pasarela de Notificaciones Transaccionales<br/><b>[SendGrid Email & Twilio SMS]</b><br/>Envío de facturas por correo y alertas de despacho SMS."]:::cloudNode
+    end
+
+    %% Enlaces clientes a host
+    cliWeb -->|"HTTPS (Puerto 5173 / 443)"| contFrontend
+    cliMovil -->|"HTTPS (Puerto 5173 / 443)"| contFrontend
+    cliAdmin -->|"HTTPS (Puerto 5173 / 443)"| contFrontend
+
+    %% Enlace entre frontend y backend
+    contFrontend -->|"HTTP REST / JSON (Puerto 8081)<br/>[frontend-net con CORS]"| contBackend
+    cliMovil -->|"Lecturas QR directo a API (Puerto 8081)"| contBackend
+
+    %% Enlace backend a persistencia
+    contBackend -->|"JDBC HikariCP (Puerto 5432)<br/>[backend-net aislado]"| contPostgres
+    contBackend --- volUploads
+    contPostgres --- volData
+
+    %% Enlaces a la nube
+    contFrontend -->|"Autenticación SSO (OAuth 2.0)"| ssoCloud
+    contBackend -->|"Intención de cobro y validación de firma"| wompiCloud
+    wompiCloud -->|"Webhook POST /api/pagos/wompi/webhook"| contBackend
+    contBackend -->|"Despacho de correos y SMS"| notifCloud
+```
+
+---
+
+### 3.5. Diagrama de Comunicación del Sistema con el Cliente (Flujo Omnicanal e Interacción)
+
+A continuación se detalla el **Flujo de Comunicación Integral entre el Cliente y el Ecosistema**, cubriendo el ciclo de vida completo: navegación en catálogo, cálculo de metrajes, autenticación SSO, pago seguro en Wompi, confirmación transaccional y seguimiento postventa:
+
+#### 3.5.1. Canales de Comunicación y Puntos de Contacto
+
+```mermaid
+flowchart TD
+    classDef clienteStyle fill:#08427B,stroke:#052e56,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef canalStyle fill:#0284c7,stroke:#0369a1,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef sistemaStyle fill:#1168BD,stroke:#0b4884,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+    classDef salidaStyle fill:#059669,stroke:#047857,stroke-width:2px,color:#ffffff,font-family:sans-serif;
+
+    Cliente["👤 Cliente / Confeccionista"]:::clienteStyle
+
+    subgraph CanalesEntrada ["📥 Canales de Interacción Cliente &rarr; Sistema"]
+        CanalWeb["🌐 Plataforma Web SPA (React 18)<br/>Catálogo, Carrito, Simulador y Checkout"]:::canalStyle
+        CanalSSO["🔐 Autenticación Federada SSO<br/>Inicio de sesión con Google / Microsoft"]:::canalStyle
+        CanalWidget["💳 Widget Wompi Seguro (iFrame)<br/>Captura de tarjetas y PSE sin intermediarios"]:::canalStyle
+    end
+
+    subgraph NucleoDAndD ["⚙️ Núcleo Transaccional D&D Textil"]
+        BackendJava["☕ Backend Java 17 + PostgreSQL 17<br/>Validación continua de metraje, transacciones ACID<br/>y orquestación de pedidos"]:::sistemaStyle
+    end
+
+    subgraph CanalesSalida ["📤 Canales de Comunicación Sistema &rarr; Cliente (Notificaciones)"]
+        CanalEmail["📧 Correo Electrónico (SendGrid / SMTP)<br/>• Confirmación de pedido y resumen de metraje<br/>• Factura comercial XML simulada"]:::salidaStyle
+        CanalSMS["💬 Mensajería Celular (Twilio SMS / WhatsApp)<br/>• Alerta de rollo en corte<br/>• Número de guía de transporte nacional"]:::salidaStyle
+        CanalTracking["📍 Portal de Rastreo en Línea (/cliente/rastreo)<br/>• Línea de tiempo interactiva en tiempo real<br/>• Estados: pending &rarr; cutting &rarr; shipped &rarr; delivered"]:::salidaStyle
+        CanalSoporte["🎫 Módulo de Garantías (/cliente/soporte)<br/>• Radicación y seguimiento de tickets postventa"]:::salidaStyle
+    end
+
+    Cliente -->|"1. Navegación, selección y compra"| CanalWeb
+    Cliente -->|"2. Autenticación rápida"| CanalSSO
+    Cliente -->|"3. Transacción bancaria segura"| CanalWidget
+
+    CanalWeb -->|"Peticiones HTTP REST"| BackendJava
+    CanalSSO -->|"Token validado"| BackendJava
+    CanalWidget -->|"Webhook firmado SHA-256"| BackendJava
+
+    BackendJava -->|"4. Emisión de comprobantes"| CanalEmail
+    BackendJava -->|"5. Alertas de despacho"| CanalSMS
+    BackendJava -->|"6. Sincronización de estados"| CanalTracking
+    BackendJava -->|"7. Gestión de reclamos"| CanalSoporte
+
+    CanalEmail -.->|"Recepción en bandeja de entrada"| Cliente
+    CanalSMS -.->|"Mensaje en dispositivo móvil"| Cliente
+    CanalTracking -.->|"Consulta en navegador"| Cliente
+    CanalSoporte -.->|"Resolución de garantías"| Cliente
+```
+
+---
+
+#### 3.5.2. Diagrama de Secuencia de Comunicación Transaccional y Postventa
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Cliente as 👤 Cliente / Confeccionista
+    participant UI as 🌐 SPA React 18 (Frontend Web / Móvil)
+    participant Auth as 🔐 Proveedor SSO / Auth (Google/Microsoft)
+    participant API as ☕ Backend Java (ServidorApi / Handlers)
+    participant Wompi as 💳 Pasarela Wompi Bancolombia
+    participant DB as 🐘 PostgreSQL 17 (Transacciones ACID)
+    participant Notif as 📲 Servicio de Notificaciones (Email & SMS)
+
+    %% FASE 1: Exploración y Cálculo
+    rect rgb(240, 248, 255)
+    Note over Cliente, API: FASE 1: Descubrimiento, Catálogo y Simulación de Metraje
+    Cliente->>UI: Navega catálogo y abre Calculadora de Metraje
+    UI->>API: GET /api/products (Filtro por fibra, ancho, gramaje)
+    API-->>UI: Listado de telas disponibles y metros en stock
+    UI-->>Cliente: Visualización interactiva y cálculo de tela (+10% margen técnico)
+    end
+
+    %% FASE 2: Autenticación
+    rect rgb(245, 245, 250)
+    Note over Cliente, Auth: FASE 2: Identificación y Autenticación Segura (SSO / Directa)
+    Cliente->>UI: Clic en "Iniciar Sesión" (Google / Microsoft / Email)
+    UI->>Auth: Redirección OAuth 2.0 / OpenID Connect
+    Auth-->>UI: Retorno con Token de Acceso
+    UI->>API: POST /api/login (Validación de credenciales / perfil SSO)
+    API-->>UI: Token de sesión emitido y perfil cargado en AuthContext
+    end
+
+    %% FASE 3: Compra y Pasarela
+    rect rgb(255, 250, 240)
+    Note over Cliente, Wompi: FASE 3: Checkout y Transacción Bancaria con Wompi
+    Cliente->>UI: Clic en "Finalizar Compra" en /checkout
+    UI->>API: POST /api/pagos/intencion (Items, metros y datos de envío)
+    API->>DB: Validar stock continuo y calcular total en servidor
+    API-->>UI: Respuesta con Referencia, Monto en centavos y Firma SHA-256
+    UI->>Wompi: Apertura del Widget oficial de Wompi (Checkout iFrame Seguro)
+    Cliente->>Wompi: Ingresa medio de pago (Tarjeta de Crédito / Transferencia PSE)
+    Wompi-->>Cliente: Notificación inmediata de procesamiento bancario
+    end
+
+    %% FASE 4: Confirmación y Webhook
+    rect rgb(240, 255, 240)
+    Note over Wompi, DB: FASE 4: Confirmación Asíncrona Webhook y Descuento de Inventario
+    Wompi->>API: Webhook POST /api/pagos/wompi/webhook (Estado: APPROVED, Firma SHA-256)
+    API->>API: Validar Checksum criptográfico (MessageDigest.isEqual)
+    API->>DB: Iniciar Transacción con Bloqueo SELECT ... FOR UPDATE en Rollo
+    API->>DB: Descontar metraje físico, actualizar pedido a 'cutting' y registrar auditoría
+    API->>DB: COMMIT Transacción
+    API-->>Wompi: HTTP 200 OK (Recepción confirmada)
+    end
+
+    %% FASE 5: Notificación y Postventa
+    rect rgb(255, 245, 245)
+    Note over API, Cliente: FASE 5: Notificaciones Multicanal y Seguimiento Postventa
+    API->>Notif: Despachar Notificaciones Transaccionales
+    Notif-->>Cliente: 📧 Envío de Correo Electrónico: Confirmación de Pedido y Factura XML
+    Notif-->>Cliente: 💬 Envío de SMS: Notificación de orden de corte y guía de despacho
+    Cliente->>UI: Ingresa a /cliente/rastreo
+    UI->>API: GET /api/orders/{id}
+    API-->>UI: Estado en tiempo real ('cutting' -> 'shipped' -> 'delivered')
+    UI-->>Cliente: Visualización de línea de tiempo interactiva
+    end
+```
+
+---
+
 ## 4. Implementacion de los Principios SOLID en el Backend
 
 El backend implementa los cinco principios de diseno de Robert C. Martin:
