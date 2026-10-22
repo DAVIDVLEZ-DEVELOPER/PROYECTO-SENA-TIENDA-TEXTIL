@@ -84,9 +84,9 @@ function Payment() {
                     fullName: user?.nombre || user?.name || 'Cliente D&D Textil',
                     email: user?.email || user?.correo || 'cliente@tienda.com',
                     phone: user?.telefono || '3001234567',
-                    address: 'Calle 100 # 15-20',
-                    city: 'Bogotá',
-                    state: 'Cundinamarca'
+                    address: 'Cra. 52 (Carabobo) # 48-30',
+                    city: 'Medellín',
+                    state: 'Antioquia'
                 },
                 couponCode: appliedCoupon?.code || null,
                 userId: user?.id || 1

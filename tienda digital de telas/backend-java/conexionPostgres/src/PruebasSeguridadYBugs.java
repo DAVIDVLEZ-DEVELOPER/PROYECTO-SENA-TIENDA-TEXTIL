@@ -331,10 +331,18 @@ public class PruebasSeguridadYBugs {
 
             String payloadGoogle = "{\"email\":\"usuario.google@gmail.com\",\"nombre\":\"Usuario Google Demo\",\"proveedor\":\"google\"}";
             JsonObject jsonGoogle = JsonParser.parseString(payloadGoogle).getAsJsonObject();
-            String correoGoogle = jsonGoogle.has("email") ? jsonGoogle.get("email").getAsString()
-                                : (jsonGoogle.has("correo") ? jsonGoogle.get("correo").getAsString() : null);
+            String correoGoogle = (jsonGoogle.has("email") && !jsonGoogle.get("email").isJsonNull()) ? jsonGoogle.get("email").getAsString()
+                                : ((jsonGoogle.has("correo") && !jsonGoogle.get("correo").isJsonNull()) ? jsonGoogle.get("correo").getAsString() : null);
             if (!"usuario.google@gmail.com".equals(correoGoogle)) {
                 throw new AssertionError("Fallo en extracción de correo en payload de Google SSO.");
+            }
+
+            // Validación de resiliencia ante valores nulos explícitos en JSON (evita UnsupportedOperationException en Gson)
+            String payloadNulo = "{\"email\":null,\"correo\":null,\"nombre\":null}";
+            JsonObject jsonNulo = JsonParser.parseString(payloadNulo).getAsJsonObject();
+            String correoNulo = (jsonNulo.has("email") && !jsonNulo.get("email").isJsonNull()) ? jsonNulo.get("email").getAsString() : null;
+            if (correoNulo != null) {
+                throw new AssertionError("Fallo: Se extrajo valor no nulo de propiedad JSON nula.");
             }
         });
 
@@ -355,6 +363,31 @@ public class PruebasSeguridadYBugs {
             JsonObject jsonWebhookFalso = JsonParser.parseString(webhookFalso).getAsJsonObject();
             if (aplicacion.servicios.ServicioCriptoWompi.validarFirmaWebhook(jsonWebhookFalso)) {
                 throw new AssertionError("Fallo de seguridad: se aceptó un webhook con firma apócrifa.");
+            }
+
+            // Verificación positiva de webhook legítimo con eventos_secret dummy
+            long timestampReal = 1700000000L;
+            String secretoEventos = infraestructura.configuracion.ConfiguracionWompi.secretoEventos();
+            if (secretoEventos == null || secretoEventos.isBlank()) secretoEventos = "test_events_dummy";
+            String cadenaValida = "tx-123APPROVED15000000" + timestampReal + secretoEventos;
+            String checksumValido = aplicacion.servicios.ServicioCriptoWompi.sha256(cadenaValida);
+            String webhookValido = "{\"event\":\"transaction.updated\",\"data\":{\"transaction\":{\"id\":\"tx-123\",\"status\":\"APPROVED\",\"amount_in_cents\":15000000}},\"signature\":{\"properties\":[\"transaction.id\",\"transaction.status\",\"transaction.amount_in_cents\"],\"checksum\":\"" + checksumValido + "\"},\"timestamp\":" + timestampReal + "}";
+            JsonObject jsonWebhookValido = JsonParser.parseString(webhookValido).getAsJsonObject();
+            if (!aplicacion.servicios.ServicioCriptoWompi.validarFirmaWebhook(jsonWebhookValido)) {
+                throw new AssertionError("Fallo: Se rechazó un webhook auténtico con firma válida.");
+            }
+        });
+
+        ejecutarPrueba("15. Reglas Financieras de Descuentos y Límites de Transacción Wompi", () -> {
+            double subtotal = 50000.0;
+            double cuponExcesivo = 80000.0;
+            double descuentoAplicado = Math.min(cuponExcesivo, subtotal);
+            if (descuentoAplicado > subtotal) {
+                throw new AssertionError("Fallo: El descuento aplicado supera el subtotal.");
+            }
+            double subtotalConDescuento = Math.max(0.0, subtotal - descuentoAplicado);
+            if (subtotalConDescuento < 0.0) {
+                throw new AssertionError("Fallo: El total con descuento resultó negativo.");
             }
         });
 

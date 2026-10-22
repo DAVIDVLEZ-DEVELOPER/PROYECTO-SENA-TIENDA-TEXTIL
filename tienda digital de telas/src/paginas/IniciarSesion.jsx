@@ -94,7 +94,7 @@ function IniciarSesion() {
                             vendedor: '/vendedor',
                             cliente: '/cliente',
                         };
-                        const destination = roleRedirects[userRole] || '/cliente';
+                        const destination = (from && from !== '/') ? from : (roleRedirects[userRole] || '/cliente');
                         navigate(destination, { replace: true });
                     } else {
                         setAuthError(authResult.message || 'Error autenticando con cuenta de ' + ssoData.proveedor);
@@ -109,7 +109,25 @@ function IniciarSesion() {
         };
 
         verificarRetornoOAuth();
-    }, [loginConSSO, navigate]);
+    }, [loginConSSO, navigate, from]);
+
+    const handleGoogleSSO = () => {
+        setAuthError('');
+        try {
+            redirigirAGoogleAccounts();
+        } catch (e) {
+            setAuthError(e.message || 'Error al iniciar conexión con Google');
+        }
+    };
+
+    const handleMicrosoftSSO = () => {
+        setAuthError('');
+        try {
+            redirigirAMicrosoft();
+        } catch (e) {
+            setAuthError(e.message || 'Error al iniciar conexión con Microsoft');
+        }
+    };
 
     const onSubmit = async (datos) => {
         setAuthError('');
@@ -321,7 +339,7 @@ function IniciarSesion() {
                                     <button
                                         type="button"
                                         disabled={!!ssoLoading || isSubmitting}
-                                        onClick={redirigirAGoogleAccounts}
+                                        onClick={handleGoogleSSO}
                                         onMouseDown={(e) => microPress(e.currentTarget)}
                                         onMouseUp={(e) => microRelease(e.currentTarget)}
                                         className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3.5 rounded-xl shadow-sm hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 disabled:opacity-60 cursor-pointer"
@@ -343,7 +361,7 @@ function IniciarSesion() {
                                     <button
                                         type="button"
                                         disabled={!!ssoLoading || isSubmitting}
-                                        onClick={redirigirAMicrosoft}
+                                        onClick={handleMicrosoftSSO}
                                         onMouseDown={(e) => microPress(e.currentTarget)}
                                         onMouseUp={(e) => microRelease(e.currentTarget)}
                                         className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3.5 rounded-xl shadow-sm hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 disabled:opacity-60 cursor-pointer"

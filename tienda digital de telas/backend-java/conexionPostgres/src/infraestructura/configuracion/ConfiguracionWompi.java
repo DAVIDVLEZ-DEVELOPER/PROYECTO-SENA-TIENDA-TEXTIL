@@ -65,8 +65,20 @@ public final class ConfiguracionWompi {
     /** Parser mínimo de archivos .env (CLAVE=valor, ignora comentarios y líneas vacías). */
     private static Map<String, String> cargarArchivoEnv() {
         Map<String, String> valores = new HashMap<>();
-        Path ruta = Paths.get(".env");
-        if (!Files.exists(ruta)) return valores;
+        Path[] posiblesRutas = {
+            Paths.get(".env"),
+            Paths.get("../.env"),
+            Paths.get("../../.env"),
+            Paths.get("../../../.env")
+        };
+        Path ruta = null;
+        for (Path p : posiblesRutas) {
+            if (Files.exists(p)) {
+                ruta = p;
+                break;
+            }
+        }
+        if (ruta == null) return valores;
         try {
             List<String> lineas = Files.readAllLines(ruta, StandardCharsets.UTF_8);
             for (String linea : lineas) {

@@ -309,14 +309,20 @@ public class PagoWompiDAO {
                          PreparedStatement pstStock = con.prepareStatement(sqlDescontarStock)) {
                         pstItems.setInt(1, idPedido);
                         try (ResultSet rsItems = pstItems.executeQuery()) {
+                            boolean hayItems = false;
                             while (rsItems.next()) {
                                 int idProducto = rsItems.getInt("producto_id");
                                 double cantidad = rsItems.getDouble("cantidad");
-                                pstStock.setDouble(1, cantidad);
-                                pstStock.setInt(2, idProducto);
-                                pstStock.addBatch();
+                                if (idProducto > 0 && cantidad > 0) {
+                                    pstStock.setDouble(1, cantidad);
+                                    pstStock.setInt(2, idProducto);
+                                    pstStock.addBatch();
+                                    hayItems = true;
+                                }
                             }
-                            pstStock.executeBatch();
+                            if (hayItems) {
+                                pstStock.executeBatch();
+                            }
                         }
                     }
 
@@ -363,27 +369,28 @@ public class PagoWompiDAO {
     }
 
     /**
-     * Consulta el estado actual de un pedido por su referencia de pago de Wompi.
+     * Consulta el estado actual de un pedido por su referencia de pago de Wompi o ID de transacción.
      */
     public Map<String, Object> consultarPedidoPorReferencia(String referencia) {
         String sql = "SELECT p.*, " +
-                "json_agg(json_build_object(" +
+                "COALESCE(json_agg(json_build_object(" +
                 "  'id', pr.id, " +
                 "  'name', pr.nombre, " +
                 "  'quantity', ip.cantidad, " +
                 "  'price', ip.precio_por_metro, " +
                 "  'subtotal', ip.subtotal, " +
                 "  'images', ARRAY(SELECT ipr.url_imagen FROM imagenes_producto ipr WHERE ipr.producto_id = pr.id ORDER BY ipr.orden_visualizacion ASC LIMIT 1)" +
-                ")) as articulos " +
+                ") FILTER (WHERE pr.id IS NOT NULL), '[]'::json) as articulos " +
                 "FROM pedidos p " +
                 "LEFT JOIN items_pedido ip ON p.id = ip.pedido_id " +
                 "LEFT JOIN productos pr ON ip.producto_id = pr.id " +
-                "WHERE p.referencia_pago = ? " +
+                "WHERE p.referencia_pago = ? OR p.wompi_transaccion_id = ? " +
                 "GROUP BY p.id";
 
         try (Connection con = Conexion.obtenerConexion();
              PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, referencia);
+            pst.setString(2, referencia);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     Map<String, Object> res = new HashMap<>();
@@ -425,17 +432,31 @@ public class PagoWompiDAO {
 
     private void registrarEvento(Connection con, String referencia, String transaccionId, String estado, String origen, String resultado, String cargaUtil) {
         String sql = "INSERT INTO eventos_pago_wompi (referencia_pago, transaccion_id, estado, origen, resultado, carga_util) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, referencia);
-            pst.setString(2, transaccionId);
-            pst.setString(3, estado);
-            pst.setString(4, origen);
-            pst.setString(5, resultado);
-            pst.setString(6, cargaUtil);
-            pst.executeUpdate();
+        java.sql.Savepoint sp = null;
+        try {
+            if (!con.getAutoCommit()) {
+                sp = con.setSavepoint();
+            }
+            try (PreparedStatement pst = con.prepareStatement(sql)) {
+                pst.setString(1, truncar(referencia, 64));
+                pst.setString(2, truncar(transaccionId, 100));
+                pst.setString(3, truncar(estado, 30));
+                pst.setString(4, truncar(origen, 30));
+                pst.setString(5, truncar(resultado, 60));
+                pst.setString(6, cargaUtil);
+                pst.executeUpdate();
+            }
         } catch (SQLException e) {
-            System.err.println("[WOMPI] Error registrando bitácora de evento: " + e.getMessage());
+            if (sp != null) {
+                try { con.rollback(sp); } catch (SQLException ignored) {}
+            }
+            System.err.println("[WOMPI] Error registrando bitácora de evento (resguardado): " + e.getMessage());
         }
+    }
+
+    private static String truncar(String valor, int maxLongitud) {
+        if (valor == null) return null;
+        return valor.length() > maxLongitud ? valor.substring(0, maxLongitud) : valor;
     }
 
     private static class ItemCalculado {

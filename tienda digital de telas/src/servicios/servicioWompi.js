@@ -17,11 +17,36 @@ export const cargarScriptWompi = () => {
     }
 
     scriptCargadoPromesa = new Promise((resolve, reject) => {
-        // Verificar si ya existe en el documento
+        const timeoutId = setTimeout(() => {
+            scriptCargadoPromesa = null;
+            reject(new Error('Tiempo de espera agotado al conectar con el servidor de Wompi. Verifica tu conexión.'));
+        }, 15000);
+
+        const onExito = () => {
+            clearTimeout(timeoutId);
+            if (window.WidgetCheckout) {
+                resolve(window.WidgetCheckout);
+            } else {
+                scriptCargadoPromesa = null;
+                reject(new Error('WidgetCheckout no está disponible en window'));
+            }
+        };
+
+        const onError = () => {
+            clearTimeout(timeoutId);
+            scriptCargadoPromesa = null;
+            reject(new Error('No se pudo cargar el script del widget de Wompi. Verifica tu conexión.'));
+        };
+
         const scriptExistente = document.querySelector(`script[src="${SCRIPT_WIDGET_URL}"]`);
         if (scriptExistente) {
-            scriptExistente.addEventListener('load', () => resolve(window.WidgetCheckout));
-            scriptExistente.addEventListener('error', reject);
+            if (window.WidgetCheckout) {
+                clearTimeout(timeoutId);
+                resolve(window.WidgetCheckout);
+                return;
+            }
+            scriptExistente.addEventListener('load', onExito, { once: true });
+            scriptExistente.addEventListener('error', onError, { once: true });
             return;
         }
 
@@ -29,17 +54,8 @@ export const cargarScriptWompi = () => {
         script.type = 'text/javascript';
         script.src = SCRIPT_WIDGET_URL;
         script.async = true;
-        script.onload = () => {
-            if (window.WidgetCheckout) {
-                resolve(window.WidgetCheckout);
-            } else {
-                reject(new Error('WidgetCheckout no está disponible en window'));
-            }
-        };
-        script.onerror = () => {
-            scriptCargadoPromesa = null;
-            reject(new Error('No se pudo cargar el script del widget de Wompi. Verifica tu conexión.'));
-        };
+        script.onload = onExito;
+        script.onerror = onError;
         document.body.appendChild(script);
     });
 
@@ -121,6 +137,10 @@ export const abrirWidgetWompi = async ({
     customerInfo,
     onFinish
 }) => {
+    if (!publicKey || publicKey.trim() === '') {
+        throw new Error('La pasarela de pagos Wompi no tiene configurada la llave pública en el servidor.');
+    }
+
     await cargarScriptWompi();
 
     if (!window.WidgetCheckout) {
@@ -128,6 +148,9 @@ export const abrirWidgetWompi = async ({
     }
 
     const redirectUrl = `${window.location.origin}/confirmacion?referencia=${encodeURIComponent(reference)}`;
+
+    // Extraer solo dígitos y asegurar formato nacional de 10 dígitos (ej. 3001234567)
+    const telefonoLimpio = (customerInfo?.phone || '').replace(/\D/g, '').slice(-10);
 
     const checkout = new window.WidgetCheckout({
         currency: currency || 'COP',
@@ -140,8 +163,8 @@ export const abrirWidgetWompi = async ({
         redirectUrl: redirectUrl,
         customerData: {
             email: customerInfo?.email || 'cliente@tienda.com',
-            fullName: customerInfo?.fullName || 'Cliente',
-            phoneNumber: customerInfo?.phone || '',
+            fullName: customerInfo?.fullName || 'Cliente D&D Textil',
+            phoneNumber: telefonoLimpio || '3001234567',
             phoneNumberPrefix: '+57'
         }
     });

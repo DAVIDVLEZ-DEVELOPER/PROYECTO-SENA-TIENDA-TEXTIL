@@ -23,9 +23,9 @@ function ConfirmacionPedido() {
         const referencia = params.get('referencia') || params.get('reference') || params.get('id');
 
         const cargarPedido = async () => {
-            if (referencia && referencia.startsWith('DD-')) {
+            if (referencia && referencia.trim() !== '') {
                 try {
-                    const datos = await consultarEstadoPagoWompi(referencia);
+                    const datos = await consultarEstadoPagoWompi(referencia.trim());
                     if (datos) {
                         let items = [];
                         try {
@@ -34,8 +34,8 @@ function ConfirmacionPedido() {
                             items = [];
                         }
                         setOrderData({
-                            orderNumber: datos.orderNumber || datos.reference,
-                            reference: datos.reference,
+                            orderNumber: datos.orderNumber || datos.reference || referencia,
+                            reference: datos.reference || referencia,
                             status: datos.status,
                             paymentStatus: datos.paymentStatus,
                             paymentMethod: datos.paymentMethod,

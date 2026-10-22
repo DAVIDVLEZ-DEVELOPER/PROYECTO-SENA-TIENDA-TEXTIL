@@ -14,8 +14,7 @@ const clientIdValido = (clientId) => Boolean(clientId) && !/x{4,}/i.test(clientI
 export const redirigirAGoogleAccounts = () => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
     if (!clientIdValido(clientId)) {
-        alert('El inicio de sesión con Google no está configurado.\nDefine VITE_GOOGLE_CLIENT_ID en el archivo .env con un Client ID real de Google Cloud Console y reinicia el servidor (npm run dev).');
-        return;
+        throw new Error('Inicio de sesión con Google no configurado: define VITE_GOOGLE_CLIENT_ID en .env con un Client ID real de Google Cloud Console.');
     }
     const redirectUri = window.location.origin + '/login';
 
@@ -39,8 +38,7 @@ export const redirigirAGoogleAccounts = () => {
 export const redirigirAMicrosoft = () => {
     const clientId = import.meta.env.VITE_AZURE_CLIENT_ID || '';
     if (!clientIdValido(clientId)) {
-        alert('El inicio de sesión con Microsoft no está configurado.\nDefine VITE_AZURE_CLIENT_ID en el archivo .env con un Application (client) ID real de Azure Portal y reinicia el servidor (npm run dev).');
-        return;
+        throw new Error('Inicio de sesión con Microsoft no configurado: define VITE_AZURE_CLIENT_ID en .env con un Application ID real de Azure Portal.');
     }
     const tenantId = import.meta.env.VITE_AZURE_TENANT_ID || 'common';
     const redirectUri = window.location.origin + '/login';

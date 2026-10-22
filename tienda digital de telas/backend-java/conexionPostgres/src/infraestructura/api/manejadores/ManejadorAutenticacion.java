@@ -32,15 +32,25 @@ public class ManejadorAutenticacion extends ManejadorBase {
 
         String ruta = intercambio.getRequestURI().getPath();
         InputStream cuerpoEntrada = intercambio.getRequestBody();
-        String cuerpoTexto = new String(cuerpoEntrada.readAllBytes(), StandardCharsets.UTF_8);
-        JsonObject jsonObjeto = JsonParser.parseString(cuerpoTexto).getAsJsonObject();
+        String cuerpoTexto = new String(cuerpoEntrada.readAllBytes(), StandardCharsets.UTF_8).trim();
+
+        if (cuerpoTexto.isEmpty()) {
+            enviarRespuestaError(intercambio, 400, "El cuerpo de la petición no puede estar vacío");
+            return;
+        }
+
+        JsonObject jsonObjeto;
+        try {
+            jsonObjeto = JsonParser.parseString(cuerpoTexto).getAsJsonObject();
+        } catch (Exception e) {
+            enviarRespuestaError(intercambio, 400, "Formato JSON inválido");
+            return;
+        }
 
         // --- POST /api/login o /api/autenticacion/iniciar-sesion ---
         if (ruta.endsWith("/login") || ruta.endsWith("/iniciar-sesion")) {
-            String correo = jsonObjeto.has("email") ? jsonObjeto.get("email").getAsString()
-                          : (jsonObjeto.has("correo") ? jsonObjeto.get("correo").getAsString() : null);
-            String contrasena = jsonObjeto.has("password") ? jsonObjeto.get("password").getAsString()
-                              : (jsonObjeto.has("contrasena") ? jsonObjeto.get("contrasena").getAsString() : null);
+            String correo = extraerTexto(jsonObjeto, "email", extraerTexto(jsonObjeto, "correo", null));
+            String contrasena = extraerTexto(jsonObjeto, "password", extraerTexto(jsonObjeto, "contrasena", null));
 
             Usuario usuario = servicioAutenticacion.iniciarSesion(correo, contrasena);
             String jsonUsuario = gson.toJson(usuario);
@@ -48,19 +58,16 @@ public class ManejadorAutenticacion extends ManejadorBase {
 
         // --- POST /api/register o /api/autenticacion/registro ---
         } else if (ruta.endsWith("/register") || ruta.endsWith("/registro")) {
-            String nombre = jsonObjeto.has("name") ? jsonObjeto.get("name").getAsString()
-                          : (jsonObjeto.has("nombre") ? jsonObjeto.get("nombre").getAsString() : null);
-            String correo = jsonObjeto.has("email") ? jsonObjeto.get("email").getAsString()
-                          : (jsonObjeto.has("correo") ? jsonObjeto.get("correo").getAsString() : null);
-            String contrasena = jsonObjeto.has("password") ? jsonObjeto.get("password").getAsString()
-                              : (jsonObjeto.has("contrasena") ? jsonObjeto.get("contrasena").getAsString() : null);
+            String nombre = extraerTexto(jsonObjeto, "name", extraerTexto(jsonObjeto, "nombre", null));
+            String correo = extraerTexto(jsonObjeto, "email", extraerTexto(jsonObjeto, "correo", null));
+            String contrasena = extraerTexto(jsonObjeto, "password", extraerTexto(jsonObjeto, "contrasena", null));
 
             boolean aceptaHabeasData = true;
-            if (jsonObjeto.has("aceptaHabeasData")) {
+            if (jsonObjeto.has("aceptaHabeasData") && !jsonObjeto.get("aceptaHabeasData").isJsonNull()) {
                 aceptaHabeasData = jsonObjeto.get("aceptaHabeasData").getAsBoolean();
-            } else if (jsonObjeto.has("acceptsTerms")) {
+            } else if (jsonObjeto.has("acceptsTerms") && !jsonObjeto.get("acceptsTerms").isJsonNull()) {
                 aceptaHabeasData = jsonObjeto.get("acceptsTerms").getAsBoolean();
-            } else if (jsonObjeto.has("habeasData")) {
+            } else if (jsonObjeto.has("habeasData") && !jsonObjeto.get("habeasData").isJsonNull()) {
                 aceptaHabeasData = jsonObjeto.get("habeasData").getAsBoolean();
             }
 
@@ -69,10 +76,8 @@ public class ManejadorAutenticacion extends ManejadorBase {
 
         // --- POST /api/autenticacion/sso o /api/sso ---
         } else if (ruta.endsWith("/sso")) {
-            String correo = jsonObjeto.has("email") ? jsonObjeto.get("email").getAsString()
-                          : (jsonObjeto.has("correo") ? jsonObjeto.get("correo").getAsString() : null);
-            String nombre = jsonObjeto.has("nombre") ? jsonObjeto.get("nombre").getAsString()
-                          : (jsonObjeto.has("name") ? jsonObjeto.get("name").getAsString() : null);
+            String correo = extraerTexto(jsonObjeto, "email", extraerTexto(jsonObjeto, "correo", null));
+            String nombre = extraerTexto(jsonObjeto, "nombre", extraerTexto(jsonObjeto, "name", null));
 
             Usuario usuario = servicioAutenticacion.autenticarOAutoRegistrarSSO(correo, nombre);
             String jsonUsuario = gson.toJson(usuario);
@@ -81,5 +86,13 @@ public class ManejadorAutenticacion extends ManejadorBase {
         } else {
             enviarRespuestaJson(intercambio, 404, "{\"error\": \"Ruta no encontrada\"}");
         }
+    }
+
+    private static String extraerTexto(JsonObject obj, String clave, String valorPorDefecto) {
+        if (obj != null && obj.has(clave) && !obj.get(clave).isJsonNull()) {
+            return obj.get(clave).getAsString();
+        }
+        return valorPorDefecto;
+    }
     }
 }

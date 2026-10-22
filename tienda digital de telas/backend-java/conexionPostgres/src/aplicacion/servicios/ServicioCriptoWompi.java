@@ -93,24 +93,28 @@ public class ServicioCriptoWompi {
         cadenaParaHash.append(secretoEventos);
 
         String checksumCalculado = sha256(cadenaParaHash.toString());
-        return checksumCalculado.equalsIgnoreCase(checksumRecibido);
+        return MessageDigest.isEqual(
+                checksumCalculado.toLowerCase().getBytes(StandardCharsets.UTF_8),
+                checksumRecibido.toLowerCase().getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     /**
      * Extrae recursivamente el valor de una ruta con notación de punto (ej: "transaction.id").
      */
     private static String extraerValorPorRuta(JsonObject raiz, String ruta) {
+        if (raiz == null || ruta == null || ruta.isBlank()) return "";
         String[] partes = ruta.split("\\.");
         JsonObject actual = raiz;
         for (int i = 0; i < partes.length - 1; i++) {
-            if (actual.has(partes[i]) && actual.get(partes[i]).isJsonObject()) {
+            if (actual != null && actual.has(partes[i]) && actual.get(partes[i]).isJsonObject()) {
                 actual = actual.getAsJsonObject(partes[i]);
             } else {
                 return "";
             }
         }
         String claveFinal = partes[partes.length - 1];
-        if (actual.has(claveFinal) && !actual.get(claveFinal).isJsonNull()) {
+        if (actual != null && actual.has(claveFinal) && !actual.get(claveFinal).isJsonNull()) {
             JsonElement el = actual.get(claveFinal);
             return el.isJsonPrimitive() ? el.getAsString() : el.toString();
         }
@@ -121,10 +125,11 @@ public class ServicioCriptoWompi {
      * Calcula el digest SHA-256 de una cadena UTF-8 y lo retorna como string hex en minúsculas.
      */
     public static String sha256(String entrada) {
+        if (entrada == null) return "";
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(entrada.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
+            StringBuilder hexString = new StringBuilder(64);
             for (byte b : hash) {
                 String hex = Integer.toHexString(0xff & b);
                 if (hex.length() == 1) hexString.append('0');
