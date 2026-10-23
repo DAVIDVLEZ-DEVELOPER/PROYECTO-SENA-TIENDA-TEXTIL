@@ -26,9 +26,9 @@ El modelo de datos relacional de **D&D Textil** se encuentra normalizado hasta l
 
 A continuación se presenta el **esquema gráfico completo** de las 25 tablas relacionales organizadas por clústeres de negocio (Catálogo Textil, Usuarios y Seguridad, Ventas y Transacciones, Cupones y Métricas ERP), detallando claves primarias (PK en amarillo), claves foráneas (FK en celeste), restricciones únicas (UK en violeta) y líneas de integridad referencial:
 
-![Modelo Relacional de Base de Datos - D&D Textil](diagramas/modelo_relacional.svg)
+![Modelo Relacional de Base de Datos - D&D Textil](diagramas/modelo_relacional_actualizado.svg)
 
-> **Nota:** Puedes hacer clic o abrir directamente el archivo vectorial en alta definición: [modelo_relacional.svg](diagramas/modelo_relacional.svg).
+> **Nota:** Puedes abrir o visualizar directamente el archivo vectorial en alta definición: [modelo_relacional_actualizado.svg](diagramas/modelo_relacional_actualizado.svg) o [modelo_relacional.svg](diagramas/modelo_relacional.svg).
 
 ---
 

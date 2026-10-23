@@ -687,15 +687,26 @@ def generar_svg_arquitectura_mvc():
 
 if __name__ == "__main__":
     os.makedirs("BASE DE DATOS/diagramas", exist_ok=True)
+    os.makedirs("documentacion/diagramas", exist_ok=True)
     
-    # 1. Guardar diagrama del Modelo Relacional
+    # 1. Guardar diagrama del Modelo Relacional (ambos nombres y ubicaciones)
     svg_relacional = generar_svg_modelo_relacional()
-    with open("BASE DE DATOS/diagramas/modelo_relacional.svg", "w", encoding="utf-8") as f:
-        f.write(svg_relacional)
-    print("Generado: BASE DE DATOS/diagramas/modelo_relacional.svg")
+    for dest in [
+        "BASE DE DATOS/diagramas/modelo_relacional.svg",
+        "BASE DE DATOS/diagramas/modelo_relacional_actualizado.svg",
+        "documentacion/diagramas/modelo_relacional.svg",
+        "documentacion/diagramas/modelo_relacional_actualizado.svg"
+    ]:
+        with open(dest, "w", encoding="utf-8") as f:
+            f.write(svg_relacional)
+        print(f"Generado: {dest}")
 
     # 2. Guardar diagrama de la Arquitectura MVC
     svg_mvc = generar_svg_arquitectura_mvc()
-    with open("BASE DE DATOS/diagramas/arquitectura_mvc.svg", "w", encoding="utf-8") as f:
-        f.write(svg_mvc)
-    print("Generado: BASE DE DATOS/diagramas/arquitectura_mvc.svg")
+    for dest in [
+        "BASE DE DATOS/diagramas/arquitectura_mvc.svg",
+        "documentacion/diagramas/arquitectura_mvc.svg"
+    ]:
+        with open(dest, "w", encoding="utf-8") as f:
+            f.write(svg_mvc)
+        print(f"Generado: {dest}")

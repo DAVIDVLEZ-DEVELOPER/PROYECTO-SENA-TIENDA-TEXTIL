@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -25,7 +25,7 @@
           <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-purple-950 text-purple-400 border border-purple-800">Patrón MVC</span>
         </div>
         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-          <span>📐</span> Modelo Relacional &amp; Arquitectura MVC Gráfica
+          <span></span> Modelo Relacional &amp; Arquitectura MVC Gráfica
         </h1>
         <p class="text-slate-400 text-sm mt-1">
           Plataforma de Comercialización e Inventario Continuo de Telas (D&amp;D Textil)
@@ -35,13 +35,13 @@
       <!-- Selector de Pestañas -->
       <nav class="flex items-center bg-[#0f172a] p-1.5 rounded-xl border border-slate-700/80">
         <button id="tab-btn-relacional" onclick="switchTab('relacional')" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all tab-active">
-          🗄️ Modelo Relacional
+          ️ Modelo Relacional
         </button>
         <button id="tab-btn-mvc" onclick="switchTab('mvc')" class="px-4 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
-          🏗️ Arquitectura MVC
+          ️ Arquitectura MVC
         </button>
         <button id="tab-btn-flujo" onclick="switchTab('flujo')" class="px-4 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
-          ⚡ Ciclo Transaccional
+           Ciclo Transaccional
         </button>
       </nav>
     </header>
@@ -53,20 +53,20 @@
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
             <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <span>🗺️</span> Diagrama Relacional de Entidades (25 Tablas Normalizadas en 3FN)
+              <span>️</span> Diagrama Relacional de Entidades (25 Tablas Normalizadas en 3FN)
             </h2>
             <p class="text-xs text-slate-400">Esquema gráfico visual con llaves primarias (PK), foráneas (FK), tipos de datos y relaciones 1:N.</p>
           </div>
           <div class="flex items-center gap-2">
-            <a href="modelo_relacional.svg" target="_blank" class="px-3 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors flex items-center gap-1.5">
-              <span>🔍</span> Abrir SVG Completo
+            <a href="modelo_relacional_actualizado.svg" target="_blank" class="px-3 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors flex items-center gap-1.5">
+              <span></span> Abrir SVG Completo
             </a>
           </div>
         </div>
 
         <!-- Contenedor del SVG -->
         <div class="bg-[#0f172a] rounded-xl border border-slate-800 p-2 overflow-x-auto shadow-inner">
-          <img src="modelo_relacional.svg" alt="Diagrama del Modelo Relacional D&D Textil" class="w-full min-w-[1100px] h-auto rounded-lg" />
+          <img src="modelo_relacional_actualizado.svg" alt="Diagrama del Modelo Relacional D&D Textil" class="w-full min-w-[1100px] h-auto rounded-lg" />
         </div>
       </div>
 
@@ -74,7 +74,7 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-[#1e293b]/70 border border-sky-500/30 rounded-xl p-4">
           <div class="flex items-center gap-2 text-sky-400 font-bold text-sm mb-1">
-            <span>🧵</span> Catálogo &amp; Inventario
+            <span></span> Catálogo &amp; Inventario
           </div>
           <p class="text-2xl font-black text-white">8 Tablas</p>
           <p class="text-xs text-slate-400 mt-1">productos, categorias, lotes_inventario, rollos_textil, eventos_merma, umbrales_stock, etc.</p>
@@ -82,7 +82,7 @@
 
         <div class="bg-[#1e293b]/70 border border-purple-500/30 rounded-xl p-4">
           <div class="flex items-center gap-2 text-purple-400 font-bold text-sm mb-1">
-            <span>👥</span> Usuarios &amp; Soporte
+            <span></span> Usuarios &amp; Soporte
           </div>
           <p class="text-2xl font-black text-white">4 Tablas</p>
           <p class="text-xs text-slate-400 mt-1">usuarios, tickets_soporte, reportes_errores, actividad_reciente (RBAC y auditoría).</p>
@@ -90,7 +90,7 @@
 
         <div class="bg-[#1e293b]/70 border border-emerald-500/30 rounded-xl p-4">
           <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm mb-1">
-            <span>🛒</span> Ventas &amp; Transacciones
+            <span></span> Ventas &amp; Transacciones
           </div>
           <p class="text-2xl font-black text-white">4 Tablas</p>
           <p class="text-xs text-slate-400 mt-1">pedidos, items_pedido, items_carrito, resenas (bloqueo transaccional FOR UPDATE).</p>
@@ -98,7 +98,7 @@
 
         <div class="bg-[#1e293b]/70 border border-orange-500/30 rounded-xl p-4">
           <div class="flex items-center gap-2 text-orange-400 font-bold text-sm mb-1">
-            <span>📊</span> Cupones, CMS &amp; ERP
+            <span></span> Cupones, CMS &amp; ERP
           </div>
           <p class="text-2xl font-black text-white">9 Tablas</p>
           <p class="text-xs text-slate-400 mt-1">cupones, categorias_cupon, metricas_ventas_erp, ventas_region, configuracion_sistema, etc.</p>
@@ -113,12 +113,12 @@
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
             <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <span>🏛️</span> Arquitectura de 3 Capas: Modelo, Vista y Controlador
+              <span>️</span> Arquitectura de 3 Capas: Modelo, Vista y Controlador
             </h2>
             <p class="text-xs text-slate-400">Separación estricta de responsabilidades entre cliente React, API Java nativa y PostgreSQL 17.</p>
           </div>
           <a href="arquitectura_mvc.svg" target="_blank" class="px-3 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors flex items-center gap-1.5">
-            <span>🔍</span> Abrir SVG Completo
+            <span></span> Abrir SVG Completo
           </a>
         </div>
 
@@ -197,7 +197,7 @@
       <div class="bg-[#1e293b] border border-slate-700/80 rounded-2xl p-6 shadow-2xl space-y-6">
         <div>
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <span>⚡</span> Ciclo de Vida Transaccional MVC: Compra de Tela y Descuento de Stock
+            <span></span> Ciclo de Vida Transaccional MVC: Compra de Tela y Descuento de Stock
           </h2>
           <p class="text-sm text-slate-400 mt-1">
             Demostración del flujo coordinado entre la Vista, el Controlador, el Modelo y el motor PostgreSQL ante una orden de compra:
