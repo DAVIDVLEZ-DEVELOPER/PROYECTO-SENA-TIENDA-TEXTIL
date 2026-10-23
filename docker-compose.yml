@@ -1,0 +1,88 @@
+services:
+  db:
+    image: postgres:17
+    container_name: ddtextil-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tienda_digital_textiles_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
+    volumes:
+      - "./BASE DE DATOS:/docker-entrypoint-initdb.d:ro"
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - backend-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-tienda_digital_textiles_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: ddtextil-backend:latest
+    build:
+      context: ./tienda digital de telas/backend-java/conexionPostgres
+      dockerfile: Dockerfile
+    container_name: ddtextil-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_URL: ${DB_URL:-jdbc:postgresql://db:5432/tienda_digital_textiles_db}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-mysecretpassword}
+      WOMPI_PUBLIC_KEY: ${WOMPI_PUBLIC_KEY:-pub_test_Q5yDA9xoKdePzhSGeVe9HAUr19rhZCQSQ}
+      WOMPI_PRIVATE_KEY: ${WOMPI_PRIVATE_KEY:-prv_test_V0Pq3O3wHqI0kO6vC4Q9Z7P6w2N5m8L1}
+      WOMPI_INTEGRITY_SECRET: ${WOMPI_INTEGRITY_SECRET:-test_integrity_b0Xy0KqP3rI8zQ9x7W5m4V2n1L6s8F0d}
+      WOMPI_EVENTS_SECRET: ${WOMPI_EVENTS_SECRET:-test_events_j8K2m4N6p8Q0r2T4v6X8z0B2d4F6h8J0}
+      WOMPI_ENV: ${WOMPI_ENV:-sandbox}
+    ports:
+      - "${BACKEND_PORT:-8081}:8081"
+    networks:
+      - backend-net
+      - frontend-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/health/live || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - "./tienda digital de telas/backend-java/conexionPostgres/uploads:/app/uploads"
+
+  frontend:
+    image: ddtextil-frontend:latest
+    build:
+      context: ./tienda digital de telas
+      dockerfile: Dockerfile
+    container_name: ddtextil-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3001}:80"
+    networks:
+      - frontend-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  backend-net:
+    driver: bridge
+    internal: false
+  frontend-net:
+    driver: bridge

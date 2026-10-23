@@ -1,84 +1,70 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AppProviders } from './components/AppProviders';
-import { ProtectedRoute, ScrollToTop } from './components';
-import SpotlightCursor from './components/SpotlightCursor';
+import { AppProviders } from './componentes/AppProviders';
+import { ProtectedRoute, DesplazarArriba, SmoothScrollProvider } from './componentes';
+import CursorFoco from './componentes/CursorFoco';
+import TruckLoader from './componentes/TruckLoader';
 
-// Pages
-import Home from './pages/Home';
-import Catalog from './pages/Catalog';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-import OrderConfirmation from './pages/OrderConfirmation';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Login from './pages/Login';
-import Register from './pages/Register';
+// Pages (eager - always needed)
+import Inicio from './paginas/Inicio';
+import Catalogo from './paginas/Catalogo';
+import DetalleProducto from './paginas/DetalleProducto';
+import Carrito from './paginas/Carrito';
+import Pago from './paginas/Pago';
+import ConfirmacionPedido from './paginas/ConfirmacionPedido';
+import About from './paginas/About';
+import IniciarSesion from './paginas/IniciarSesion';
+import Registro from './paginas/Registro';
+import BugReport from './paginas/BugReport';
+import Payment from './paginas/payment/Payment';
 
-// Client Dashboard - Main
-import ClientDashboard from './pages/client/ClientDashboard';
-import ClientProfile from './pages/client/Profile';
-import ClientOrderHistory from './pages/client/OrderHistory';
+// Dashboard paginas (lazy - only loaded when needed)
+const PanelCliente = lazy(() => import('./paginas/cliente/PanelCliente'));
+const ClientOrderHistory = lazy(() => import('./paginas/cliente/Orders/HistorialPedidos'));
+const SeguimientoPedido = lazy(() => import('./paginas/cliente/Orders/SeguimientoPedido'));
+const Wishlist = lazy(() => import('./paginas/cliente/Collection/Wishlist'));
+const ProjectCalculator = lazy(() => import('./paginas/cliente/Collection/ProjectCalculator'));
+const NewReport = lazy(() => import('./paginas/cliente/Soporte/NewReport'));
+const MyTickets = lazy(() => import('./paginas/cliente/Soporte/MyTickets'));
+const Perfil = lazy(() => import('./paginas/cliente/Settings/Perfil'));
+const AddressBook = lazy(() => import('./paginas/cliente/Settings/AddressBook'));
 
-// Client Dashboard - Orders
-import OrderHistoryNew from './pages/client/Orders/OrderHistory';
-import OrderTracking from './pages/client/Orders/OrderTracking';
+const ProductosVendedor = lazy(() => import('./paginas/vendedor/PanelVendedor'));
+const PedidosVendedor = lazy(() => import('./paginas/vendedor/PedidosVendedor'));
+const StockAlerts = lazy(() => import('./paginas/vendedor/StockAlerts'));
 
-// Client Dashboard - Collection
-import Wishlist from './pages/client/Collection/Wishlist';
-import ProjectCalculator from './pages/client/Collection/ProjectCalculator';
+const ResumenAdmin = lazy(() => import('./paginas/admin/ResumenAdmin'));
+const GestionUsuarios = lazy(() => import('./paginas/admin/GestionUsuarios'));
+const MetricasVendedor = lazy(() => import('./paginas/admin/MetricasVendedor'));
+const MetricasCliente = lazy(() => import('./paginas/admin/MetricasCliente'));
+const ConfiguracionSistema = lazy(() => import('./paginas/admin/ConfiguracionSistema'));
+const GestionarCarrusel = lazy(() => import('./paginas/admin/GestionarCarrusel'));
+const GestionarInicio = lazy(() => import('./paginas/admin/GestionarInicio'));
+const ReportesAdmin = lazy(() => import('./paginas/admin/ReportesAdmin'));
+const ProductosAdmin = lazy(() => import('./paginas/admin/ProductosAdmin'));
+const ActividadAdmin = lazy(() => import('./paginas/admin/ActividadAdmin'));
+const ControlLotes = lazy(() => import('./paginas/admin/Inventario/ControlLotes'));
+const CalculadoraMerma = lazy(() => import('./paginas/admin/Inventario/CalculadoraMerma'));
+const ConfiguracionStock = lazy(() => import('./paginas/admin/Inventario/ConfiguracionStock'));
+const HistorialMovimientos = lazy(() => import('./paginas/admin/Inventario/HistorialMovimientos'));
+const ColaAprobacion = lazy(() => import('./paginas/admin/Moderacion/ColaAprobacion'));
+const RendimientoVendedores = lazy(() => import('./paginas/admin/Moderacion/RendimientoVendedores'));
+const MapaVentas = lazy(() => import('./paginas/admin/Analiticas/MapaVentas'));
+const RankingRotacion = lazy(() => import('./paginas/admin/Analiticas/RankingRotacion'));
+const AnalisisDevoluciones = lazy(() => import('./paginas/admin/Analiticas/AnalisisDevoluciones'));
+const ProyeccionIngresos = lazy(() => import('./paginas/admin/Analiticas/ProyeccionIngresos'));
+const GestionTickets = lazy(() => import('./paginas/admin/Soporte/GestionTickets'));
+const CreacionCupones = lazy(() => import('./paginas/admin/Soporte/CreacionCupones'));
+const Contact = lazy(() => import('./paginas/Contact'));
+const FacturasAdmin = lazy(() => import('./paginas/admin/FacturasAdmin'));
 
-// Client Dashboard - Support
-import NewReport from './pages/client/Support/NewReport';
-import MyTickets from './pages/client/Support/MyTickets';
-
-// Client Dashboard - Settings
-import Profile from './pages/client/Settings/Profile';
-import AddressBook from './pages/client/Settings/AddressBook';
-
-// Seller Dashboard
-import SellerProducts from './pages/seller/SellerDashboard';
-import SellerOrders from './pages/seller/SellerOrders';
-import StockAlerts from './pages/seller/StockAlerts';
-
-// Admin Dashboard
-import AdminOverview from './pages/admin/AdminOverview';
-import UserManagement from './pages/admin/UserManagement';
-import SellerMetrics from './pages/admin/SellerMetrics';
-import ClientMetrics from './pages/admin/ClientMetrics';
-import SystemConfig from './pages/admin/SystemConfig';
-import ManageCarousel from './pages/admin/ManageCarousel';
-import ManageHome from './pages/admin/ManageHome';
-import AdminBugReports from './pages/admin/AdminBugReports';
-import AdminProducts from './pages/admin/AdminProducts';
-import AdminActivity from './pages/admin/AdminActivity';
-
-// Admin - Inventory Management
-import BatchControl from './pages/admin/Inventory/BatchControl';
-import WasteCalculator from './pages/admin/Inventory/WasteCalculator';
-import StockSettings from './pages/admin/Inventory/StockSettings';
-import MovementHistory from './pages/admin/Inventory/MovementHistory';
-
-// Admin - Vendor Moderation
-import ApprovalQueue from './pages/admin/Vetting/ApprovalQueue';
-import VendorPerformance from './pages/admin/Vetting/VendorPerformance';
-
-// Admin - Analytics
-import SalesHeatMap from './pages/admin/Analytics/SalesHeatMap';
-import RotationRanking from './pages/admin/Analytics/RotationRanking';
-import ReturnsAnalysis from './pages/admin/Analytics/ReturnsAnalysis';
-import RevenueProjection from './pages/admin/Analytics/RevenueProjection';
-
-// Admin - Support
-import TicketManagement from './pages/admin/Support/TicketManagement';
-import CouponCreation from './pages/admin/Support/CouponCreation';
-
-
-// Reports
-import BugReport from './pages/BugReport';
-
-// Payment
-import Payment from './pages/payment/Payment';
+function DashboardFallback() {
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900">
+            <TruckLoader text="Cargando panel..." />
+        </div>
+    );
+}
 
 function AppRoutes() {
     const location = useLocation();
@@ -86,16 +72,18 @@ function AppRoutes() {
     return (
         <Routes location={location} key={location.pathname}>
                 {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                    <Route path="/catalogo" element={<Catalog />} />
-                    <Route path="/producto/:id" element={<ProductDetail />} />
-                    <Route path="/carrito" element={<Cart />} />
+                <Route path="/" element={<Inicio />} />
+                    <Route path="/catalogo" element={<Catalogo />} />
+                    <Route path="/producto/:id" element={<DetalleProducto />} />
+                    <Route path="/carrito" element={<Carrito />} />
                     <Route path="/nosotros" element={<About />} />
-                    <Route path="/contacto" element={<Contact />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/registro" element={<Register />} />
+                    <Route path="/contacto" element={<Suspense fallback={<TruckLoader text="Cargando..." />}><Contact /></Suspense>} />
+                    <Route path="/login" element={<IniciarSesion />} />
+                    <Route path="/registro" element={<Registro />} />
                     <Route path="/reportar-fallo" element={<BugReport />} />
-
+                    <Route path="/pago" element={<Payment />} />
+                    <Route path="/checkout" element={<Pago />} />
+                    <Route path="/confirmacion" element={<ConfirmacionPedido />} />
 
                     {/* Payment */}
                     <Route
@@ -112,7 +100,7 @@ function AppRoutes() {
                         path="/checkout"
                         element={
                             <ProtectedRoute>
-                                <Checkout />
+                                <Pago />
                             </ProtectedRoute>
                         }
                     />
@@ -120,157 +108,174 @@ function AppRoutes() {
                         path="/confirmacion"
                         element={
                             <ProtectedRoute>
-                                <OrderConfirmation />
+                                <ConfirmacionPedido />
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Client Dashboard */}
                     <Route
                         path="/cliente"
                         element={
-                            <ProtectedRoute roles="client">
-                                <ClientDashboard />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <PanelCliente />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
-                        path="/perfil"
+                        path="/cliente/perfil"
                         element={
-                            <ProtectedRoute roles="client">
-                                <ClientProfile />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/mis-pedidos"
-                        element={
-                            <ProtectedRoute roles="client">
-                                <ClientOrderHistory />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <Perfil />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Client - Orders */}
                     <Route
                         path="/cliente/pedidos"
                         element={
-                            <ProtectedRoute roles="client">
-                                <OrderHistoryNew />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ClientOrderHistory />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/cliente/pedidos/rastreo"
                         element={
-                            <ProtectedRoute roles="client">
-                                <OrderTracking />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <SeguimientoPedido />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Client - Collection */}
                     <Route
                         path="/cliente/coleccion"
                         element={
-                            <ProtectedRoute roles="client">
-                                <Wishlist />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <Wishlist />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/cliente/coleccion/calculadora"
                         element={
-                            <ProtectedRoute roles="client">
-                                <ProjectCalculator />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ProjectCalculator />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Client - Support */}
                     <Route
                         path="/cliente/soporte/nuevo"
                         element={
-                            <ProtectedRoute roles="client">
-                                <NewReport />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <NewReport />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/cliente/soporte/tickets"
                         element={
-                            <ProtectedRoute roles="client">
-                                <MyTickets />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <MyTickets />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Client - Settings */}
                     <Route
                         path="/cliente/configuracion"
                         element={
-                            <ProtectedRoute roles="client">
-                                <Profile />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <Perfil />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/cliente/configuracion/direcciones"
                         element={
-                            <ProtectedRoute roles="client">
-                                <AddressBook />
+                            <ProtectedRoute roles="cliente">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <AddressBook />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Seller Dashboard */}
                     <Route
                         path="/vendedor"
                         element={
-                            <ProtectedRoute roles={['seller', 'admin']}>
-                                <SellerProducts />
+                            <ProtectedRoute roles={['vendedor', 'admin']}>
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ProductosVendedor />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/vendedor/productos"
                         element={
-                            <ProtectedRoute roles={['seller', 'admin']}>
-                                <SellerProducts />
+                            <ProtectedRoute roles={['vendedor', 'admin']}>
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ProductosVendedor />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/vendedor/pedidos"
                         element={
-                            <ProtectedRoute roles={['seller', 'admin']}>
-                                <SellerOrders />
+                            <ProtectedRoute roles={['vendedor', 'admin']}>
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <PedidosVendedor />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/vendedor/stock"
                         element={
-                            <ProtectedRoute roles={['seller', 'admin']}>
-                                <StockAlerts />
+                            <ProtectedRoute roles={['vendedor', 'admin']}>
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <StockAlerts />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/vendedor/configuracion"
                         element={
-                            <ProtectedRoute roles={['seller', 'admin']}>
-                                <Profile />
+                            <ProtectedRoute roles={['vendedor', 'admin']}>
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <Perfil />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Admin Dashboard */}
                     <Route
                         path="/admin"
                         element={
                             <ProtectedRoute roles="admin">
-                                <AdminOverview />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ResumenAdmin />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -278,7 +283,9 @@ function AppRoutes() {
                         path="/admin/usuarios"
                         element={
                             <ProtectedRoute roles="admin">
-                                <UserManagement />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <GestionUsuarios />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -286,7 +293,9 @@ function AppRoutes() {
                         path="/admin/vendedores"
                         element={
                             <ProtectedRoute roles="admin">
-                                <SellerMetrics />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <MetricasVendedor />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -294,7 +303,9 @@ function AppRoutes() {
                         path="/admin/clientes"
                         element={
                             <ProtectedRoute roles="admin">
-                                <ClientMetrics />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <MetricasCliente />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -302,7 +313,9 @@ function AppRoutes() {
                         path="/admin/productos"
                         element={
                             <ProtectedRoute roles="admin">
-                                <AdminProducts />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ProductosAdmin />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -310,7 +323,9 @@ function AppRoutes() {
                         path="/admin/carrusel"
                         element={
                             <ProtectedRoute roles="admin">
-                                <ManageCarousel />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <GestionarCarrusel />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -318,7 +333,19 @@ function AppRoutes() {
                         path="/admin/home"
                         element={
                             <ProtectedRoute roles="admin">
-                                <ManageHome />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <GestionarInicio />
+                                </Suspense>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/facturas"
+                        element={
+                            <ProtectedRoute roles="admin">
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <FacturasAdmin />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -326,7 +353,9 @@ function AppRoutes() {
                         path="/admin/reportes"
                         element={
                             <ProtectedRoute roles="admin">
-                                <AdminBugReports />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ReportesAdmin />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -334,17 +363,20 @@ function AppRoutes() {
                         path="/admin/actividad"
                         element={
                             <ProtectedRoute roles="admin">
-                                <AdminActivity />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ActividadAdmin />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Admin - Inventory Management */}
                     <Route
                         path="/admin/inventario/lotes"
                         element={
                             <ProtectedRoute roles="admin">
-                                <BatchControl />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ControlLotes />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -352,7 +384,9 @@ function AppRoutes() {
                         path="/admin/inventario/merma"
                         element={
                             <ProtectedRoute roles="admin">
-                                <WasteCalculator />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <CalculadoraMerma />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -360,7 +394,9 @@ function AppRoutes() {
                         path="/admin/inventario/alertas"
                         element={
                             <ProtectedRoute roles="admin">
-                                <StockSettings />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ConfiguracionStock />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -368,17 +404,20 @@ function AppRoutes() {
                         path="/admin/inventario/historial"
                         element={
                             <ProtectedRoute roles="admin">
-                                <MovementHistory />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <HistorialMovimientos />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Admin - Vendor Moderation */}
                     <Route
                         path="/admin/moderacion/aprobacion"
                         element={
                             <ProtectedRoute roles="admin">
-                                <ApprovalQueue />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ColaAprobacion />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -386,17 +425,20 @@ function AppRoutes() {
                         path="/admin/moderacion/vendedores"
                         element={
                             <ProtectedRoute roles="admin">
-                                <VendorPerformance />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <RendimientoVendedores />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Admin - Analytics */}
                     <Route
                         path="/admin/analytics/mapa-ventas"
                         element={
                             <ProtectedRoute roles="admin">
-                                <SalesHeatMap />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <MapaVentas />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -404,7 +446,9 @@ function AppRoutes() {
                         path="/admin/analytics/rotacion"
                         element={
                             <ProtectedRoute roles="admin">
-                                <RotationRanking />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <RankingRotacion />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -412,7 +456,9 @@ function AppRoutes() {
                         path="/admin/analytics/devoluciones"
                         element={
                             <ProtectedRoute roles="admin">
-                                <ReturnsAnalysis />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <AnalisisDevoluciones />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -420,17 +466,20 @@ function AppRoutes() {
                         path="/admin/analytics/proyeccion"
                         element={
                             <ProtectedRoute roles="admin">
-                                <RevenueProjection />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ProyeccionIngresos />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* Admin - Support */}
                     <Route
                         path="/admin/soporte/tickets"
                         element={
                             <ProtectedRoute roles="admin">
-                                <TicketManagement />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <GestionTickets />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -438,7 +487,9 @@ function AppRoutes() {
                         path="/admin/soporte/cupones"
                         element={
                             <ProtectedRoute roles="admin">
-                                <CouponCreation />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <CreacionCupones />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -447,7 +498,9 @@ function AppRoutes() {
                         path="/admin/configuracion"
                         element={
                             <ProtectedRoute roles="admin">
-                                <SystemConfig />
+                                <Suspense fallback={<DashboardFallback />}>
+                                    <ConfiguracionSistema />
+                                </Suspense>
                             </ProtectedRoute>
                         }
                     />
@@ -459,13 +512,14 @@ function App() {
     return (
         <AppProviders>
             <Router>
-                <ScrollToTop />
-                <SpotlightCursor />
-                <AppRoutes />
+                <DesplazarArriba />
+                <CursorFoco />
+                <SmoothScrollProvider>
+                    <AppRoutes />
+                </SmoothScrollProvider>
             </Router>
         </AppProviders>
     );
 }
 
 export default App;
-

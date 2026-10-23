@@ -33,21 +33,21 @@ export default {
                     900: 'var(--theme-secondary-900, #0f172a)',
                 },
                 accent: {
-                    50: 'var(--theme-accent-50, #eef2ff)',
-                    100: 'var(--theme-accent-100, #e0e7ff)',
-                    200: 'var(--theme-accent-200, #c7d2fe)',
-                    300: 'var(--theme-accent-300, #a5b4fc)',
-                    400: 'var(--theme-accent-400, #818cf8)',
-                    500: 'var(--theme-accent-500, #6366f1)',
-                    600: 'var(--theme-accent-600, #4f46e5)',
-                    700: 'var(--theme-accent-700, #4338ca)',
-                    800: 'var(--theme-accent-800, #3730a3)',
-                    900: 'var(--theme-accent-900, #312e81)',
+                    50: 'var(--theme-accent-50, #fff7ed)',
+                    100: 'var(--theme-accent-100, #ffedd5)',
+                    200: 'var(--theme-accent-200, #fed7aa)',
+                    300: 'var(--theme-accent-300, #fdba74)',
+                    400: 'var(--theme-accent-400, #fb923c)',
+                    500: 'var(--theme-accent-500, #f97316)',
+                    600: 'var(--theme-accent-600, #ea580c)',
+                    700: 'var(--theme-accent-700, #c2410c)',
+                    800: 'var(--theme-accent-800, #9a3412)',
+                    900: 'var(--theme-accent-900, #7c2d12)',
                 },
             },
             fontFamily: {
-                sans: ['ui-sans-serif', 'system-ui', 'sans-serif'],
-                display: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+                sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
             },
             animation: {
                 'fade-in': 'fadeIn 0.5s ease-in-out',
@@ -55,6 +55,12 @@ export default {
                 'slide-down': 'slideDown 0.5s ease-out',
                 'scale-in': 'scaleIn 0.3s ease-out',
                 'float': 'float 3s ease-in-out infinite',
+                'float-gentle': 'floatGentle 4s ease-in-out infinite',
+                'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+                'ping-slow': 'pingSlow 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+                'spin-slow': 'spin 3s linear infinite',
+                'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
+                'shimmer-fast': 'shimmer 1.5s linear infinite',
             },
             keyframes: {
                 fadeIn: {
@@ -76,6 +82,25 @@ export default {
                 float: {
                     '0%, 100%': { transform: 'translateY(0px)' },
                     '50%': { transform: 'translateY(-10px)' },
+                },
+                floatGentle: {
+                    '0%, 100%': { transform: 'translateY(0px)' },
+                    '50%': { transform: 'translateY(-5px)' },
+                },
+                pulseSoft: {
+                    '0%, 100%': { opacity: '1' },
+                    '50%': { opacity: '0.7' },
+                },
+                pingSlow: {
+                    '75%, 100%': { transform: 'scale(2)', opacity: '0' },
+                },
+                bounceGentle: {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-4px)' },
+                },
+                shimmer: {
+                    '0%': { backgroundPosition: '-200% center' },
+                    '100%': { backgroundPosition: '200% center' },
                 },
             },
             backgroundImage: {

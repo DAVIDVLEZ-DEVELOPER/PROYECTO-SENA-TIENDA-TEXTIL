@@ -1,0 +1,154 @@
+package infraestructura.persistencia.jdbc;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import infraestructura.configuracion.Conexion;
+import dominio.modelos.DiapositivaCarrusel;
+
+/**
+ * DAO para las diapositivas del carrusel de inicio.
+ * Opera sobre la tabla 'diapositivas_carrusel'.
+ */
+public class CarruselDAO {
+
+    /**
+     * Recupera las diapositivas activas ordenadas por su posición.
+     */
+    public List<DiapositivaCarrusel> obtenerDiapositivasActivas() {
+        List<DiapositivaCarrusel> diapositivas = new ArrayList<>();
+        String consulta = "SELECT * FROM diapositivas_carrusel WHERE active = true ORDER BY orden ASC, id ASC";
+
+        try (Connection con = Conexion.obtenerConexion();
+             PreparedStatement pst = con.prepareStatement(consulta);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                diapositivas.add(mapearFila(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return diapositivas;
+    }
+
+    /**
+     * Recupera todas las diapositivas (activas e inactivas).
+     */
+    public List<DiapositivaCarrusel> obtenerTodasLasDiapositivas() {
+        List<DiapositivaCarrusel> diapositivas = new ArrayList<>();
+        String consulta = "SELECT * FROM diapositivas_carrusel ORDER BY orden ASC, id ASC";
+
+        try (Connection con = Conexion.obtenerConexion();
+             PreparedStatement pst = con.prepareStatement(consulta);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                diapositivas.add(mapearFila(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return diapositivas;
+    }
+
+    /**
+     * Inserta una nueva diapositiva en la base de datos.
+     */
+    public boolean agregarDiapositiva(DiapositivaCarrusel diapositiva) {
+        String consulta = "INSERT INTO diapositivas_carrusel (titulo, subtitulo, imagen, image, cta, clave_seccion, activo, active, orden) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection con = Conexion.obtenerConexion();
+             PreparedStatement pst = con.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS)) {
+            pst.setString(1, diapositiva.getTitulo());
+            pst.setString(2, diapositiva.getSubtitulo());
+            pst.setString(3, diapositiva.getImagen());
+            pst.setString(4, diapositiva.getImagen());
+            pst.setString(5, diapositiva.getTextoBoton());
+            pst.setString(6, diapositiva.getClaveSeccion());
+            pst.setBoolean(7, diapositiva.isActivo());
+            pst.setBoolean(8, diapositiva.isActivo());
+            pst.setInt(9, diapositiva.getOrden());
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza una diapositiva existente.
+     */
+    public boolean actualizarDiapositiva(int id, DiapositivaCarrusel diapositiva, Boolean activo) {
+        String consulta = "UPDATE diapositivas_carrusel SET " +
+                "titulo = COALESCE(?, titulo), " +
+                "subtitulo = COALESCE(?, subtitulo), " +
+                "imagen = COALESCE(?, imagen), " +
+                "image = COALESCE(?, image), " +
+                "cta = COALESCE(?, cta), " +
+                "clave_seccion = COALESCE(?, clave_seccion), " +
+                "activo = COALESCE(?, activo), " +
+                "active = COALESCE(?, active), " +
+                "orden = COALESCE(?, orden) " +
+                "WHERE id = ?";
+        try (Connection con = Conexion.obtenerConexion();
+             PreparedStatement pst = con.prepareStatement(consulta)) {
+            pst.setString(1, diapositiva.getTitulo());
+            pst.setString(2, diapositiva.getSubtitulo());
+            pst.setString(3, diapositiva.getImagen());
+            pst.setString(4, diapositiva.getImagen());
+            pst.setString(5, diapositiva.getTextoBoton());
+            pst.setString(6, diapositiva.getClaveSeccion());
+            pst.setObject(7, activo);
+            pst.setObject(8, activo);
+            pst.setObject(9, diapositiva.getOrden() > 0 ? diapositiva.getOrden() : null);
+            pst.setInt(10, id);
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Elimina una diapositiva.
+     */
+    public boolean eliminarDiapositiva(int id) {
+        String consulta = "DELETE FROM diapositivas_carrusel WHERE id = ?";
+        try (Connection con = Conexion.obtenerConexion();
+             PreparedStatement pst = con.prepareStatement(consulta)) {
+            pst.setInt(1, id);
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private DiapositivaCarrusel mapearFila(ResultSet rs) throws SQLException {
+        DiapositivaCarrusel slide = new DiapositivaCarrusel();
+        slide.setId(rs.getInt("id"));
+        slide.setTitulo(rs.getString("titulo"));
+        slide.setSubtitulo(rs.getString("subtitulo"));
+        String img = rs.getString("imagen");
+        slide.setImagen(img != null && !img.isBlank() ? img : rs.getString("image"));
+        slide.setTextoBoton(rs.getString("cta"));
+        slide.setClaveSeccion(rs.getString("clave_seccion"));
+        slide.setActivo(rs.getBoolean("activo"));
+        slide.setOrden(rs.getInt("orden"));
+        return slide;
+    }
+
+    // Métodos alias para compatibilidad
+    public List<DiapositivaCarrusel> getActiveSlides() { return obtenerDiapositivasActivas(); }
+    public List<DiapositivaCarrusel> getAllSlides() { return obtenerTodasLasDiapositivas(); }
+    public boolean addSlide(DiapositivaCarrusel slide) { return agregarDiapositiva(slide); }
+    public boolean updateSlide(int id, DiapositivaCarrusel slide, Boolean active) { return actualizarDiapositiva(id, slide, active); }
+    public boolean deleteSlide(int id) { return eliminarDiapositiva(id); }
+}
+
