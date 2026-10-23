@@ -1,141 +1,137 @@
 import os
 
 def generar_svg_modelo_relacional():
-    # Dimensiones y estilo base
-    width = 1750
-    height = 1250
+    # Dimensiones y estilo base elegante y desaturado
+    width = 1780
+    height = 1240
     
     svg = []
-    svg.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="100%" height="100%" style="background:#0f172a; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;">')
+    svg.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="100%" height="100%" style="background:#0b0f17; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;">')
     
-    # Definiciones de gradientes, filtros y marcadores de flecha
     svg.append('''
     <defs>
-      <!-- Patrón de cuadrícula de fondo -->
-      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.8"/>
+      <pattern id="grid-clean" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#162032" stroke-width="0.6"/>
       </pattern>
       
-      <!-- Sombra suave para las tarjetas de tablas -->
-      <filter id="card-shadow" x="-5%" y="-5%" width="115%" height="115%">
-        <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+      <filter id="card-shadow" x="-3%" y="-3%" width="106%" height="108%">
+        <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.45"/>
       </filter>
 
-      <!-- Marcador para claves foráneas (flecha) -->
-      <marker id="fk-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#38bdf8" />
+      <marker id="fk-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 7 3, 0 6" fill="#38bdf8" />
       </marker>
       
-      <!-- Marcador de inicio (pata de gallo / circulo) -->
-      <marker id="circle-marker" markerWidth="8" markerHeight="8" refX="4" refY="4">
-        <circle cx="4" cy="4" r="3" fill="#38bdf8" />
+      <marker id="circle-marker" markerWidth="6" markerHeight="6" refX="3" refY="3">
+        <circle cx="3" cy="3" r="2.5" fill="#38bdf8" />
       </marker>
-
-      <!-- Gradientes para encabezados de módulos -->
-      <linearGradient id="grad-catalogo" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#0284c7" />
-        <stop offset="100%" stop-color="#0369a1" />
-      </linearGradient>
-      
-      <linearGradient id="grad-ventas" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#059669" />
-        <stop offset="100%" stop-color="#047857" />
-      </linearGradient>
-      
-      <linearGradient id="grad-usuarios" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#7c3aed" />
-        <stop offset="100%" stop-color="#6d28d9" />
-      </linearGradient>
-
-      <linearGradient id="grad-erp" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#ea580c" />
-        <stop offset="100%" stop-color="#c2410c" />
-      </linearGradient>
     </defs>
     ''')
     
-    # Cuadrícula de fondo
-    svg.append(f'<rect width="{width}" height="{height}" fill="url(#grid)" />')
+    svg.append(f'<rect width="{width}" height="{height}" fill="url(#grid-clean)" />')
     
-    # Título Principal y Subtítulo
+    # Encabezado Banner
     svg.append('''
-    <g transform="translate(60, 45)">
-      <rect x="0" y="0" width="1630" height="75" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5" filter="url(#card-shadow)"/>
-      <text x="30" y="34" font-size="22" font-weight="bold" fill="#f8fafc">MODELO RELACIONAL DE BASE DE DATOS (POSTGRESQL 17)</text>
-      <text x="30" y="58" font-size="14" fill="#94a3b8">Plataforma D&amp;D Textil · Normalización 3FN · Integridad Referencial PK/FK · 25 Entidades Relacionales</text>
+    <g transform="translate(60, 40)">
+      <rect x="0" y="0" width="1660" height="76" rx="10" fill="#131b2a" stroke="#253347" stroke-width="1.2" filter="url(#card-shadow)"/>
+      <text x="26" y="33" font-size="20" font-weight="700" fill="#f8fafc" letter-spacing="0.3">MODELO RELACIONAL DE BASE DE DATOS (POSTGRESQL 17)</text>
+      <text x="26" y="56" font-size="13" fill="#94a3b8">Plataforma D&amp;D Textil · Normalización 3FN · Integridad Referencial PK/FK · 25 Entidades Relacionales</text>
       
-      <!-- Badges informativos a la derecha -->
-      <g transform="translate(1100, 22)">
-        <rect x="0" y="0" width="120" height="30" rx="6" fill="#0369a1"/>
-        <text x="60" y="20" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">SENA ADSO</text>
+      <g transform="translate(1120, 23)">
+        <rect x="0" y="0" width="110" height="28" rx="5" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+        <text x="55" y="19" font-size="11.5" font-weight="600" fill="#94a3b8" text-anchor="middle">SENA ADSO</text>
         
-        <rect x="135" y="0" width="170" height="30" rx="6" fill="#047857"/>
-        <text x="220" y="20" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">PostgreSQL 17 (UTF-8)</text>
+        <rect x="125" y="0" width="165" height="28" rx="5" fill="#172554" stroke="#1e3a8a" stroke-width="1"/>
+        <text x="207" y="19" font-size="11.5" font-weight="600" fill="#93c5fd" text-anchor="middle">PostgreSQL 17 (UTF-8)</text>
 
-        <rect x="320" y="0" width="170" height="30" rx="6" fill="#7c3aed"/>
-        <text x="405" y="20" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Normalización 3FN</text>
+        <rect x="305" y="0" width="165" height="28" rx="5" fill="#064e3b" stroke="#065f46" stroke-width="1"/>
+        <text x="387" y="19" font-size="11.5" font-weight="600" fill="#6ee7b7" text-anchor="middle">Normalización 3FN</text>
       </g>
     </g>
     ''')
 
-    # Función auxiliar para renderizar una tabla relacional
-    def render_table(x, y, w, title, header_grad, columns):
-        h = 38 + len(columns) * 24 + 10
+    def render_table(x, y, w, title, accent, columns):
+        h = 34 + len(columns) * 22 + 6
         out = []
         out.append(f'<g transform="translate({x}, {y})" filter="url(#card-shadow)">')
-        # Fondo de la tarjeta
-        out.append(f'<rect width="{w}" height="{h}" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>')
-        # Encabezado con gradiente
-        out.append(f'<path d="M 0 8 Q 0 0 8 0 L {w-8} 0 Q {w} 0 {w} 8 L {w} 34 L 0 34 Z" fill="url(#{header_grad})"/>')
-        # Título de la tabla
-        out.append(f'<text x="14" y="22" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="0.5">{title}</text>')
-        # Línea separadora
-        out.append(f'<line x1="0" y1="34" x2="{w}" y2="34" stroke="#475569" stroke-width="1"/>')
+        out.append(f'<rect width="{w}" height="{h}" rx="8" fill="#131b2a" stroke="#253347" stroke-width="1.2"/>')
+        out.append(f'<path d="M 0 8 Q 0 0 8 0 L {w-8} 0 Q {w} 0 {w} 8 L {w} 32 L 0 32 Z" fill="#182234"/>')
+        out.append(f'<line x1="0" y1="1" x2="{w}" y2="1" stroke="{accent}" stroke-width="2" opacity="0.9"/>')
+        out.append(f'<text x="12" y="21" font-size="12.5" font-weight="700" fill="#f8fafc" letter-spacing="0.4">{title}</text>')
+        out.append(f'<line x1="0" y1="32" x2="{w}" y2="32" stroke="#253347" stroke-width="1"/>')
         
-        # Filas de columnas
-        cy = 52
-        for col in columns:
+        cy = 48
+        for i, col in enumerate(columns):
             name, ctype, badge = col
-            # Indicador de tipo de clave
+            if i % 2 == 1:
+                out.append(f'<rect x="1" y="{cy-12}" width="{w-2}" height="22" fill="#0e1420" opacity="0.5"/>')
+            
             if badge == "PK":
-                out.append(f'<rect x="12" y="{cy-11}" width="24" height="15" rx="3" fill="#fbbf24"/>')
-                out.append(f'<text x="24" y="{cy}" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>')
+                out.append(f'<rect x="10" y="{cy-10}" width="22" height="13" rx="3" fill="#292524" stroke="#78350f" stroke-width="0.9"/>')
+                out.append(f'<text x="21" y="{cy}" font-size="8.5" font-weight="700" fill="#fbbf24" text-anchor="middle">PK</text>')
+                col_x, weight, color = 38, "700", "#ffffff"
             elif badge == "FK":
-                out.append(f'<rect x="12" y="{cy-11}" width="24" height="15" rx="3" fill="#38bdf8"/>')
-                out.append(f'<text x="24" y="{cy}" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>')
+                out.append(f'<rect x="10" y="{cy-10}" width="22" height="13" rx="3" fill="#172554" stroke="#1e3a8a" stroke-width="0.9"/>')
+                out.append(f'<text x="21" y="{cy}" font-size="8.5" font-weight="700" fill="#93c5fd" text-anchor="middle">FK</text>')
+                col_x, weight, color = 38, "500", "#cbd5e1"
             elif badge == "UK":
-                out.append(f'<rect x="12" y="{cy-11}" width="24" height="15" rx="3" fill="#a78bfa"/>')
-                out.append(f'<text x="24" y="{cy}" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>')
-            elif badge == "PK/FK":
-                out.append(f'<rect x="10" y="{cy-11}" width="36" height="15" rx="3" fill="#f43f5e"/>')
-                out.append(f'<text x="28" y="{cy}" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">PK/FK</text>')
+                out.append(f'<rect x="10" y="{cy-10}" width="22" height="13" rx="3" fill="#2e1065" stroke="#4c1d95" stroke-width="0.9"/>')
+                out.append(f'<text x="21" y="{cy}" font-size="8.5" font-weight="700" fill="#c084fc" text-anchor="middle">UK</text>')
+                col_x, weight, color = 38, "500", "#cbd5e1"
             else:
-                out.append(f'<circle cx="24" cy="{cy-4}" r="2.5" fill="#64748b"/>')
-            
-            # Nombre de la columna
-            col_x = 52 if badge == "PK/FK" else (42 if badge else 36)
-            font_weight = "bold" if badge == "PK" else "normal"
-            fill_color = "#f8fafc" if badge else "#cbd5e1"
-            out.append(f'<text x="{col_x}" y="{cy}" font-size="12" font-weight="{font_weight}" fill="{fill_color}">{name}</text>')
-            
-            # Tipo de dato (alineado a la derecha)
-            out.append(f'<text x="{w-12}" y="{cy}" font-size="11" fill="#94a3b8" text-anchor="end">{ctype}</text>')
-            cy += 24
+                out.append(f'<circle cx="21" cy="{cy-4}" r="1.8" fill="#475569"/>')
+                col_x, weight, color = 34, "400", "#94a3b8"
+                
+            out.append(f'<text x="{col_x}" y="{cy}" font-size="11.5" font-weight="{weight}" fill="{color}">{name}</text>')
+            out.append(f'<text x="{w-10}" y="{cy}" font-size="10.5" fill="#64748b" text-anchor="end" font-family="ui-monospace, monospace">{ctype}</text>')
+            cy += 22
             
         out.append('</g>')
         return "\n".join(out)
 
-    # -------------------------------------------------------------
-    # 1. MÓDULO CATÁLOGO & TEXTIL (Azul)
-    # -------------------------------------------------------------
-    svg.append(render_table(60, 150, 240, "CATEGORIAS", "grad-catalogo", [
+    acc_blue = "#38bdf8"
+    acc_indigo = "#818cf8"
+    acc_green = "#34d399"
+    acc_amber = "#fbbf24"
+
+    # Columna 1A: Entidades Detalle de Catalogo e Inventario
+    svg.append(render_table(60, 150, 250, "CATEGORIAS", acc_blue, [
         ("id", "SERIAL", "PK"),
         ("nombre", "VARCHAR(100)", "UK"),
         ("descripcion", "TEXT", ""),
         ("creado_en", "TIMESTAMP", "")
     ]))
 
-    svg.append(render_table(340, 150, 280, "PRODUCTOS", "grad-catalogo", [
+    svg.append(render_table(60, 300, 250, "IMAGENES_PRODUCTO", acc_blue, [
+        ("id", "SERIAL", "PK"),
+        ("producto_id", "INTEGER", "FK"),
+        ("url_imagen", "TEXT", ""),
+        ("orden", "INTEGER", "")
+    ]))
+
+    svg.append(render_table(60, 450, 250, "LOTES_INVENTARIO", acc_blue, [
+        ("id", "SERIAL", "PK"),
+        ("producto_id", "INTEGER", "FK"),
+        ("numero_lote", "VARCHAR(50)", ""),
+        ("metros_recibidos", "NUMERIC(10,2)", ""),
+        ("costo_por_metro", "NUMERIC(10,2)", ""),
+        ("proveedor", "VARCHAR(100)", ""),
+        ("fecha_recepcion", "DATE", "")
+    ]))
+
+    svg.append(render_table(60, 670, 250, "ROLLOS_TEXTIL", acc_blue, [
+        ("id", "SERIAL", "PK"),
+        ("producto_id", "INTEGER", "FK"),
+        ("lote_id", "INTEGER", "FK"),
+        ("codigo_rollo", "VARCHAR(50)", "UK"),
+        ("metraje_inicial", "NUMERIC(10,2)", ""),
+        ("metraje_remanente", "NUMERIC(10,2)", ""),
+        ("lote_tintoreria", "VARCHAR(50)", ""),
+        ("estado", "VARCHAR(30)", "")
+    ]))
+
+    # Columna 1B: Nucleo Catalogo e Inventario
+    svg.append(render_table(350, 150, 270, "PRODUCTOS", acc_blue, [
         ("id", "SERIAL", "PK"),
         ("nombre", "VARCHAR(150)", ""),
         ("categoria_id", "INTEGER", "FK"),
@@ -151,35 +147,7 @@ def generar_svg_modelo_relacional():
         ("creado_en", "TIMESTAMP", "")
     ]))
 
-    svg.append(render_table(60, 310, 240, "IMAGENES_PRODUCTO", "grad-catalogo", [
-        ("id", "SERIAL", "PK"),
-        ("producto_id", "INTEGER", "FK"),
-        ("url_imagen", "TEXT", ""),
-        ("orden_visualizacion", "INTEGER", "")
-    ]))
-
-    svg.append(render_table(60, 470, 240, "LOTES_INVENTARIO", "grad-catalogo", [
-        ("id", "SERIAL", "PK"),
-        ("producto_id", "INTEGER", "FK"),
-        ("numero_lote", "VARCHAR(50)", ""),
-        ("metros_recibidos", "NUMERIC(10,2)", ""),
-        ("costo_por_metro", "NUMERIC(10,2)", ""),
-        ("proveedor", "VARCHAR(100)", ""),
-        ("fecha_recepcion", "DATE", "")
-    ]))
-
-    svg.append(render_table(60, 710, 240, "ROLLOS_TEXTIL", "grad-catalogo", [
-        ("id", "SERIAL", "PK"),
-        ("producto_id", "INTEGER", "FK"),
-        ("lote_id", "INTEGER", "FK"),
-        ("codigo_rollo", "VARCHAR(50)", "UK"),
-        ("metraje_inicial", "NUMERIC(10,2)", ""),
-        ("metraje_remanente", "NUMERIC(10,2)", ""),
-        ("lote_tintoreria", "VARCHAR(50)", ""),
-        ("estado", "VARCHAR(30)", "")
-    ]))
-
-    svg.append(render_table(340, 560, 280, "EVENTOS_MERMA", "grad-catalogo", [
+    svg.append(render_table(350, 510, 270, "EVENTOS_MERMA", acc_blue, [
         ("id", "SERIAL", "PK"),
         ("producto_id", "INTEGER", "FK"),
         ("metros_perdidos", "NUMERIC(10,2)", ""),
@@ -188,14 +156,14 @@ def generar_svg_modelo_relacional():
         ("creado_en", "TIMESTAMP", "")
     ]))
 
-    svg.append(render_table(340, 780, 280, "UMBRALES_STOCK", "grad-catalogo", [
+    svg.append(render_table(350, 720, 270, "UMBRALES_STOCK", acc_blue, [
         ("id", "SERIAL", "PK"),
         ("tipo_tela", "VARCHAR(100)", "UK"),
         ("metros_minimos", "NUMERIC(10,2)", ""),
         ("alerta_activa", "BOOLEAN", "")
     ]))
 
-    svg.append(render_table(60, 970, 560, "INVENTARIO_TELAS_ERP", "grad-catalogo", [
+    svg.append(render_table(60, 910, 560, "INVENTARIO_TELAS_ERP", acc_blue, [
         ("id", "SERIAL", "PK"),
         ("sku", "VARCHAR(50)", "UK"),
         ("nombre_tela", "VARCHAR(150)", ""),
@@ -205,10 +173,8 @@ def generar_svg_modelo_relacional():
         ("costo_por_metro", "NUMERIC(10,2)", "")
     ]))
 
-    # -------------------------------------------------------------
-    # 2. MÓDULO USUARIOS & SEGURIDAD (Púrpura)
-    # -------------------------------------------------------------
-    svg.append(render_table(670, 150, 280, "USUARIOS", "grad-usuarios", [
+    # Columna 2: Usuarios, Seguridad y Soporte (Indigo suave)
+    svg.append(render_table(670, 150, 280, "USUARIOS", acc_indigo, [
         ("id", "SERIAL", "PK"),
         ("nombre", "VARCHAR(100)", ""),
         ("correo", "VARCHAR(150)", "UK"),
@@ -221,7 +187,7 @@ def generar_svg_modelo_relacional():
         ("ultimo_acceso", "TIMESTAMP", "")
     ]))
 
-    svg.append(render_table(670, 460, 280, "TICKETS_SOPORTE", "grad-usuarios", [
+    svg.append(render_table(670, 445, 280, "TICKETS_SOPORTE", acc_indigo, [
         ("id", "SERIAL", "PK"),
         ("usuario_id", "INTEGER", "FK"),
         ("correo_usuario", "VARCHAR(150)", ""),
@@ -232,7 +198,7 @@ def generar_svg_modelo_relacional():
         ("asignado_a", "INTEGER", "FK")
     ]))
 
-    svg.append(render_table(670, 730, 280, "REPORTES_ERRORES", "grad-usuarios", [
+    svg.append(render_table(670, 700, 280, "REPORTES_ERRORES", acc_indigo, [
         ("id", "SERIAL", "PK"),
         ("vendedor_id", "INTEGER", "FK"),
         ("nombre_vendedor", "VARCHAR(100)", ""),
@@ -242,7 +208,7 @@ def generar_svg_modelo_relacional():
         ("prioridad", "VARCHAR(20)", "")
     ]))
 
-    svg.append(render_table(670, 970, 280, "ACTIVIDAD_RECIENTE", "grad-usuarios", [
+    svg.append(render_table(670, 930, 280, "ACTIVIDAD_RECIENTE", acc_indigo, [
         ("id", "SERIAL", "PK"),
         ("tipo", "VARCHAR(50)", ""),
         ("usuario_id", "INTEGER", "FK"),
@@ -251,10 +217,8 @@ def generar_svg_modelo_relacional():
         ("creado_en", "TIMESTAMP", "")
     ]))
 
-    # -------------------------------------------------------------
-    # 3. MÓDULO VENTAS & TRANSACCIONAL (Verde)
-    # -------------------------------------------------------------
-    svg.append(render_table(1000, 150, 310, "PEDIDOS", "grad-ventas", [
+    # Columna 3: Ventas & Transaccional (Esmeralda suave)
+    svg.append(render_table(1000, 150, 310, "PEDIDOS", acc_green, [
         ("id", "SERIAL", "PK"),
         ("usuario_id", "INTEGER", "FK"),
         ("vendedor_id", "INTEGER", "FK"),
@@ -271,7 +235,7 @@ def generar_svg_modelo_relacional():
         ("creado_en", "TIMESTAMP", "")
     ]))
 
-    svg.append(render_table(1000, 560, 310, "ITEMS_PEDIDO", "grad-ventas", [
+    svg.append(render_table(1000, 535, 310, "ITEMS_PEDIDO", acc_green, [
         ("id", "SERIAL", "PK"),
         ("pedido_id", "INTEGER", "FK"),
         ("producto_id", "INTEGER", "FK"),
@@ -280,7 +244,7 @@ def generar_svg_modelo_relacional():
         ("subtotal", "NUMERIC(12,2)", "")
     ]))
 
-    svg.append(render_table(1000, 770, 310, "ITEMS_CARRITO", "grad-ventas", [
+    svg.append(render_table(1000, 745, 310, "ITEMS_CARRITO", acc_green, [
         ("id", "SERIAL", "PK"),
         ("usuario_id", "INTEGER", "FK"),
         ("producto_id", "INTEGER", "FK"),
@@ -288,7 +252,7 @@ def generar_svg_modelo_relacional():
         ("agregado_en", "TIMESTAMP", "")
     ]))
 
-    svg.append(render_table(1000, 950, 310, "RESENAS", "grad-ventas", [
+    svg.append(render_table(1000, 930, 310, "RESENAS", acc_green, [
         ("id", "SERIAL", "PK"),
         ("producto_id", "INTEGER", "FK"),
         ("usuario_id", "INTEGER", "FK"),
@@ -297,10 +261,8 @@ def generar_svg_modelo_relacional():
         ("creado_en", "TIMESTAMP", "")
     ]))
 
-    # -------------------------------------------------------------
-    # 4. MÓDULO CUPONES, CMS & ERP (Naranja)
-    # -------------------------------------------------------------
-    svg.append(render_table(1360, 150, 310, "CUPONES", "grad-erp", [
+    # Columna 4: Cupones, ERP & Configuracion (Ambar suave)
+    svg.append(render_table(1360, 150, 310, "CUPONES", acc_amber, [
         ("id", "SERIAL", "PK"),
         ("codigo", "VARCHAR(50)", "UK"),
         ("tipo_descuento", "VARCHAR(20)", ""),
@@ -310,20 +272,20 @@ def generar_svg_modelo_relacional():
         ("activo", "BOOLEAN", "")
     ]))
 
-    svg.append(render_table(1360, 380, 310, "CATEGORIAS_CUPON", "grad-erp", [
+    svg.append(render_table(1360, 375, 310, "CATEGORIAS_CUPON", acc_amber, [
         ("id", "SERIAL", "PK"),
         ("cupon_id", "INTEGER", "FK"),
         ("categoria_id", "INTEGER", "FK")
     ]))
 
-    svg.append(render_table(1360, 510, 310, "CONFIGURACION_SISTEMA", "grad-erp", [
+    svg.append(render_table(1360, 510, 310, "CONFIGURACION_SISTEMA", acc_amber, [
         ("id", "SERIAL", "PK"),
         ("clave", "VARCHAR(100)", "UK"),
         ("valor", "TEXT", ""),
         ("actualizado_en", "TIMESTAMP", "")
     ]))
 
-    svg.append(render_table(1360, 680, 310, "METRICAS_VENTAS_ERP", "grad-erp", [
+    svg.append(render_table(1360, 665, 310, "METRICAS_VENTAS_ERP", acc_amber, [
         ("id", "SERIAL", "PK"),
         ("fecha_registro", "DATE", "UK"),
         ("ventas_reales", "NUMERIC(14,2)", ""),
@@ -331,102 +293,95 @@ def generar_svg_modelo_relacional():
         ("margen_ganancia", "NUMERIC(5,2)", "")
     ]))
 
-    svg.append(render_table(1360, 870, 310, "VENTAS_REGION", "grad-erp", [
+    svg.append(render_table(1360, 845, 310, "VENTAS_REGION", acc_amber, [
         ("id", "SERIAL", "PK"),
         ("region", "VARCHAR(100)", ""),
         ("ventas_totales", "NUMERIC(14,2)", ""),
         ("porcentaje", "NUMERIC(5,2)", "")
     ]))
 
-    svg.append(render_table(1360, 1030, 310, "VENTAS_DIARIAS", "grad-erp", [
+    svg.append(render_table(1360, 1000, 310, "VENTAS_DIARIAS", acc_amber, [
         ("id", "SERIAL", "PK"),
         ("fecha_venta", "DATE", "UK"),
         ("ventas_totales", "NUMERIC(14,2)", ""),
         ("pedidos_totales", "INTEGER", "")
     ]))
 
-    # -------------------------------------------------------------
-    # LÍNEAS CONECTORAS DE RELACIONES (Claves Foráneas)
-    # Trazado ortogonal por canales despejados (sin cruce sobre tablas)
-    # -------------------------------------------------------------
+    # Lineas conectoras ortogonales limpias (sin cruce de tablas)
     svg.append('''
-    <!-- Relaciones (Lineas de conexion ortogonales con marcadores) -->
-    <g stroke="#38bdf8" stroke-width="1.8" fill="none" opacity="0.85">
-      <!-- CATEGORIAS -> PRODUCTOS -->
-      <path d="M 300 200 L 340 200" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+    <!-- Relaciones (Lineas de conexion ortogonales despejadas) -->
+    <g stroke="#38bdf8" stroke-width="1.6" fill="none" opacity="0.8">
+      <!-- 1. CATEGORIAS -> PRODUCTOS -->
+      <path d="M 310 195 L 350 195" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
       
-      <!-- USUARIOS -> PRODUCTOS (Vendedor) -->
-      <path d="M 670 250 L 620 250" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 2. USUARIOS -> PRODUCTOS (Vendedor) -->
+      <path d="M 670 240 L 620 240" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- PRODUCTOS -> IMAGENES_PRODUCTO -->
-      <path d="M 340 370 L 300 370" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 3. PRODUCTOS -> IMAGENES_PRODUCTO -->
+      <path d="M 350 350 L 310 350" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- PRODUCTOS -> LOTES_INVENTARIO -->
-      <path d="M 340 500 L 300 500" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 4. PRODUCTOS -> LOTES_INVENTARIO -->
+      <path d="M 350 470 L 310 470" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- LOTES_INVENTARIO -> ROLLOS_TEXTIL -->
-      <path d="M 180 686 L 180 710" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 5. LOTES_INVENTARIO -> ROLLOS_TEXTIL -->
+      <path d="M 185 643 L 185 670" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- PRODUCTOS -> EVENTOS_MERMA -->
-      <path d="M 480 510 L 480 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 6. PRODUCTOS -> EVENTOS_MERMA -->
+      <path d="M 485 475 L 485 510" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- USUARIOS -> PEDIDOS -->
-      <path d="M 950 200 L 1000 200" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 7. USUARIOS -> PEDIDOS (Cliente) -->
+      <path d="M 950 195 L 1000 195" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- PEDIDOS -> ITEMS_PEDIDO -->
-      <path d="M 1150 534 L 1150 560" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 8. PEDIDOS -> ITEMS_PEDIDO -->
+      <path d="M 1155 497 L 1155 535" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- PRODUCTOS -> ITEMS_PEDIDO (Canal despejado entre USUARIOS y TICKETS_SOPORTE) -->
-      <path d="M 620 420 L 645 420 L 645 448 L 975 448 L 975 620 L 1000 620" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 9. PRODUCTOS -> ITEMS_PEDIDO (Canal despejado x=645, y=425, x=975) -->
+      <path d="M 620 420 L 645 420 L 645 425 L 975 425 L 975 590 L 1000 590" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- USUARIOS -> TICKETS_SOPORTE -->
-      <path d="M 780 438 L 780 460" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 10. USUARIOS -> TICKETS_SOPORTE -->
+      <path d="M 810 409 L 810 445" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- USUARIOS -> REPORTES_ERRORES (Canal lateral izquierdo x=655) -->
-      <path d="M 670 320 L 655 320 L 655 760 L 670 760" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 11. USUARIOS -> REPORTES_ERRORES (Canal x=655) -->
+      <path d="M 670 310 L 655 310 L 655 730 L 670 730" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- USUARIOS -> ACTIVIDAD_RECIENTE (Canal lateral izquierdo x=640) -->
-      <path d="M 670 360 L 640 360 L 640 1000 L 670 1000" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 12. USUARIOS -> ACTIVIDAD_RECIENTE (Canal x=640) -->
+      <path d="M 670 345 L 640 345 L 640 960 L 670 960" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- USUARIOS -> ITEMS_CARRITO (Canal lateral derecho x=985) -->
-      <path d="M 950 260 L 985 260 L 985 810 L 1000 810" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 13. USUARIOS -> ITEMS_CARRITO (Canal x=985) -->
+      <path d="M 950 260 L 985 260 L 985 785 L 1000 785" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- PRODUCTOS -> ITEMS_CARRITO (Canal despejado y1=454, x=965) -->
-      <path d="M 620 454 L 965 454 L 965 835 L 1000 835" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 14. PRODUCTOS -> ITEMS_CARRITO (Canal y=435, x=965) -->
+      <path d="M 620 435 L 965 435 L 965 810 L 1000 810" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- CUPONES -> CATEGORIAS_CUPON -->
-      <path d="M 1510 366 L 1510 380" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 15. CUPONES -> CATEGORIAS_CUPON -->
+      <path d="M 1515 343 L 1515 375" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
 
-      <!-- CATEGORIAS -> CATEGORIAS_CUPON (Canal perimetral superior y lateral derecho) -->
-      <path d="M 200 150 L 200 130 L 1690 130 L 1690 420 L 1670 420" stroke-dasharray="4,4" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
+      <!-- 16. CATEGORIAS -> CATEGORIAS_CUPON (Canal superior y=130 y lateral x=1695) -->
+      <path d="M 185 150 L 185 130 L 1695 130 L 1695 415 L 1670 415" stroke-dasharray="4,4" marker-start="url(#circle-marker)" marker-end="url(#fk-arrow)" />
     </g>
     ''')
 
     # Leyenda en la esquina inferior izquierda
     svg.append('''
-    <g transform="translate(60, 1150)">
-      <rect width="680" height="70" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2" filter="url(#card-shadow)"/>
-      <text x="20" y="25" font-size="12" font-weight="bold" fill="#f8fafc">CONVENCIONES DEL MODELO RELACIONAL:</text>
+    <g transform="translate(60, 1135)">
+      <rect width="660" height="60" rx="8" fill="#131b2a" stroke="#253347" stroke-width="1.2" filter="url(#card-shadow)"/>
+      <text x="18" y="22" font-size="11" font-weight="700" fill="#94a3b8" letter-spacing="0.5">CONVENCIONES DEL MODELO RELACIONAL:</text>
       
-      <!-- PK -->
-      <rect x="20" y="38" width="26" height="18" rx="3" fill="#fbbf24"/>
-      <text x="33" y="51" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">PK</text>
-      <text x="54" y="51" font-size="12" fill="#cbd5e1">Clave Primaria</text>
+      <rect x="18" y="32" width="22" height="15" rx="3" fill="#292524" stroke="#78350f" stroke-width="0.9"/>
+      <text x="29" y="43" font-size="8.5" font-weight="700" fill="#fbbf24" text-anchor="middle">PK</text>
+      <text x="46" y="44" font-size="11.5" fill="#cbd5e1">Clave Primaria</text>
 
-      <!-- FK -->
-      <rect x="160" y="38" width="26" height="18" rx="3" fill="#38bdf8"/>
-      <text x="173" y="51" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">FK</text>
-      <text x="194" y="51" font-size="12" fill="#cbd5e1">Clave Foránea</text>
+      <rect x="155" y="32" width="22" height="15" rx="3" fill="#172554" stroke="#1e3a8a" stroke-width="0.9"/>
+      <text x="166" y="43" font-size="8.5" font-weight="700" fill="#93c5fd" text-anchor="middle">FK</text>
+      <text x="183" y="44" font-size="11.5" fill="#cbd5e1">Clave Foránea</text>
 
-      <!-- UK -->
-      <rect x="300" y="38" width="26" height="18" rx="3" fill="#a78bfa"/>
-      <text x="313" y="51" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">UK</text>
-      <text x="334" y="51" font-size="12" fill="#cbd5e1">Restricción Unique</text>
+      <rect x="290" y="32" width="22" height="15" rx="3" fill="#2e1065" stroke="#4c1d95" stroke-width="0.9"/>
+      <text x="301" y="43" font-size="8.5" font-weight="700" fill="#c084fc" text-anchor="middle">UK</text>
+      <text x="318" y="44" font-size="11.5" fill="#cbd5e1">Restricción Unique</text>
 
-      <!-- Línea FK -->
-      <line x1="470" y1="47" x2="510" y2="47" stroke="#38bdf8" stroke-width="2" marker-end="url(#fk-arrow)"/>
-      <circle cx="470" cy="47" r="3" fill="#38bdf8"/>
-      <text x="525" y="51" font-size="12" fill="#cbd5e1">Relación (1 a Muchos)</text>
+      <line x1="450" y1="40" x2="485" y2="40" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#fk-arrow)"/>
+      <circle cx="450" cy="40" r="2.5" fill="#38bdf8"/>
+      <text x="498" y="44" font-size="11.5" fill="#cbd5e1">Relación (1 a Muchos)</text>
     </g>
     ''')
 
