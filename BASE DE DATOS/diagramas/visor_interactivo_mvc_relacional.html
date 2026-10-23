@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor Gráfico: Modelo Relacional y Arquitectura MVC - D&amp;D Textil</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .tab-active {
+      border-color: #38bdf8 !important;
+      color: #38bdf8 !important;
+      background: rgba(56, 189, 248, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-[#0b1120] text-slate-100 min-h-screen p-4 md:p-6 font-sans">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header Principal -->
+    <header class="bg-[#1e293b] border border-slate-700/80 rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-sky-950 text-sky-400 border border-sky-800">SENA ADSO</span>
+          <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-emerald-950 text-emerald-400 border border-emerald-800">PostgreSQL 17</span>
+          <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-purple-950 text-purple-400 border border-purple-800">Patrón MVC</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+          <span></span> Modelo Relacional &amp; Arquitectura MVC Gráfica
+        </h1>
+        <p class="text-slate-400 text-sm mt-1">
+          Plataforma de Comercialización e Inventario Continuo de Telas (D&amp;D Textil)
+        </p>
+      </div>
+
+      <!-- Selector de Pestañas -->
+      <nav class="flex items-center bg-[#0f172a] p-1.5 rounded-xl border border-slate-700/80">
+        <button id="tab-btn-relacional" onclick="switchTab('relacional')" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all tab-active">
+          ️ Modelo Relacional
+        </button>
+        <button id="tab-btn-mvc" onclick="switchTab('mvc')" class="px-4 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+          ️ Arquitectura MVC
+        </button>
+        <button id="tab-btn-flujo" onclick="switchTab('flujo')" class="px-4 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+           Ciclo Transaccional
+        </button>
+      </nav>
+    </header>
+
+    <!-- PESTAÑA 1: MODELO RELACIONAL -->
+    <section id="pane-relacional" class="space-y-6">
+      <!-- Visor de Imagen Vectorial -->
+      <div class="bg-[#1e293b] border border-slate-700/80 rounded-2xl p-5 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>️</span> Diagrama Relacional de Entidades (25 Tablas Normalizadas en 3FN)
+            </h2>
+            <p class="text-xs text-slate-400">Esquema gráfico visual con llaves primarias (PK), foráneas (FK), tipos de datos y relaciones 1:N.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="modelo_relacional_actualizado.svg" target="_blank" class="px-3 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors flex items-center gap-1.5">
+              <span></span> Abrir SVG Completo
+            </a>
+          </div>
+        </div>
+
+        <!-- Contenedor del SVG -->
+        <div class="bg-[#0f172a] rounded-xl border border-slate-800 p-2 overflow-x-auto shadow-inner">
+          <img src="modelo_relacional_actualizado.svg" alt="Diagrama del Modelo Relacional D&D Textil" class="w-full min-w-[1100px] h-auto rounded-lg" />
+        </div>
+      </div>
+
+      <!-- Métricas y Clústeres de Tablas -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-[#1e293b]/70 border border-sky-500/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 text-sky-400 font-bold text-sm mb-1">
+            <span></span> Catálogo &amp; Inventario
+          </div>
+          <p class="text-2xl font-black text-white">8 Tablas</p>
+          <p class="text-xs text-slate-400 mt-1">productos, categorias, lotes_inventario, rollos_textil, eventos_merma, umbrales_stock, etc.</p>
+        </div>
+
+        <div class="bg-[#1e293b]/70 border border-purple-500/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 text-purple-400 font-bold text-sm mb-1">
+            <span></span> Usuarios &amp; Soporte
+          </div>
+          <p class="text-2xl font-black text-white">4 Tablas</p>
+          <p class="text-xs text-slate-400 mt-1">usuarios, tickets_soporte, reportes_errores, actividad_reciente (RBAC y auditoría).</p>
+        </div>
+
+        <div class="bg-[#1e293b]/70 border border-emerald-500/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm mb-1">
+            <span></span> Ventas &amp; Transacciones
+          </div>
+          <p class="text-2xl font-black text-white">4 Tablas</p>
+          <p class="text-xs text-slate-400 mt-1">pedidos, items_pedido, items_carrito, resenas (bloqueo transaccional FOR UPDATE).</p>
+        </div>
+
+        <div class="bg-[#1e293b]/70 border border-orange-500/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 text-orange-400 font-bold text-sm mb-1">
+            <span></span> Cupones, CMS &amp; ERP
+          </div>
+          <p class="text-2xl font-black text-white">9 Tablas</p>
+          <p class="text-xs text-slate-400 mt-1">cupones, categorias_cupon, metricas_ventas_erp, ventas_region, configuracion_sistema, etc.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 2: ARQUITECTURA MVC -->
+    <section id="pane-mvc" class="space-y-6 hidden">
+      <!-- Visor del Diagrama MVC -->
+      <div class="bg-[#1e293b] border border-slate-700/80 rounded-2xl p-5 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>️</span> Arquitectura de 3 Capas: Modelo, Vista y Controlador
+            </h2>
+            <p class="text-xs text-slate-400">Separación estricta de responsabilidades entre cliente React, API Java nativa y PostgreSQL 17.</p>
+          </div>
+          <a href="arquitectura_mvc.svg" target="_blank" class="px-3 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors flex items-center gap-1.5">
+            <span></span> Abrir SVG Completo
+          </a>
+        </div>
+
+        <!-- Contenedor del SVG -->
+        <div class="bg-[#0f172a] rounded-xl border border-slate-800 p-2 overflow-x-auto shadow-inner">
+          <img src="arquitectura_mvc.svg" alt="Diagrama de Arquitectura MVC D&D Textil" class="w-full min-w-[1000px] h-auto rounded-lg" />
+        </div>
+      </div>
+
+      <!-- Desglose de las 3 Capas -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- CAPA VISTA -->
+        <div class="bg-[#1e293b] border-t-4 border-t-emerald-500 border border-slate-700/80 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded">FRONTEND</span>
+            <span class="text-xs text-slate-400">Puerto 3001</span>
+          </div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>1️⃣</span> VISTA (View)
+          </h3>
+          <p class="text-xs text-slate-300">
+            Interfaz reactiva en <strong>React 18</strong>, Vite y Tailwind CSS. Renderiza catálogos, carritos y paneles administrativos sin acoplamiento a base de datos.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1.5 border-t border-slate-700/50 pt-3">
+            <li>• <strong class="text-slate-200">Catalogo.jsx:</strong> Filtros en tiempo real por tela y precio.</li>
+            <li>• <strong class="text-slate-200">CarritoDrawer.jsx:</strong> Liquidación de metraje continuo y cupones.</li>
+            <li>• <strong class="text-slate-200">ResumenAdmin.jsx:</strong> Gráficos Recharts de ventas y stock.</li>
+            <li>• <strong class="text-slate-200">App Android:</strong> Wrapper nativo Kotlin con WebView.</li>
+          </ul>
+        </div>
+
+        <!-- CAPA CONTROLADOR -->
+        <div class="bg-[#1e293b] border-t-4 border-t-blue-500 border border-slate-700/80 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-400 bg-blue-950/80 px-2 py-0.5 rounded">BACKEND</span>
+            <span class="text-xs text-slate-400">Puerto 8081</span>
+          </div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>2️⃣</span> CONTROLADOR (Controller)
+          </h3>
+          <p class="text-xs text-slate-300">
+            Servidor HTTP nativo en <strong>Vanilla Java 17</strong> con pool de 32 hilos concurrentes. Aplica validaciones, seguridad DevSecOps y orquestación.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1.5 border-t border-slate-700/50 pt-3">
+            <li>• <strong class="text-slate-200">ManejadorBase:</strong> CORS, Rate Limit (120 req/min) y X-Correlation-ID.</li>
+            <li>• <strong class="text-slate-200">ManejadorProductos:</strong> Endpoints /api/productos (GET, POST, PUT, DELETE).</li>
+            <li>• <strong class="text-slate-200">ManejadorPedidos:</strong> Transaccionalidad de compras e inventario.</li>
+            <li>• <strong class="text-slate-200">ManejadorSalud:</strong> Probes /health/live y /health/ready.</li>
+          </ul>
+        </div>
+
+        <!-- CAPA MODELO -->
+        <div class="bg-[#1e293b] border-t-4 border-t-purple-500 border border-slate-700/80 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-400 bg-purple-950/80 px-2 py-0.5 rounded">PERSISTENCIA &amp; DOMINIO</span>
+            <span class="text-xs text-slate-400">Puerto 5432</span>
+          </div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>3️⃣</span> MODELO (Model)
+          </h3>
+          <p class="text-xs text-slate-300">
+            Entidades de dominio Java + DAOs JDBC con pool <strong>HikariCP</strong> + motor relacional <strong>PostgreSQL 17</strong> con bloqueo a nivel de fila.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1.5 border-t border-slate-700/50 pt-3">
+            <li>• <strong class="text-slate-200">Entidades:</strong> Producto, Pedido, Usuario, LoteInventario.</li>
+            <li>• <strong class="text-slate-200">DAOs:</strong> ProductoDAO, PedidoDAO, InventarioDAO (SQL parametrizado).</li>
+            <li>• <strong class="text-slate-200">PostgreSQL 17:</strong> 25 Tablas 3FN, Vistas SQL y Transacciones ACID.</li>
+            <li>• <strong class="text-slate-200">SELECT ... FOR UPDATE:</strong> Previene sobreventa simultánea de telas.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 3: CICLO TRANSACCIONAL -->
+    <section id="pane-flujo" class="space-y-6 hidden">
+      <div class="bg-[#1e293b] border border-slate-700/80 rounded-2xl p-6 shadow-2xl space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span></span> Ciclo de Vida Transaccional MVC: Compra de Tela y Descuento de Stock
+          </h2>
+          <p class="text-sm text-slate-400 mt-1">
+            Demostración del flujo coordinado entre la Vista, el Controlador, el Modelo y el motor PostgreSQL ante una orden de compra:
+          </p>
+        </div>
+
+        <!-- Paso a Paso Visual -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+          <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 text-center space-y-2">
+            <span class="w-8 h-8 rounded-full bg-emerald-950 border border-emerald-600 text-emerald-400 font-bold flex items-center justify-center mx-auto text-xs">1</span>
+            <h4 class="text-xs font-bold text-white">Vista (React)</h4>
+            <p class="text-[11px] text-slate-400">Cliente pulsa "Confirmar Pedido". Se genera JSON con carrito y dirección.</p>
+          </div>
+
+          <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 text-center space-y-2">
+            <span class="w-8 h-8 rounded-full bg-sky-950 border border-sky-600 text-sky-400 font-bold flex items-center justify-center mx-auto text-xs">2</span>
+            <h4 class="text-xs font-bold text-white">Controlador (Java)</h4>
+            <p class="text-[11px] text-slate-400">ManejadorBase valida CORS, Rate Limit y genera X-Correlation-ID.</p>
+          </div>
+
+          <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 text-center space-y-2">
+            <span class="w-8 h-8 rounded-full bg-purple-950 border border-purple-600 text-purple-400 font-bold flex items-center justify-center mx-auto text-xs">3</span>
+            <h4 class="text-xs font-bold text-white">Modelo (DAOs)</h4>
+            <p class="text-[11px] text-slate-400">PedidoDAO inicia transacción: BEGIN TRANSACTION con HikariCP.</p>
+          </div>
+
+          <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 text-center space-y-2">
+            <span class="w-8 h-8 rounded-full bg-amber-950 border border-amber-600 text-amber-400 font-bold flex items-center justify-center mx-auto text-xs">4</span>
+            <h4 class="text-xs font-bold text-white">PostgreSQL 17</h4>
+            <p class="text-[11px] text-slate-400">SELECT ... FOR UPDATE bloquea la fila de la tela y descuenta stock.</p>
+          </div>
+
+          <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 text-center space-y-2">
+            <span class="w-8 h-8 rounded-full bg-emerald-950 border border-emerald-600 text-emerald-400 font-bold flex items-center justify-center mx-auto text-xs">5</span>
+            <h4 class="text-xs font-bold text-white">Respuesta 201</h4>
+            <p class="text-[11px] text-slate-400">COMMIT, retorno de ID de orden y renderizado reactivo en la Vista.</p>
+          </div>
+        </div>
+
+        <!-- Bloque SQL Demostrativo -->
+        <div class="bg-[#0f172a] rounded-xl p-4 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-mono">
+            <span>Operación SQL Transaccional en Modelo (PostgreSQL)</span>
+            <span class="text-emerald-400">Nivel de Aislamiento: READ COMMITTED</span>
+          </div>
+          <pre class="text-xs text-sky-300 font-mono overflow-x-auto p-2 bg-[#090d16] rounded border border-slate-900 leading-relaxed">
+BEGIN TRANSACTION;
+  -- Bloqueo pesimista para evitar carreras en ventas simultáneas
+  SELECT id, stock FROM productos WHERE id = 1 FOR UPDATE;
+  
+  -- Inserción de la orden comercial y sus ítems
+  INSERT INTO pedidos (usuario_id, monto_total, estado, estado_pago) VALUES (5, 85000.00, 'pending', 'paid');
+  INSERT INTO items_pedido (pedido_id, producto_id, cantidad, precio_por_metro, subtotal) VALUES (12, 1, 3.4, 25000.00, 85000.00);
+  
+  -- Descuento exacto de metros del stock
+  UPDATE productos SET stock = stock - 3.4 WHERE id = 1;
+COMMIT TRANSACTION;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-slate-500 py-4 border-t border-slate-800/80">
+      Plataforma D&amp;D Textil · Tecnólogo en Análisis y Desarrollo de Software (ADSO) - SENA · Calidad ISO/IEC 25010 &amp; DevSecOps
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      const tabs = ['relacional', 'mvc', 'flujo'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-btn-' + t);
+        const pane = document.getElementById('pane-' + t);
+        if (t === tabId) {
+          btn.classList.add('tab-active');
+          btn.classList.remove('text-slate-400');
+          pane.classList.remove('hidden');
+        } else {
+          btn.classList.remove('tab-active');
+          btn.classList.add('text-slate-400');
+          pane.classList.add('hidden');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

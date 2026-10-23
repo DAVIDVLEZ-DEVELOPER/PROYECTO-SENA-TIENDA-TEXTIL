@@ -1,13 +1,17 @@
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=00b4d8&height=200&section=header&text=Tienda%20Digital&fontSize=70&animation=fadeIn" />
+﻿<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=00b4d8&height=200&section=header&text=Tienda%20Digital&fontSize=70&animation=fadeIn"/>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-  <img src="https://img.shields.io/badge/Vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white" />
-  <img src="https://img.shields.io/badge/TailwindCSS-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" />
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white" />
-  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/>
+  <img src="https://img.shields.io/badge/Vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white"/>
+  <img src="https://img.shields.io/badge/TailwindCSS-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white"/>
+</p>
+
+<p align="center">
+  <img src="../images/tienda-preview.png"alt="D&D Textil - Vista Principal de la Tienda"width="100%"/>
 </p>
 
 ---
@@ -38,7 +42,7 @@
 
 ## Visión General
 
-**D&D Textil** es una plataforma B2B/B2C (React + Java PostgreSQL) diseñada para la gestión premium de inventario, ventas y catálogo en la industria textil. La aplicación combina un diseño envolvente "Glassmorphism" y animaciones fluidas con un panel administrativo avanzado.
+**D&D Textil** es una plataforma B2B/B2C (React + Java PostgreSQL) diseñada para la gestión premium de inventario, ventas y catálogo en la industria textil. La aplicación combina un diseño envolvente "Glassmorphism"y animaciones fluidas con un panel administrativo avanzado.
 
 ### Funcionalidades Clave
 
@@ -61,7 +65,7 @@ npm install
 
 # (Opcional) Si tienes backend en Java/Postgres:
 cd backend-java/conexionPostgres
-java -cp "bin;lib/gson-2.10.1.jar;lib/postgresql-42.7.3.jar" App
+java -cp "bin;lib/gson-2.10.1.jar;lib/postgresql-42.7.3.jar"App
 
 # Inicia la aplicación frontend
 npm run dev
@@ -174,8 +178,8 @@ El **Frontend** es la interfaz (lo que una persona ve y toca) de D&D Textil. Con
 
 ### Stack Tecnológico Utilizado
 
-*   **React 18**: Librería basada en el paradigma Funcional y de Reactividad. Su funcionamiento básico radica en renderizar el Virtual DOM (una copia exacta de la pantalla pero en la memoria RAM del navegador). Cuando el usuario realiza una acción, el Virtual DOM comprueba la diferencia contra el DOM Real, de forma que "solo se parchean o repintan los píxeles de las zonas cambiadas" en vez de redibujar toda la sección desde cero, alcanzando una fluidez enorme (60 fps web).
-*   **Vite**: El empaquetador moderno `bundler`. Reemplaza al lento Webpack y sirve el entorno de desarrollo traduciendo módulos EcmaScript instantáneamente, usando "hot-module-replacement (HMR)" para reflejar los cambios en el navegador una fracción de segundo después de dar Control+S en tu editor de código.
+*   **React 18**: Librería basada en el paradigma Funcional y de Reactividad. Su funcionamiento básico radica en renderizar el Virtual DOM (una copia exacta de la pantalla pero en la memoria RAM del navegador). Cuando el usuario realiza una acción, el Virtual DOM comprueba la diferencia contra el DOM Real, de forma que "solo se parchean o repintan los píxeles de las zonas cambiadas"en vez de redibujar toda la sección desde cero, alcanzando una fluidez enorme (60 fps web).
+*   **Vite**: El empaquetador moderno `bundler`. Reemplaza al lento Webpack y sirve el entorno de desarrollo traduciendo módulos EcmaScript instantáneamente, usando "hot-module-replacement (HMR)"para reflejar los cambios en el navegador una fracción de segundo después de dar Control+S en tu editor de código.
 *   **Tailwind CSS**: Framework "Utility-first". En vez de crear archivos CSS externos clásicos con clases tipo `.boton-primario`, se inyectan clases atómicas directas sobre el HTML (ej. `<button className="bg-blue-500 rounded-md p-4">`). En D&D Textil esto facilitó adoptar el estilo visual *Glassmorphism* usando paletas semitransparentes `bg-white/10` mezclado con desenfoque de fondo `backdrop-blur-md` permitiendo ese tono suave y vidrioso.
 *   **Framer Motion**: Librería que coordina la física (rebotes, suavidad, desaceleración) en transiciones. No es CSS plano; es JavaScript inyectando matemática compleja en el framerate.
 *   **React Router (V6)**: El controlador de rutas local de la página en React.
@@ -197,13 +201,13 @@ Aquí no se desarrolla lógica granular o pequeños cuadros de UI. Cada módulo 
 - **`admin/`**: Vistas de acceso a información total. Exponen reportes. 
 
 #### 3. Componentes de UI (`components/`)
-Archivos 100% aislados o 'sin estado' (Stateless o Pure Components) diseñados para Reciclaje. Esto garantiza la regla "DRY" (Don't Repeat Yourself). Ejemplos:
+Archivos 100% aislados o 'sin estado' (Stateless o Pure Components) diseñados para Reciclaje. Esto garantiza la regla "DRY"(Don't Repeat Yourself). Ejemplos:
 - **`ProductCard.jsx`**: Recibe propiedades (`props` en React) referenciando Única e individualmente a UN producto. Él se asegura de armar el rectángulo, inyectar el SRC de su foto individual y poseer su botón de Carrito con lógica interna. Ahorra 100 líneas de código x los 50 productos en Catálogo.
 - **`Alerts.jsx`** / **`Toast.jsx`**: Modales que pueden ser invocados importando una función desde donde sea de la app para emitir advertencias interactivas genéricas.
 
 #### 4. Estados Globales o Memorias (`context/`)
-El `useState` simple en React solo almacena en la memoria del componente local. Pero, ¿qué sucede si *el usuario inicia sesión en el archivo Login.jsx* pero luego esa información de "¿quién está online?" sirve en *App.jsx para cambiar el botón del menú de "Login" a "Mi Panel"*?.
-Ahí entran los Context. Son como "Memorias USB invisibles" que conectan a todos.
+El `useState` simple en React solo almacena en la memoria del componente local. Pero, ¿qué sucede si *el usuario inicia sesión en el archivo Login.jsx* pero luego esa información de "¿quién está online?"sirve en *App.jsx para cambiar el botón del menú de "Login"a "Mi Panel"*?.
+Ahí entran los Context. Son como "Memorias USB invisibles"que conectan a todos.
 - **`AuthContext.jsx`**: Efectúa el `fetch("http://localhost:8080/api/login")`. Si es exitoso, almacena tu token/usuario y lo exporta global. Todos los archivos que utilicen el hook `useAuth()` de este Context saben instantáneamente que ya estás logueado. 
 - **`MetricsContext.jsx`**: Inicializado usando Hooks como `useEffect`, dispara sus peticiones a Backend (`/api/products`) tan pronto la página termina de cargar por primera vez. Una vez las recibe, llena un array en memoria `products` o `orders` del cual cualquier parte del proyecto puede sacar información real, previniendo múltiples llamadas lentas al backend de forma redundante (caché manual de Frontend).
 - **`CartContext.jsx`**: Opera con inmutabilidad (regla estricta de React). Nunca modifica el arreglo del carrito directamente, utiliza métodos `.map()` o `.filter()` para clonarlo creando nuevos carritos cuando agregas y descuentas telas. Esto fuerza a la página a repintar el pequeño círculo indicador (Badge) al lado del Icono de la bolsa.
@@ -216,7 +220,7 @@ Ahí entran los Context. Son como "Memorias USB invisibles" que conectan a todos
 ### Seguridad en Frontend (CORS y Rutas Protegidas)
 El frontend contiene barreras lógicas. Para las páginas que implican privacidad y gestión:
 - Existe un componente envolvedor `<ProtectedRoute role="x">`.
-- Funciona chequeando la validación del `AuthContext`. Si es nulo, retorna `<Navigate to="/login" replace />`. Si el usuario sí está logueado pero su rol no macha (ej: Un User Cliente que intentó alterar la barra de búsqueda escribiendo manual `/admin/dashboard`), la prop `role="admin"` detectará la discordancia devolviéndolo forzadamente al Home y mostrando "Acceso Denegado". Todo esto pasa en décimas de segundo, localmente sin emitir red al servidor.
+- Funciona chequeando la validación del `AuthContext`. Si es nulo, retorna `<Navigate to="/login"replace />`. Si el usuario sí está logueado pero su rol no macha (ej: Un User Cliente que intentó alterar la barra de búsqueda escribiendo manual `/admin/dashboard`), la prop `role="admin"` detectará la discordancia devolviéndolo forzadamente al Home y mostrando "Acceso Denegado". Todo esto pasa en décimas de segundo, localmente sin emitir red al servidor.
 
 ---
 
@@ -249,7 +253,7 @@ Estos revisan qué quieres hacer. Un Handler generalmente realiza este flujo:
 #### 3. Capa Transaccional o DAO (Data Access Objects `dao/`)
 En los DAOs (`CartDAO`, `UserDAO`, `ProductDAO`, etc.) reside verdaderamente el conocimiento relacional al servidor en SQL. No existe HTML, no existe Frontend y no existen Rutas aquí. Únicamente Lógica, Bases de Datos, Validaciones Matemáticas.
 Son las entidades responsables de proteger tu plataforma ejecutando funciones como `PreparedStatement`.
-Un PreparedStatement es una capa extra de seguridad. En vez de enviar a Postgres esto: `"SELECT * FROM user WHERE email = " + variableEmail` (Lo cual desencadena la terrible vulnerabilidad de inyecciones Sql destruyendo DB's), Java le avisa a Postgres que "Le voy a mandar variables de forma sellada y parametrizada", mediante el caracter `?`. Así, postgres rechaza cualquier comando ajeno o malversión en ese String, tomándolo estrictamente como un dato y salvando el negocio.
+Un PreparedStatement es una capa extra de seguridad. En vez de enviar a Postgres esto: `"SELECT * FROM user WHERE email = "+ variableEmail` (Lo cual desencadena la terrible vulnerabilidad de inyecciones Sql destruyendo DB's), Java le avisa a Postgres que "Le voy a mandar variables de forma sellada y parametrizada", mediante el caracter `?`. Así, postgres rechaza cualquier comando ajeno o malversión en ese String, tomándolo estrictamente como un dato y salvando el negocio.
 
 #### 4. Modelos POJO (`models/`)
 - Abreviados "Plain Old Java Objects".
@@ -263,7 +267,7 @@ Toma credenciales exclusivas del sistema Windows o Mac del dueño a través de `
 
 ### Un Viaje Analístico: ¿Cómo se conectan Frontend a Backend en Milisegundos?
 
-Tomemos el ejemplo práctico más crítico del negocio: Un usuario va a tu página "/login" y aprieta Entrar.
+Tomemos el ejemplo práctico más crítico del negocio: Un usuario va a tu página "/login"y aprieta Entrar.
 Esto es lo que sucede, paso a paso, abarcando todas las tecnologías conjuntas: 
 
 1. El botón `Login` es presionado en React. Dispara el gancho previniendo evento nativo y ejecuta función async `loginUser()`.
@@ -275,7 +279,7 @@ Esto es lo que sucede, paso a paso, abarcando todas las tecnologías conjuntas:
 7. `AuthHandler` activa "AuthDAO", llamando su método vital encapsulado `login(email, pass)`.
 8. En lo más profundo de la seguridad backend Java (DAO), el password virgen `...123` viaja a la función `hashPassword(password)`. Entra en el engranaje criptográfico Java Class MessageDigest `SHA-256`, mezclando bytes e iteraciones iterando un Byte-String hex crudo a `a97d21b0....`. (Ni remotamente es la misma palabra).
 9. El AuthDAO utiliza un PreparedStatement JDBC abriéndose conexión hacia tu Base de Datos PostgreSQL 14 consultándote: `SELECT id, role, hash FROM users WHERE email=? AND password=?`.
-10. La BD retorna 1 línea o ninguna. Si hay línea exitosa, el DAO Java crea de cero un Modelo local de Java (`User.java`) empotrando nombre "Cliente Genérico" ID 2, y Rol `cliente`, y lo devuelve a través de return lógicos hasta el `AuthHandler`.
+10. La BD retorna 1 línea o ninguna. Si hay línea exitosa, el DAO Java crea de cero un Modelo local de Java (`User.java`) empotrando nombre "Cliente Genérico"ID 2, y Rol `cliente`, y lo devuelve a través de return lógicos hasta el `AuthHandler`.
 11. `AuthHandler` al percibirlo como No Nulo, asume tu identidad como validísima, sella un Exchange Response HTML Code `200 EXITO`. Empepa como JSON de regreso a ese usuario.
 12. El fetch() del Navegador Web Cliente que estaba pausado bajo la cláusula JS (await), recibe éxito. Toma el payload del JSON, informándoselo a AuthContext (El centro de variables Context).
 13. AuthContext propaga inmediatamente para re-renderizar Virtual-DOM en toda tu Aplicación Web indicando al menú esconder la pestaña logear. App.jsx direcciona desde Navigate hook forzosamente transportándote al `/cliente`. Y la pantalla cambia mostrándote la Bienvenida, con total y rotundo éxito, de forma segura. ¡Y todo sin refrescarse!.
@@ -292,13 +296,13 @@ La base de datos se llama **`tienda_digital_textiles_db`** y se aloja sobre el m
 * **users**: Contiene la información plana y validaciones de rol (Admin, Seller, Buyer). Emplea `id SERIAL PRIMARY KEY`. Garantizando indexación B-Tree en cada usuario. No guarda passwords reales, es una columna con limitante a tamaño y validada en su char-set 256 de encriptación Hexa-decimal desde tu código Java.
 * **categories**: Catálogo primario. Define los IDs (seda, encaje, algodón) para enlazar dependientemente tu catálogo tela en búsquedas optimizadas en donde "Todos comparten algo por igual".
 * **products**: Vinculado al `sellerId`. Guarda métricas exactas de tus inventarios y nombre del Item (Varchar restrictivo y decimales para metrajes precisos `NUMERIC 10,2`). Control de aprobación y precios lógicos indexados (`price` DECIMAL).
-* **product_images**: Tabla auxiliar. No atiborramos tus "productos" de blob binario, almacenando así las representaciones únicamente usando la Key secundaria (`product_id`) indicando que cada id un producto tendrá n Fotos diferentes de urls Base64 almacenables local o servidor cloud, incluyendo los campos referenciales y ordenamiento prioritario de imagen en frontend `display_order`. 
-* **orders** + **order_items**: Ejemplo clásico de disociación Transaccional de One-to-Many(1 a Muchos). Una Factura (orden) se genera (ID orden, Montos y dirección envío, cliente y timestamp `now()`), seguido de multiplicados "Order_items" (Detalle en español). Son todos en filas hijas que apuntan a tu orden indicando (Lleve la Tela Roja(ID.4) Unidades(20) Preciouna($30) + y Tela Azul....). Este tipo de lógica previene error cruzado y posibilita reabastecimiento en reversiones y reembolsos por artículo.
+* **product_images**: Tabla auxiliar. No atiborramos tus "productos"de blob binario, almacenando así las representaciones únicamente usando la Key secundaria (`product_id`) indicando que cada id un producto tendrá n Fotos diferentes de urls Base64 almacenables local o servidor cloud, incluyendo los campos referenciales y ordenamiento prioritario de imagen en frontend `display_order`. 
+* **orders** + **order_items**: Ejemplo clásico de disociación Transaccional de One-to-Many(1 a Muchos). Una Factura (orden) se genera (ID orden, Montos y dirección envío, cliente y timestamp `now()`), seguido de multiplicados "Order_items"(Detalle en español). Son todos en filas hijas que apuntan a tu orden indicando (Lleve la Tela Roja(ID.4) Unidades(20) Preciouna($30) + y Tela Azul....). Este tipo de lógica previene error cruzado y posibilita reabastecimiento en reversiones y reembolsos por artículo.
 
 ### Tablas Secundarias e Inteligencia Empresarial
 10 Tablas modernas fueron introducidas, haciendo que Java se conecte de igual modo con todos estos apartados mediante `InventoryDao`.
 * **cart_items**: Permite la persistencia Carrito. Si cierras navegador tras meter un carrito con 50 metros, en otro día Java recuperará exactamente el mismo item enlazándolo al user ID.
-* **coupon_categories** / **coupon_usage**: Segmentación comercial cruzando la regla porcentual contra "Limites de uso 1 vez por user" o si está caducado impidiendo la re-involucración lógica por base de datos de los algoritmos de venta.
+* **coupon_categories** / **coupon_usage**: Segmentación comercial cruzando la regla porcentual contra "Limites de uso 1 vez por user"o si está caducado impidiendo la re-involucración lógica por base de datos de los algoritmos de venta.
 * **inventory_batches** + **waste_events**: Las mermas (daños del rollo grande por defecto de fábrica). El backend genera estadísticas en DB conectando quien perdió los metros. 
 * **daily_sales** + **region_sales**: Ahorro analítico asombroso de base de datos a través de procesos de volcado, los Endpoints no suman matemáticamente en tiempo-real las 500,000 ventas de un año en 2 segundos cuando abre tu Administrador. Estas tablas son condensados aglomerados listos para servir las analíticas rápidas.
 * **global_banner**: Tabla unifila empleaba el backend update / upsert lógico por java con boolean `enabled` reflejándose sobre un contexto dinámico `useEffect()` al inicio total que cambia el frontend por anuncio de 20%, el de rebajas del sábado, entre otros.
@@ -311,7 +315,7 @@ La base de datos se llama **`tienda_digital_textiles_db`** y se aloja sobre el m
 
 Esta herramienta permite evitar desperdicios. Cuando eliges un artículo:
 * **Falda Circular**: Toma uso geométrico puro. Se procesa usando radio y diámetros base matemáticos: Se implementa la fórmula `(Cintura / 2 * PI)`, extraemos dimensión diametral por caída hasta llegar al valor de recorte real agregando excedentes.
-* **Cortinas**: Usando simples iteraciones condicionales `if-else`. Se calcula por pliegues multiplicando anchos fijos de la tela (ancho ventana * factor (1.5, 2.0. 3.0)), y aplicando offsets como variables fijadas como "reservas" para dobladillos estándar de la manufactura nacional de hasta medio metro compensado.
+* **Cortinas**: Usando simples iteraciones condicionales `if-else`. Se calcula por pliegues multiplicando anchos fijos de la tela (ancho ventana * factor (1.5, 2.0. 3.0)), y aplicando offsets como variables fijadas como "reservas"para dobladillos estándar de la manufactura nacional de hasta medio metro compensado.
 * **Manteles**: Opera midiendo el vuelo o de caída deseada por encima de dimensiones rectangulares exactas. El algoritmo extrae lados equivalentes A, Sides B con caída X total.
 Todas rematan su proceso devolviendo la variable más un `+= 10%`, un salvavidas default en diseño textil previniendo daños de sesgo antes del resultado al usuario.
 
@@ -319,7 +323,7 @@ Todas rematan su proceso devolviendo la variable más un `+= 10%`, un salvavidas
 
 ## Cómo ingresar al sistema de Producción (Demo)
 
-Para probar la plataforma en tus navegadores en Localhost, puedes usar estas cuentas de demostración prefabricadas (cuyas contraseñas ya corrieron bajo hash en BD). Enciende primero la Base de datos, luego Java y por último Vite con el script `iniciar_todo.ps1`:
+Para probar la plataforma en tus navegadores en Localhost, puedes usar estas cuentas de demostración prefabricadas (cuyas contraseñas ya corrieron bajo hash en BD):
 
 | Rol | Correo | Password (Sin encriptar a ojo de User) |
 |---|---|---|
@@ -327,7 +331,7 @@ Para probar la plataforma en tus navegadores en Localhost, puedes usar estas cue
 | Vendedor | vendedor@ddtextil.com | vendedor123 |
 | Administrador | admin@ddtextil.com | admin123 |
 
-> 🛡️ **Seguridad:** Las contraseñas están almacenadas con encriptación SHA-256. Las cuentas nuevas registradas desde la pantalla de "Registrarse" también usan SHA-256.
+> **Seguridad:** Las contraseñas están almacenadas con encriptación SHA-256. Las cuentas nuevas registradas desde la pantalla de "Registrarse"también usan SHA-256.
 
 ---
 
@@ -343,7 +347,7 @@ Está programado de raíz. Limitantes algorítmicas `max={producto.stock}` está
 Usa la Calculadora de Metraje del Panel.
 
 **¿Es seguro pagar en esta plataforma?**
-Sí. Tu `iniciar_todo.ps1` inyecta una variable pura del sistema (`DB_PASSWORD`) de forma de entorno en lugar de tener texto plano en strings. Esto es principio de OWASP Security top 10. Las validaciones de capa frontend corren en tiempo útil con Regex validando todo campo previo envío. Cero inyección y seguridad máxima logrando aislar variables públicas de base de datos cerrada y restringiendo con roles en UI (Routes Protector).
+Sí. Con Docker, las variables de entorno se configuran en el archivo `.env` y se inyectan de forma segura en los contenedores sin exponerlas en el código fuente. Esto es principio de OWASP Security top 10. Las validaciones de capa frontend corren en tiempo útil con Regex validando todo campo previo envío. Cero inyección y seguridad máxima logrando aislar variables públicas de base de datos cerrada y restringiendo con roles en UI (Routes Protector).
 
 ---
 
@@ -381,74 +385,70 @@ El backend en Java ha sido rigurosamente estructurado separando las responsabili
 
 ```text
 src/
- ├── domain/                  # Capa 1: Entidades Centrales
- │    ├── models/               # Clases planas (Product, User, Order, Coupon, etc.)
- │    └── repositories/         # Interfaces (contratos) que definen qué operaciones de DB existen.
- ├── application/             # Capa 2: Casos de Uso y Lógica de Negocio
- │    └── services/             # Lógica de aplicación (AuthService), validaciones, encriptación.
- ├── infrastructure/          # Capa 3: Adaptadores hacia el mundo exterior (HTTP, BD)
+ ├── dominio/                   # Capa 1: Entidades Centrales
+ │    ├── modelos/              # Clases puras (Producto, Usuario, Pedido, Cupon, etc.)
+ │    ├── repositorios/         # Interfaces de persistencia (RepositorioUsuario)
+ │    └── excepciones/          # Excepciones de dominio (ExcepcionDominio)
+ ├── aplicacion/                # Capa 2: Casos de Uso y Servicios
+ │    └── servicios/            # Reglas de negocio (ServicioAutenticacion, ServicioFactura)
+ ├── infraestructura/           # Capa 3: Adaptadores y Persistencia
  │    ├── api/
- │    │    ├── handlers/          # Controladores HTTP (AuthHandler, ProductsHandler)
- │    │    └── ApiServer.java     # Configuración del servidor y enrutamiento principal.
- │    ├── persistence/jdbc/     # DAOs y Repositorios concretos (JdbcUserRepositoryImpl)
- │    └── config/
- │         └── Conexion.java      # Singleton de conexión a la Base de Datos.
- ├── App.java                 # Punto de entrada (main) de la aplicación.
- └── MockDataSeeder.java      # Utilidad para poblar la BD con datos iniciales reales.
+ │    │    ├── manejadores/     # Controladores HTTP (ManejadorAutenticacion, ManejadorProductos...)
+ │    │    └── ServidorApi.java # Servidor HTTP concurrente (Pool de 32+ hilos)
+ │    ├── persistencia/jdbc/    # DAOs y Repositorios JDBC (UsuarioDAO, JdbcRepositorioUsuarioImpl...)
+ │    └── configuracion/
+ │         └── Conexion.java    # Pool de conexiones HikariCP / PostgreSQL
+ ├── App.java                   # Punto de entrada principal
+ ├── PobladorDatosPrueba.java   # Utilidad para poblar la BD con datos iniciales reales
+ └── PruebasSeguridadYBugs.java # Suite de validación de seguridad y concurrencia
 ```
 
 ---
 
 ### 2. Implementación de los Principios SOLID (Backend)
 
-Durante la reestructuración del backend, se aplicaron rigurosamente los 5 principios de diseño orientado a objetos definidos por Robert C. Martin:
+Durante la estructuración del backend, se aplicaron rigurosamente los 5 principios de diseño orientado a objetos:
 
 #### S - Single Responsibility Principle (Principio de Responsabilidad Única)
 *Una clase debe tener una, y solo una, razón para cambiar.*
-- **Implementación:** Antes, las clases hacían rutas HTTP, lógica y base de datos simultáneamente. Ahora:
-  - `AuthHandler`: **Solo** intercepta la petición HTTP (Request), verifica los headers (CORS), extrae el JSON y arma la respuesta HTTP (Response).
-  - `AuthService`: **Solo** contiene lógica de negocio pura (hashear contraseñas con SHA-256, verificar prohibiciones, verificar roles de usuarios).
-  - `UserDAO` / `JdbcUserRepositoryImpl`: **Solo** ejecutan queries SQL (`SELECT`, `INSERT`) y mapean la base de datos a objetos Java.
+- **Implementación:**
+  - `ManejadorAutenticacion`: **Solo** intercepta la petición HTTP (Request), verifica headers (CORS, Rate Limiting), extrae el JSON y emite la respuesta HTTP (Response).
+  - `ServicioAutenticacion`: **Solo** contiene lógica de negocio pura (hashing SHA-256 de contraseñas, validación de suspensión, verificación de roles).
+  - `UsuarioDAO` / `JdbcRepositorioUsuarioImpl`: **Solo** ejecutan consultas SQL (`SELECT`, `INSERT`) y mapean resultados relacionales a objetos Java.
 
 #### O - Open/Closed Principle (Principio de Abierto/Cerrado)
 *El software debe estar abierto para extensión, pero cerrado para modificación.*
-- **Implementación:** El servidor (`ApiServer.java`) está diseñado para agregar nuevas rutas sin tocar el código de los manejadores existentes. Si el día de mañana agregamos un flujo de recuperar con Google (Google Oauth), no destruiremos `AuthService`. En lugar de eso, crearíamos nuevas entidades extendiendo nuestras interfaces de inicio de sesión sin necesidad de reescribir la autenticación que ya validamos y aprobamos.
+- **Implementación:** El servidor (`ServidorApi.java`) está diseñado para agregar nuevas rutas sin alterar el código de los manejadores existentes. Nuevos proveedores de autenticación o métodos de pago extienden las interfaces de dominio sin reescribir la lógica ya validada.
 
 #### L - Liskov Substitution Principle (Principio de Sustitución de Liskov)
 *Las clases derivadas deben poder sustituir a sus clases base.*
-- **Implementación:** El diseño base de Java Sun HTTP (`HttpHandler`) permite polimorfismo riguroso. Cualquier `Handler` implementado (por ejemplo, `ProductsHandler` o `UsersHandler`) cumple a la perfección el contrato de `handle(HttpExchange exchange)`. Puedes agrupar, enviar a métodos genéricos, o sustituir un controlador por un mock de testing de `HttpHandler` sin que el programa note la diferencia ni provoque fallos.
+- **Implementación:** Todos los controladores extienden `ManejadorBase` e implementan el contrato `HttpHandler` de Java nativo. Cualquier manejador (`ManejadorProductos`, `ManejadorUsuarios`, etc.) puede sustituirse o evaluarse mediante pruebas sin alterar el flujo del servidor.
 
 #### I - Interface Segregation Principle (Principio de Segregación de Interfaces)
 *Ningún cliente debe verse obligado a depender de métodos que no utiliza.*
-- **Implementación:** En un sistema de e-commerce grande, los DAOs pueden tener cientos de métodos. Al usar carpetas como `domain/repositories/`, segregamos las responsabilidades. `UserRepository` expone métodos estrictamente relevantes para usuarios (`findByEmail`, `save`). Un controlador de autenticación accede a `UserRepository` libre del peso del código y métodos de facturación, carritos e inventario con los que nunca va a interactuar.
+- **Implementación:** Las interfaces en `dominio/repositorios/` segregan responsabilidades. `RepositorioUsuario` expone métodos estrictamente relevantes para usuarios (`buscarPorCorreo`, `guardar`). Un controlador de autenticación accede a `RepositorioUsuario` sin depender de lógica de facturación, carritos ni inventario.
 
 #### D - Dependency Inversion Principle (Principio de Inversión de Dependencia)
 *Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones.*
-- **Implementación:** Es el pilar fundamental que hemos completado para lograr una arquitectura robusta, enfocado en el archivo `ApiServer.java` y los servicios:
-  1. La lógica principal (`AuthService`) **NUNCA** llama a la base de datos PostgreSQL de forma directa.
-  2. El servicio depende únicamente de una **Interfaz Abstracta** llamada `UserRepository`.
-  3. En `ApiServer.java`, realizamos la inyección total de dependencias desde "fuera" hacia "adentro":
+- **Implementación:** En `ServidorApi.java`, realizamos la inyección de dependencias desacoplando la persistencia de las reglas de negocio:
 
 ```java
-// 1. Instanciamos la conexión a PostgreSQL (Detalle de Bajo Nivel)
-UserRepository userRepository = new JdbcUserRepositoryImpl(); 
+// 1. Instanciamos la persistencia JDBC (Bajo Nivel)
+RepositorioUsuario repositorioUsuario = new JdbcRepositorioUsuarioImpl(); 
 
 // 2. Inyectamos la Interfaz al Servicio de Alto Nivel
-// El AuthService recibe el objeto, a él no le importa si es PostgreSQL, MySQL o Mongo.
-AuthService authService = new AuthService(userRepository); 
+ServicioAutenticacion servicioAutenticacion = new ServicioAutenticacion(repositorioUsuario); 
 
-// 3. Inyectamos el servicio al Controlador HTTP final
-AuthHandler authHandler = new AuthHandler(authService);
+// 3. Inyectamos el servicio al Manejador HTTP final
+ManejadorAutenticacion manejadorAutenticacion = new ManejadorAutenticacion(servicioAutenticacion);
 ```
-- **Resultado:** Si necesitas cambiar tu base de datos actual en PostgreSQL a MongoDB o Firebase, la clase `AuthService` permanece intocable y no colapsará. Simplemente programas un nuevo `MongoUserRepositoryImpl` y lo enchufas en la inyección de dependencias.
+- **Resultado:** Si se requiere migrar de base de datos relacional a otro motor, `ServicioAutenticacion` permanece intacto, bastando implementar un nuevo `RepositorioUsuario`.
 
 ---
 
 ## Arquitectura Frontend
 
-**Descripción:** "Diseño y estructura de la interfaz en React."
-
-El Frontend de **D&D Textil** está estructurado bajo **React 18** y **Vite**, enfatizando el rendimiento, transiciones fluidas de página y un estado global predecible. 
+**Descripción:** "Diseño y estructura de la interfaz en React."El Frontend de **D&D Textil** está estructurado bajo **React 18** y **Vite**, enfatizando el rendimiento, transiciones fluidas de página y un estado global predecible. 
 
 ### Funcionalidades principales
 - Catálogo visual y filtros
@@ -474,7 +474,7 @@ Colores y estilos modificables en el archivo `tailwind.config.js`.
 Todas las páginas encapsuladas que requieran sesión activa están resguardadas por el componente `ProtectedRoute.jsx`.
 
 ```jsx
-<Route path="/admin/*" element={
+<Route path="/admin/*"element={
     <ProtectedRoute allowedRoles={['admin']}>
         <AdminOverview />
     </ProtectedRoute>
@@ -548,7 +548,7 @@ CREATE TABLE products (
 
 ### Conexion JDBC / Pool
 
-Las conexiones (`Conexion.java`) manejan un pool estático pero poseen mecanismos de resiliencia (`isValid()`) que previene conexiones "Zombie" cuando Postgres limpia procesos inactivos de la red, garantizando alta escalabilidad y estabilidad.
+Las conexiones (`Conexion.java`) manejan un pool estático pero poseen mecanismos de resiliencia (`isValid()`) que previene conexiones "Zombie"cuando Postgres limpia procesos inactivos de la red, garantizando alta escalabilidad y estabilidad.
 
 ---
 
@@ -556,9 +556,9 @@ Las conexiones (`Conexion.java`) manejan un pool estático pero poseen mecanismo
 
 ### Requisitos Previos
 
-- **Java JDK 17+** 👉 [https://adoptium.net](https://adoptium.net)
-- **Node.js 18+** 👉 [https://nodejs.org](https://nodejs.org)
-- **PostgreSQL 14+** 👉 [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
+- **Java JDK 17+** [https://adoptium.net](https://adoptium.net)
+- **Node.js 18+** [https://nodejs.org](https://nodejs.org)
+- **PostgreSQL 14+** [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
 
 Verifica que están instalados:
 
@@ -591,16 +591,14 @@ CREATE DATABASE tienda_digital_textiles_db;
 El archivo SQL se encuentra en la carpeta `BASE DE DATOS/` en la raíz del repositorio.
 
 ```bash
-psql -U postgres -d tienda_digital_textiles_db -f "BASE DE DATOS/TIENDA DIGITAL TEXTIL.sql"
-```
+psql -U postgres -d tienda_digital_textiles_db -f "BASE DE DATOS/TIENDA DIGITAL TEXTIL.sql"```
 
 > **Nota:** Si te pide contraseña, ingresa la contraseña de tu usuario `postgres` de PostgreSQL.
 
 #### 1.3. Verificar que se crearon las tablas
 
 ```bash
-psql -U postgres -d tienda_digital_textiles_db -c "\dt"
-```
+psql -U postgres -d tienda_digital_textiles_db -c "\dt"```
 
 Deberías ver las tablas: `users`, `products`, `categories`, `orders`, `order_items`, `product_images`, `coupons`, `coupon_categories`, `coupon_usage`, `support_tickets`, `bug_reports`, `cart_items`, `daily_sales`, `global_banner`, `inventory_batches`, `system_config`, entre otras.
 
@@ -613,8 +611,7 @@ El backend necesita la contraseña de PostgreSQL como variable de entorno. **No 
 **PowerShell (Windows):**
 
 ```powershell
-$env:DB_PASSWORD = "TU_CONTRASEÑA_DE_POSTGRES"
-```
+$env:DB_PASSWORD = "TU_CONTRASEÑA_DE_POSTGRES"```
 
 **CMD (Windows):**
 
@@ -625,8 +622,7 @@ set DB_PASSWORD=TU_CONTRASEÑA_DE_POSTGRES
 **Linux/Mac:**
 
 ```bash
-export DB_PASSWORD="TU_CONTRASEÑA_DE_POSTGRES"
-```
+export DB_PASSWORD="TU_CONTRASEÑA_DE_POSTGRES"```
 
 Variables opcionales (tienen valores por defecto):
 
@@ -641,13 +637,13 @@ Variables opcionales (tienen valores por defecto):
 Desde la carpeta del proyecto frontend (`tienda digital de telas/`):
 
 ```bash
-javac -encoding UTF-8 -cp "backend-java/conexionPostgres/lib/*" -d "backend-java/conexionPostgres/bin" backend-java/conexionPostgres/src/App.java backend-java/conexionPostgres/src/conexion/*.java backend-java/conexionPostgres/src/api/*.java backend-java/conexionPostgres/src/dao/*.java backend-java/conexionPostgres/src/models/*.java
+javac -encoding UTF-8 -cp "backend-java/conexionPostgres/lib/*"-d "backend-java/conexionPostgres/bin"backend-java/conexionPostgres/src/App.java backend-java/conexionPostgres/src/conexion/*.java backend-java/conexionPostgres/src/api/*.java backend-java/conexionPostgres/src/dao/*.java backend-java/conexionPostgres/src/models/*.java
 ```
 
 #### 2.3. Ejecutar el backend
 
 ```bash
-java -cp "backend-java/conexionPostgres/bin;backend-java/conexionPostgres/lib/*" App
+java -cp "backend-java/conexionPostgres/bin;backend-java/conexionPostgres/lib/*"App
 ```
 
 Deberías ver:
@@ -682,7 +678,7 @@ Deberías ver:
 ```
   VITE v5.x.x  ready in xxx ms
 
-  ➜  Local:   http://localhost:3001/
+  Local:   http://localhost:3001/
 ```
 
 Abre `http://localhost:3001` en tu navegador.
@@ -737,7 +733,7 @@ Siempre ejecuta en este orden:
 
 ## Solución de Problemas Frecuentes
 
-### 1. Error de "Credenciales Incorrectas" al Iniciar Sesión (Tabla users incorrecta)
+### 1. Error de "Credenciales Incorrectas"al Iniciar Sesión (Tabla users incorrecta)
 Si al clonar el repositorio e intentar iniciar sesión (por ejemplo con admin@ddtextil.com y clave admin123) la página arroja **"Credenciales incorrectas"** de manera persistente, esto se debe a que PostgreSQL no importó el `TIENDA DIGITAL TEXTIL.sql` correctamente en tu máquina, o que utilizaste una versión muy antigua del código y tu tabla users local no tiene las columnas obligatorias del backend (`active`, `suspended`, `last_login`, `commission_rate`, etc).
 
 Para solucionarlo y tener la base de datos idéntica al repositorio oficial:
@@ -759,18 +755,105 @@ Para solucionarlo y tener la base de datos idéntica al repositorio oficial:
 
 3. **Vuelve a importar el SQL actualizado (que ya contiene todas las columnas correctas y los hashes válidos):**
    ```bash
-   psql -U postgres -d tienda_digital_textiles_db -f "BASE DE DATOS/TIENDA DIGITAL TEXTIL.sql"
-   ```
+   psql -U postgres -d tienda_digital_textiles_db -f "BASE DE DATOS/TIENDA DIGITAL TEXTIL.sql"```
 
-> **💡 Consejo Pro (MockDataSeeder):**  
-> Alternativamente, en lugar de importar el archivo `.sql`, puedes usar nuestra herramienta nativa de Java para resetear y sembrar automáticamente la base de datos. Solo ve a la carpeta del backend y ejecuta el seeder:  
+> **Consejo Pro (PobladorDatosPrueba):**  
+> Alternativamente, en lugar de importar el archivo `.sql`, puedes usar nuestra herramienta nativa de Java para resetear y sembrar automáticamente la base de datos con contraseñas encriptadas en SHA-256:  
 > ```bash
-> cd "backend-java/conexionPostgres"
-> java -cp "bin;lib/*" MockDataSeeder
+> cd "backend-java/conexionPostgres"> java -cp "bin;lib/*"PobladorDatosPrueba
 > ```  
-> Esto truncará las tablas e insertará mágicamente usuarios, métricas, productos temporales y las **credenciales válidas**.
+> Esto truncará las tablas e insertará usuarios, métricas, productos temporales y las **credenciales válidas**.
 
 --- 
+
+---
+
+## Auditoría de Seguridad y Ataques Realizados
+
+Como parte del proceso de hardening de la aplicación, se realizó una auditoría de seguridad completa encontrando y corrigiendo las siguientes vulnerabilidades:
+
+### Ataque 1: XSS (Cross-Site Scripting) en Contact.jsx
+**Vulnerabilidad:** El componente `LocationGlobe` en `src/pages/Contact.jsx` (línea 101) utilizaba `el.innerHTML` con template literals interpolando datos `${d.name}`, `${d.temp}`, `${d.time}` y `${d.color}`. Esto permitía inyección de HTML/JavaScript arbitrario si alguna fuente de datos (API externa, etc.) resultaba comprometida, ya que `innerHTML` bypasses el escape automático de React (JSX).
+
+**Corrección:** Reemplazado `innerHTML` por creación programática del DOM con `document.createElement()`, `textContent` para datos de usuario y `className` para estilos. Los SVG estáticos se mantienen con `innerHTML` pues no contienen datos interpolados.
+
+**Archivos afectados:** `src/pages/Contact.jsx`
+
+---
+
+### Ataque 2: Ausencia de Security Headers (CSP, XFO, HSTS)
+**Vulnerabilidad:** El archivo `index.html` carecía de headers de seguridad críticos: sin Content-Security-Policy (XSS), sin X-Frame-Options (clickjacking), sin X-Content-Type-Options (MIME sniffing) y sin Referrer-Policy (filtración de URLs). Un atacante podría cargar la página en un iframe malicioso, ejecutar scripts no autorizados o robar datos referenciales.
+
+**Corrección:** Agregados `<meta http-equiv>` tags:
+- `Content-Security-Policy`: Solo permite `'self'`, Google Fonts, conexiones a `localhost:8081` y `api.open-meteo.com`. Bloquea frames (`frame-src 'none'`) y plugins (`object-src 'none'`).
+- `X-Frame-Options: DENY`: Previene clickjacking.
+- `X-Content-Type-Options: nosniff`: Previene MIME sniffing.
+- `Referrer-Policy: strict-origin-when-cross-origin`: Controla fuga de referrer.
+
+**Archivos afectados:** `index.html`
+
+---
+
+### Ataque 3: Credenciales Demo Hardcodeadas en Login
+**Vulnerabilidad:** En `src/pages/Login.jsx` (líneas 91-101) se encontraron 3 pares de credenciales hardcodeadas en texto plano (`admin@ddtextil.com`/`admin123`, `vendedor@ddtextil.com`/`vendedor123`, `cliente@ddtextil.com`/`cliente123`). Cualquier persona con acceso al código fuente (repositorio público) podía conocer contraseñas funcionales del sistema.
+
+**Corrección:** Eliminadas las contraseñas del código fuente. Los botones de demo ahora solo prellenan el correo electrónico; la contraseña debe ser ingresada por el usuario o configurada en el backend.
+
+**Archivos afectados:** `src/pages/Login.jsx`
+
+---
+
+### Ataque 4: Open Redirect en Login
+**Vulnerabilidad:** La función de redirección post-login en `src/pages/Login.jsx` (línea 23) tomaba `location.state?.from?.pathname` sin validación, permitiendo potencialmente redirigir a usuarios a URLs maliciosas o externas si un atacante lograba manipular el estado de React Router.
+
+**Corrección:** Agregada validación estricta: solo se permiten rutas que comiencen con prefijos conocidos (`/`, `/cliente`, `/vendedor`, `/admin`, `/catalogo`, `/carrito`, `/checkout`, `/perfil`) y se rechazan rutas con protocolos (`://`) o doble slash inicial (`//`).
+
+**Archivos afectados:** `src/pages/Login.jsx`
+
+---
+
+### Ataque 5: Datos de Pago en localStorage
+**Vulnerabilidad:** En `src/pages/payment/Payment.jsx` (líneas 46, 55), los resultados del pago (incluyendo `transactionId`, `amount`, `method`) se almacenaban en `localStorage` bajo la clave `lastPayment`. Aunque no se guardaban datos de tarjeta directamente, el almacenamiento persistente de datos financieros en el navegador expone información sensible accesible desde cualquier script en el mismo origen.
+
+**Corrección:** Eliminadas las llamadas a `localStorage.setItem('lastPayment', ...)`. El resultado del pago ahora solo se usa para navegación inmediata sin persistencia innecesaria. (El pedido final se almacena como `lastOrder` para la pantalla de confirmación).
+
+**Archivos afectados:** `src/pages/payment/Payment.jsx`
+
+---
+
+### Ataque 6: URLs Hardcodeadas a `localhost:8081`
+**Vulnerabilidad:** Múltiples archivos (AuthContext, ProductContext, Home, SellerProducts, SellerDashboard, ManageHome, AdminProducts) tenían la URL del backend hardcodeada como `http://localhost:8081`. Esto no solo impedía cambiar de entorno sin modificar código, sino que al estar en HTTP (no HTTPS), las credenciales viajaban en texto plano en redes no locales.
+
+**Corrección:** Creado `src/config.js` con `getApiUrl(path)` que lee `VITE_API_URL` de variables de entorno (Vite `import.meta.env`) con fallback a `http://localhost:8081`. Actualizados todos los archivos para usar `getApiUrl()`.
+
+**Archivos afectados:** `src/config.js` (nuevo), `src/context/AuthContext.jsx`, `src/context/ProductContext.jsx`, `src/pages/Home.jsx`, `src/pages/seller/SellerProducts.jsx`, `src/pages/seller/SellerDashboard.jsx`, `src/pages/admin/ManageHome.jsx`, `src/pages/admin/AdminProducts.jsx`
+
+---
+
+### Ataque 7: Dev Server Expuesto (`allowedHosts: true`)
+**Vulnerabilidad:** En `vite.config.js` (línea 18), la opción `allowedHosts: true` permitía que cualquier sitio web externo realizara peticiones al servidor de desarrollo de Vite, abriendo la puerta a ataques de DNS rebinding durante el desarrollo.
+
+**Corrección:** Eliminada la propiedad `allowedHosts` del `vite.config.js`.
+
+**Archivos afectados:** `vite.config.js`
+
+---
+
+### Resumen de Riesgos Identificados (No Corregidos en Frontend)
+Estos problemas requieren cambios en el backend Java o en la infraestructura:
+
+| # | Riesgo | Severidad | Dónde |
+|---|--------|-----------|-------|
+| 1 | Autenticación sin JWT: el backend devuelve el objeto usuario en texto plano sin token firmado | **Crítica** | `AuthHandler.java` |
+| 2 | Sin tokens de autorización en llamadas API: cualquier llamada al backend es anónima | **Crítica** | Todos los handlers |
+| 3 | CSRF: sin tokens anti-CSRF en ningún formulario | **Alta** | Todos los endpoints mutantes |
+| 4 | CORS permisivo (`Access-Control-Allow-Origin: *`) | **Alta** | `BaseHandler.java` |
+| 5 | Passwords hasheados con SHA-256 (sin salt, ni bcrypt/argon2) | **Alta** | `AuthService.java` |
+| 6 | Sin rate limiting en login (fuerza bruta) | **Alta** | Backend y nginx |
+| 7 | Base de datos SQL dump completo en el repositorio público con hashes de passwords | **Alta** | `BASE DE DATOS/` |
+| 8 | Pago simulado sin pasarela real, datos de tarjeta en estado de React | **Crítica** | `Payment.jsx`, `PaymentForm.jsx` |
+
+---
 
 ## Contacto
 Puedes comunicarte vía [GitHub](https://github.com/Jhonmoreno000) 
