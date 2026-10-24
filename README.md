@@ -195,11 +195,8 @@ El cuerpo documental oficial del sistema esta estructurado de forma modular en l
 * 10. **[Casos de Uso](documentacion/10-casos-de-uso.md)**
 * 11. **[Diagrama de Clases del Backend](documentacion/11-diagrama-de-clases.md)**
 * 12. **[Diagramas de Secuencia](documentacion/12-diagramas-de-secuencia.md)**
-* 13. **[Manual de Usuario](documentacion/13-manual-de-usuario.md)**
-* **[Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)**
-* **[Matriz de Requerimientos (RF, RNF y Trazabilidad)](documentacion/Matriz_de_requerimientos_v2.xlsx)**
-
-Version para imprimir: **[Manual de usuario (PDF)](documentacion/pdf/Manual%20de%20usuario%20-%20D%26D%20Textil.pdf)**
+* 13. **[Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)**
+* 14. **[Matriz de Requerimientos (RF, RNF y Trazabilidad)](documentacion/Matriz_de_requerimientos_v2.xlsx)**
 
 ---
 

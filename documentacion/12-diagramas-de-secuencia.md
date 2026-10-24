@@ -49,7 +49,7 @@ sequenceDiagram
     SA->>REPO: buscarPorCorreoYValidarContrasena(correo, hash)
     REPO->>DB: SELECT … FROM usuarios<br/>WHERE correo = ? AND contrasena_hash = ?<br/>AND activo = true
     DB-->>REPO: fila o vacío
-    REPO-->>SA: Optional<Usuario>
+    REPO-->>SA: Optional de Usuario
     alt credenciales incorrectas, cuenta inactiva o suspendida
     SA-->>MA: ExcepcionDominio
     MA-->>BASE: (excepción)

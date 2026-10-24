@@ -1,4 +1,4 @@
-﻿# Indice General de Documentacion Tecnica - D&D Textil
+# Indice General de Documentacion Tecnica - D&D Textil
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Estandares Aplicados:** IEEE 830, ISO/IEC 25010, Modelo C4 (Simon Brown), BDD (Gherkin), Clean Architecture, Domain-Driven Design (DDD), OWASP API Security, PCI-DSS v4.0, Ley 1581 de 2012 (Habeas Data)  
@@ -98,13 +98,10 @@ El cuerpo documental oficial del proyecto se encuentra centralizado en el direct
 ### 12. [12. Diagramas de Secuencia](documentacion/12-diagramas-de-secuencia.md)
 *   **Flujos clave:** Inicio de sesion, registro, compra con bloqueo de stock, factura en PDF y motor de corte textil.
 
-### 13. [13. Manual de Usuario](documentacion/13-manual-de-usuario.md)
-*   **Guia por rol con capturas:** Cliente, vendedor y administrador, paso a paso. Version en [PDF](documentacion/pdf/Manual%20de%20usuario%20-%20D%26D%20Textil.pdf).
-
-### 14. [Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)
+### 13. [Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)
 *   Especificacion Swagger / OpenAPI v3.0 completa y estandarizada de todos los endpoints de la API REST, con esquemas de peticion, esquemas de respuesta y codigos de error HTTP.
 
-### 15. [Matriz de Requerimientos](documentacion/Matriz_de_requerimientos_v2.xlsx)
+### 14. [Matriz de Requerimientos](documentacion/Matriz_de_requerimientos_v2.xlsx)
 *   Requerimientos funcionales y no funcionales (ISO/IEC 25010) y matriz de trazabilidad hacia casos de uso y clases de diseno.
 
 ---
