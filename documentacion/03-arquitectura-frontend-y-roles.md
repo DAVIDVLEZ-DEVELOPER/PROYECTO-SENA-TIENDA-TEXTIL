@@ -1,4 +1,4 @@
-﻿# Arquitectura del Frontend y Gestion de Roles de Usuario
+# Arquitectura del Frontend y Gestion de Roles de Usuario
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Tecnologias:** React 18, Vite 5, TailwindCSS 3, Context API, React Router DOM v6  

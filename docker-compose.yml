@@ -25,7 +25,7 @@ services:
   backend:
     image: ddtextil-backend:latest
     build:
-      context: ./tienda digital de telas/backend-java/conexionPostgres
+      context: ./tienda digital de telas/backend-java/servidor-api
       dockerfile: Dockerfile
     container_name: ddtextil-backend
     restart: unless-stopped
@@ -35,6 +35,7 @@ services:
       DB_URL: ${DB_URL:-jdbc:postgresql://db:5432/tienda_digital_textiles_db}
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-mysecretpassword}
+      PORT: ${BACKEND_PORT:-8081}
       WOMPI_PUBLIC_KEY: ${WOMPI_PUBLIC_KEY:-pub_test_Q5yDA9xoKdePzhSGeVe9HAUr19rhZCQSQ}
       WOMPI_PRIVATE_KEY: ${WOMPI_PRIVATE_KEY:-prv_test_V0Pq3O3wHqI0kO6vC4Q9Z7P6w2N5m8L1}
       WOMPI_INTEGRITY_SECRET: ${WOMPI_INTEGRITY_SECRET:-test_integrity_b0Xy0KqP3rI8zQ9x7W5m4V2n1L6s8F0d}
@@ -54,7 +55,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - "./tienda digital de telas/backend-java/conexionPostgres/uploads:/app/uploads"
+      - "./tienda digital de telas/backend-java/servidor-api/uploads:/app/uploads"
 
   frontend:
     image: ddtextil-frontend:latest

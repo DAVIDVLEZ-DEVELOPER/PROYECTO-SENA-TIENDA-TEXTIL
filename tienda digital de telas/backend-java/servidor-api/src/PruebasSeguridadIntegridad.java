@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 /**
- * Suite de Pruebas Automatizadas de Seguridad, Validación de Errores y Bugs para D&D Textil.
+ * Suite de Pruebas Automatizadas de Seguridad, Validación de E INTEGRIDAD DE NEGOCIO para D&D Textil.
  * Todo el código, métodos y variables implementados estrictamente en español.
  */
-public class PruebasSeguridadYBugs {
+public class PruebasSeguridadIntegridad {
 
     private static int pruebasExitosas = 0;
     private static int pruebasFallidas = 0;
@@ -20,7 +20,7 @@ public class PruebasSeguridadYBugs {
 
     public static void main(String[] argumentos) {
         System.out.println("=================================================================");
-        System.out.println("   SUITE DE PRUEBAS DE SEGURIDAD, ERRORES Y BUGS (D&D TEXTIL)    ");
+        System.out.println("   SUITE DE PRUEBAS DE SEGURIDAD, E INTEGRIDAD DE NEGOCIO (D&D TEXTIL)    ");
         System.out.println("=================================================================");
 
         ejecutarPrueba("1. Hash Criptográfico UTF-8 consistente con caracteres especiales", () -> {
@@ -398,7 +398,7 @@ public class PruebasSeguridadYBugs {
         System.out.println("  Pruebas fallidas:            " + pruebasFallidas);
 
         if (pruebasFallidas == 0) {
-            System.out.println("\n>>> TODAS LAS PRUEBAS DE SEGURIDAD Y BUGS FUERON EXITOSAS (100% EN ESPAÑOL) <<<\n");
+            System.out.println("\n>>> TODAS LAS PRUEBAS DE SEGURIDAD E INTEGRIDAD FUERON EXITOSAS (100% EN ESPAÑOL) <<<\n");
         } else {
             System.err.println("\n>>> SE IDENTIFICARON FALLAS EN LA SUITE DE PRUEBAS <<<\n");
             System.exit(1);

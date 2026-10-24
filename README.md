@@ -166,11 +166,11 @@ El proyecto implementa los estandares de la norma **ISO/IEC 25010** y las direct
 
 ```bash
 # Navegar al directorio del backend
-cd "tienda digital de telas/backend-java/conexionPostgres"
+cd "tienda digital de telas/backend-java/servidor-api"
 
 # Ejecutar las suites de pruebas automatizadas
 java -cp "lib/*;bin" PruebasReglasNegocioTextil
-java -cp "lib/*;bin" PruebasSeguridadYBugs
+java -cp "lib/*;bin" PruebasSeguridadIntegridad
 ```
 
 ### Probes de Observabilidad (Health Checks)

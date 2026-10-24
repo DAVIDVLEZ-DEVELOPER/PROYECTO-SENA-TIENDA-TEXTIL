@@ -1,4 +1,4 @@
-﻿# Arquitectura de Software, Modelo C4 y Backend Java
+# Arquitectura de Software, Modelo C4 y Backend Java
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Estandares:** Clean Architecture, Domain-Driven Design (DDD), Modelo C4 (Simon Brown), Principios SOLID  
@@ -20,7 +20,7 @@ El backend de **D&D Textil** es un servicio corporativo desarrollado en **Java 1
 
 ## 2. Estructura Exhaustiva de Capas y Paquetes
 
-La distribucion fisica del codigo fuente en `tienda digital de telas/backend-java/conexionPostgres/src/` se estructura de la siguiente manera:
+La distribucion fisica del codigo fuente en `tienda digital de telas/backend-java/servidor-api/src/` se estructura de la siguiente manera:
 
 ```text
 src/
@@ -92,9 +92,9 @@ src/
  |              +-- ManejadorSalud.java             # GET /health/live, /health/ready
  |
  +-- App.java                         # Punto de entrada de la aplicacion
- +-- PobladorDatosPrueba.java         # Sembrador automatico de datos y contrasenas SHA-256
+ +-- SembradorDatosPrueba.java         # Sembrador automatico de datos y contrasenas SHA-256
  +-- PruebasReglasNegocioTextil.java  # Suite de pruebas unitarias (14 pruebas)
- +-- PruebasSeguridadYBugs.java       # Suite de pruebas de seguridad y concurrencia (12 pruebas)
+ +-- PruebasSeguridadIntegridad.java       # Suite de pruebas de seguridad y concurrencia (12 pruebas)
 ```
 
 ---

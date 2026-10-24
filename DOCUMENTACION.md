@@ -80,7 +80,7 @@ El cuerpo documental oficial del proyecto se encuentra centralizado en el direct
 *   **Entidad RolloTextil:** Estados del ciclo de vida (`DISPONIBLE`, `RESERVADO`, `RETAZO_LIQUIDADO`, `AGOTADO`) y metodos de corte.
 *   **Servicio de Corte Textil:** Algoritmo Best Fit para seleccion de rollo con menor desperdicio y formula de liquidacion con descuentos (12% mayorista, 25% rollo cerrado, 40% retazos).
 *   **Matriz de Pruebas de Reglas de Negocio:** Detalle de los 14 casos de prueba unitarios ejecutados en `PruebasReglasNegocioTextil.java` (100% aprobados).
-*   **Matriz de Pruebas de Seguridad y Casos Extremos:** Detalle de los 12 casos de prueba ejecutados en `PruebasSeguridadYBugs.java` (100% aprobados).
+*   **Matriz de Pruebas de Seguridad y Casos Extremos:** Detalle de los 12 casos de prueba ejecutados en `PruebasSeguridadIntegridad.java` (100% aprobados).
 *   **Certificacion de Resultados:** Registro oficial de ejecucion de las 26 pruebas automatizadas.
 
 ### 8. [08. Modelo Entidad-Relacion](documentacion/08-modelo-entidad-relacion.md)

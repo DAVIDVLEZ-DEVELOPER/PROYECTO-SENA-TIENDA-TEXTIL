@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import infraestructura.configuracion.Conexion;
 
 /**
- * Inicializador y Poblador de Base de Datos PostgreSQL para D&D Textil.
+ * Inicializador y Sembrador de Datos (Seeder) PostgreSQL para D&D Textil.
  * 
  * Este script inserta la información inicial completa en las tablas relacionales de PostgreSQL:
  *  - Cuentas de usuarios (Administrador, Vendedores, Clientes).
@@ -21,7 +21,7 @@ import infraestructura.configuracion.Conexion;
  * 
  * Todo el backend Java lee y escribe esta información de forma 100% dinámica mediante SQL JDBC (DAOs).
  */
-public class PobladorDatosPrueba {
+public class SembradorDatosPrueba {
 
     /**
      * Genera el hash criptográfico SHA-256 idéntico al de ServicioAutenticacion.

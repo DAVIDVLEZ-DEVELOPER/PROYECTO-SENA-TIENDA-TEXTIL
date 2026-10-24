@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import dominio.excepciones.ExcepcionDominio;
+import infraestructura.configuracion.ConfiguracionEntorno;
 
 /**
  * Clase base abstracta para todos los controladores de la API REST (D&D Textil).
@@ -52,8 +53,8 @@ public abstract class ManejadorBase implements HttpHandler {
         intercambio.getResponseHeaders().set("X-Correlation-ID", correlationId);
 
         // 2. Configuración de CORS
-        String origenPermitido = System.getenv("CORS_ALLOWED_ORIGIN");
-        intercambio.getResponseHeaders().set("Access-Control-Allow-Origin", (origenPermitido != null && !origenPermitido.isBlank()) ? origenPermitido : "*");
+        String origenPermitido = ConfiguracionEntorno.obtener("CORS_ALLOWED_ORIGIN", "*");
+        intercambio.getResponseHeaders().set("Access-Control-Allow-Origin", origenPermitido);
         intercambio.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
         intercambio.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Correlation-ID,X-User-Id,X-User-Roles");
         intercambio.getResponseHeaders().set("Access-Control-Expose-Headers", "X-Correlation-ID");
@@ -158,16 +159,18 @@ public abstract class ManejadorBase implements HttpHandler {
     protected abstract void procesarPeticion(HttpExchange intercambio) throws Exception;
 
     /**
-     * Envía una respuesta HTTP con cuerpo JSON en UTF-8.
+     * Envía una respuesta HTTP con cuerpo JSON en UTF-8 asegurando el cierre del flujo.
      */
     protected void enviarRespuestaJson(HttpExchange intercambio, int codigoEstado, String respuestaJson) throws IOException {
         byte[] bytes = respuestaJson != null ? respuestaJson.getBytes(StandardCharsets.UTF_8) : new byte[0];
         intercambio.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
         intercambio.sendResponseHeaders(codigoEstado, bytes.length);
 
-        OutputStream os = intercambio.getResponseBody();
-        if (bytes.length > 0) os.write(bytes);
-        os.close();
+        try (OutputStream os = intercambio.getResponseBody()) {
+            if (bytes.length > 0) {
+                os.write(bytes);
+            }
+        }
     }
 
     /**

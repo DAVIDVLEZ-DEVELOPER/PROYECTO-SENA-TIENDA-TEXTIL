@@ -1,6 +1,6 @@
 # Diagrama de clases — D&D Textil
 
-> Generado desde el backend compilado (`javap` sobre `tienda digital de telas/backend-java/conexionPostgres/src`), así que los atributos y métodos son exactamente los del código. Se presentan dos vistas: el **modelo de dominio** (las clases de datos) y la **arquitectura por capas** (quién llama a quién).
+> Generado desde el backend compilado (`javap` sobre `tienda digital de telas/backend-java/servidor-api/src`), así que los atributos y métodos son exactamente los del código. Se presentan dos vistas: el **modelo de dominio** (las clases de datos) y la **arquitectura por capas** (quién llama a quién).
 
 ## 1. Modelo de dominio
 
@@ -185,10 +185,6 @@ classDiagram
         -String mensaje
         -String tipoBanner
         -String fechaActualizacion
-    }
-    class ItemConfiguracion {
-        -String clave
-        -String valor
     }
     class VentaDiaria {
         -int id

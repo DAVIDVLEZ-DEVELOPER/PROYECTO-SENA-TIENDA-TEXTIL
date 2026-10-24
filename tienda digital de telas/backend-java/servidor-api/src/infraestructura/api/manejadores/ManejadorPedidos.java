@@ -29,9 +29,23 @@ public class ManejadorPedidos extends ManejadorBase {
     @Override
     protected void procesarPeticion(HttpExchange intercambio) throws Exception {
         String metodo = intercambio.getRequestMethod();
+        String ruta = intercambio.getRequestURI().getPath();
 
-        // GET /api/orders o /api/pedidos
+        // GET /api/orders o /api/pedidos (o individual /api/orders/{id})
         if ("GET".equalsIgnoreCase(metodo)) {
+            if (ruta.matches("^/api/(orders|pedidos)/\\d+/?$")) {
+                int idPedido = extraerIdRuta(ruta);
+                if (idPedido > 0) {
+                    Pedido pedido = pedidoDAO.obtenerPedidoPorId(idPedido);
+                    if (pedido != null) {
+                        enviarRespuestaJson(intercambio, 200, gson.toJson(pedido));
+                    } else {
+                        enviarRespuestaJson(intercambio, 404, "{\"error\":\"Pedido no encontrado\"}");
+                    }
+                    return;
+                }
+            }
+
             List<Pedido> pedidos = pedidoDAO.obtenerTodosLosPedidos();
             enviarRespuestaJson(intercambio, 200, gson.toJson(pedidos));
 
@@ -84,17 +98,8 @@ public class ManejadorPedidos extends ManejadorBase {
 
         // PUT /api/orders/{id}/status o /api/pedidos/{id}/estado
         } else if ("PUT".equalsIgnoreCase(metodo)) {
-            String ruta = intercambio.getRequestURI().getPath();
             if (ruta.contains("/status") || ruta.contains("/estado")) {
-                String[] segmentos = ruta.split("/");
-                int idPedido = -1;
-                for (String segmento : segmentos) {
-                    if (segmento.matches("\\d+")) {
-                        idPedido = Integer.parseInt(segmento);
-                        break;
-                    }
-                }
-
+                int idPedido = extraerIdRuta(ruta);
                 if (idPedido <= 0) {
                     enviarRespuestaJson(intercambio, 400, "{\"error\":\"Identificador de pedido inválido en la ruta\"}");
                     return;
@@ -120,5 +125,15 @@ public class ManejadorPedidos extends ManejadorBase {
         } else {
             enviarRespuestaJson(intercambio, 405, "{\"error\":\"Método no permitido\"}");
         }
+    }
+
+    private int extraerIdRuta(String ruta) {
+        String[] segmentos = ruta.split("/");
+        for (String segmento : segmentos) {
+            if (segmento.matches("\\d+")) {
+                return Integer.parseInt(segmento);
+            }
+        }
+        return -1;
     }
 }

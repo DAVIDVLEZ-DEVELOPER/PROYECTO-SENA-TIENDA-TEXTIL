@@ -12,6 +12,7 @@ import com.google.gson.JsonParser;
 
 /**
  * Controlador para la gestión de productos (CRUD + moderación + imágenes).
+ * Rutas soportadas: /api/products y /api/productos
  */
 public class ManejadorProductos extends ManejadorBase {
 
@@ -36,6 +37,20 @@ public class ManejadorProductos extends ManejadorBase {
     }
 
     private void manejarGet(HttpExchange intercambio, String ruta, ProductoDAO dao, Gson gson) throws Exception {
+        // Consulta de producto individual por ID: /api/productos/10 o /api/products/10
+        if (ruta.matches("^/api/(products|productos)/\\d+/?$")) {
+            int id = extraerIdRuta(ruta);
+            if (id > 0) {
+                Producto producto = dao.obtenerProductoPorId(id);
+                if (producto != null) {
+                    enviarRespuestaJson(intercambio, 200, gson.toJson(producto));
+                } else {
+                    enviarRespuestaJson(intercambio, 404, "{\"error\":\"Producto no encontrado\"}");
+                }
+                return;
+            }
+        }
+
         List<Producto> productos;
         int idVendedor = obtenerParametroConsultaEntero(intercambio, "sellerId", -1);
         if (idVendedor <= 0) {
@@ -60,9 +75,13 @@ public class ManejadorProductos extends ManejadorBase {
     }
 
     private void manejarPut(HttpExchange intercambio, String ruta, ProductoDAO dao, Gson gson) throws Exception {
+        int idProducto = extraerIdRuta(ruta);
+        if (idProducto <= 0) {
+            enviarRespuestaJson(intercambio, 400, "{\"error\":\"ID de producto no válido en la ruta\"}");
+            return;
+        }
+
         if (ruta.contains("/moderate") || ruta.contains("/moderar")) {
-            String[] partes = ruta.split("/");
-            int idProducto = Integer.parseInt(partes[3]);
             InputStream entrada = intercambio.getRequestBody();
             String cuerpo = new String(entrada.readAllBytes(), StandardCharsets.UTF_8);
             JsonObject json = JsonParser.parseString(cuerpo).getAsJsonObject();
@@ -72,21 +91,7 @@ public class ManejadorProductos extends ManejadorBase {
             boolean exito = dao.actualizarEstadoModeracion(idProducto, estado, motivo);
             enviarRespuestaJson(intercambio, exito ? 200 : 500, exito ? "{\"success\":true}" : "{\"error\":\"Error en moderación\"}");
 
-        } else if (ruta.matches("^/api/producto?s?/\\d+$")) {
-            String[] partes = ruta.split("/");
-            int idProducto = Integer.parseInt(partes[3]);
-            InputStream entrada = intercambio.getRequestBody();
-            String cuerpo = new String(entrada.readAllBytes(), StandardCharsets.UTF_8);
-            JsonObject json = JsonParser.parseString(cuerpo).getAsJsonObject();
-            Producto actualizaciones = gson.fromJson(json, Producto.class);
-            Boolean destacado = json.has("featured") ? json.get("featured").getAsBoolean()
-                              : (json.has("destacado") ? json.get("destacado").getAsBoolean() : null);
-            boolean exito = dao.actualizarProducto(idProducto, actualizaciones, destacado);
-            enviarRespuestaJson(intercambio, exito ? 200 : 500, exito ? "{\"success\":true}" : "{\"error\":\"Error al actualizar\"}");
-
-        } else if (ruta.matches("^/api/producto?s?/\\d+/image$") || ruta.matches("^/api/producto?s?/\\d+/imagen$")) {
-            String[] partes = ruta.split("/");
-            int idProducto = Integer.parseInt(partes[3]);
+        } else if (ruta.matches("^/api/(products|productos)/\\d+/image$") || ruta.matches("^/api/(products|productos)/\\d+/imagen$")) {
             InputStream entrada = intercambio.getRequestBody();
             String cuerpo = new String(entrada.readAllBytes(), StandardCharsets.UTF_8);
             JsonObject json = JsonParser.parseString(cuerpo).getAsJsonObject();
@@ -98,6 +103,17 @@ public class ManejadorProductos extends ManejadorBase {
             } else {
                 enviarRespuestaJson(intercambio, 500, "{\"error\":\"Error al guardar imagen\"}");
             }
+
+        } else if (ruta.matches("^/api/(products|productos)/\\d+/?$")) {
+            InputStream entrada = intercambio.getRequestBody();
+            String cuerpo = new String(entrada.readAllBytes(), StandardCharsets.UTF_8);
+            JsonObject json = JsonParser.parseString(cuerpo).getAsJsonObject();
+            Producto actualizaciones = gson.fromJson(json, Producto.class);
+            Boolean destacado = json.has("featured") ? json.get("featured").getAsBoolean()
+                              : (json.has("destacado") ? json.get("destacado").getAsBoolean() : null);
+            boolean exito = dao.actualizarProducto(idProducto, actualizaciones, destacado);
+            enviarRespuestaJson(intercambio, exito ? 200 : 500, exito ? "{\"success\":true}" : "{\"error\":\"Error al actualizar\"}");
+
         } else {
             enviarRespuestaJson(intercambio, 404, "{\"error\":\"Ruta no encontrada\"}");
         }
@@ -112,13 +128,22 @@ public class ManejadorProductos extends ManejadorBase {
     }
 
     private void manejarDelete(HttpExchange intercambio, String ruta, ProductoDAO dao, Gson gson) throws Exception {
-        if (ruta.matches("^/api/producto?s?/\\d+$")) {
-            String[] partes = ruta.split("/");
-            int idProducto = Integer.parseInt(partes[3]);
+        int idProducto = extraerIdRuta(ruta);
+        if (idProducto > 0) {
             boolean exito = dao.eliminarProducto(idProducto);
             enviarRespuestaJson(intercambio, exito ? 200 : 500, exito ? "{\"success\":true}" : "{\"error\":\"Error al eliminar producto\"}");
         } else {
             enviarRespuestaJson(intercambio, 404, "{\"error\":\"Ruta no encontrada\"}");
         }
+    }
+
+    private int extraerIdRuta(String ruta) {
+        String[] partes = ruta.split("/");
+        for (String p : partes) {
+            if (p.matches("\\d+")) {
+                return Integer.parseInt(p);
+            }
+        }
+        return -1;
     }
 }

@@ -36,24 +36,16 @@ public class ManejadorResenas extends ManejadorBase {
     }
 
     /**
-     * GET /api/reviews?productId=N o /api/resenas?idProducto=N — Lista las reseñas de un producto.
+     * GET /api/reviews?productId=N o /api/resenas?idProducto=N - Lista las reseñas de un producto.
      */
     private void manejarGet(HttpExchange intercambio, ResenasDAO dao, Gson gson) throws Exception {
-        String parametrosConsulta = intercambio.getRequestURI().getQuery();
-        if (parametrosConsulta == null || (!parametrosConsulta.contains("productId=") && !parametrosConsulta.contains("idProducto="))) {
-            enviarRespuestaJson(intercambio, 400, "{\"error\":\"Falta el parámetro productId o idProducto\"}");
-            return;
+        int idProducto = obtenerParametroConsultaEntero(intercambio, "productId", -1);
+        if (idProducto <= 0) {
+            idProducto = obtenerParametroConsultaEntero(intercambio, "idProducto", -1);
         }
 
-        int idProducto;
-        try {
-            if (parametrosConsulta.contains("productId=")) {
-                idProducto = Integer.parseInt(parametrosConsulta.split("productId=")[1].split("&")[0]);
-            } else {
-                idProducto = Integer.parseInt(parametrosConsulta.split("idProducto=")[1].split("&")[0]);
-            }
-        } catch (NumberFormatException e) {
-            enviarRespuestaJson(intercambio, 400, "{\"error\":\"Identificador de producto inválido\"}");
+        if (idProducto <= 0) {
+            enviarRespuestaJson(intercambio, 400, "{\"error\":\"Falta el parámetro productId o idProducto válido\"}");
             return;
         }
 

@@ -20,6 +20,49 @@ import dominio.modelos.Producto;
 public class ProductoDAO {
 
     /**
+     * Recupera un producto activo por su identificador único.
+     * @param idProducto Identificador del producto.
+     * @return Objeto Producto o null si no se encuentra.
+     */
+    public Producto obtenerProductoPorId(int idProducto) {
+        String consulta = "SELECT p.*, c.nombre as nombre_categoria " +
+                "FROM productos p " +
+                "LEFT JOIN categorias c ON p.categoria_id = c.id " +
+                "WHERE p.id = ? AND p.activo = true";
+
+        try (Connection conexion = Conexion.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
+            sentencia.setInt(1, idProducto);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    Producto producto = new Producto();
+                    producto.setId(String.valueOf(resultado.getInt("id")));
+                    producto.setNombre(resultado.getString("nombre"));
+                    producto.setCategoria(resultado.getString("nombre_categoria"));
+                    producto.setPrecio(resultado.getDouble("precio"));
+                    producto.setIdVendedor(resultado.getInt("vendedor_id"));
+                    producto.setDescripcion(resultado.getString("descripcion"));
+                    producto.setMaterial(resultado.getString("material"));
+                    producto.setAncho(resultado.getString("ancho"));
+                    producto.setPeso(resultado.getString("peso"));
+                    producto.setCuidado(resultado.getString("cuidados"));
+                    producto.setExistencias(resultado.getInt("stock"));
+                    producto.setDestacado(resultado.getBoolean("destacado"));
+                    producto.setEsNuevaColeccion(resultado.getBoolean("es_nueva_coleccion"));
+                    producto.setEsExclusivo(resultado.getBoolean("es_exclusivo"));
+                    producto.setEsOferta(resultado.getBoolean("es_oferta"));
+                    producto.setImagenes(obtenerImagenesProducto(conexion, idProducto));
+                    return producto;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[ERROR] Error obteniendo producto por ID: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * Recupera todos los productos activos del catálogo.
      * @return Lista de objetos Producto.
      */
@@ -154,7 +197,7 @@ public class ProductoDAO {
 
             File carpetaSubidas = new File("uploads");
             if (!carpetaSubidas.exists())
-                carpetaSubidas.mkdir();
+                carpetaSubidas.mkdirs();
 
             String nombreArchivo = "product_" + idProducto + "_" + System.currentTimeMillis() + "." + extension;
             File archivoImagen = new File(carpetaSubidas, nombreArchivo);

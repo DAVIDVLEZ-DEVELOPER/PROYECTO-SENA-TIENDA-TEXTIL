@@ -55,20 +55,18 @@ public class ServicioFactura {
             PDPage pagina = new PDPage(PDRectangle.A4);
             documento.addPage(pagina);
 
-            PDPageContentStream flujoContenido = new PDPageContentStream(documento, pagina);
+            try (PDPageContentStream flujoContenido = new PDPageContentStream(documento, pagina)) {
+                dibujarMarcaAgua(flujoContenido);
 
-            dibujarMarcaAgua(flujoContenido);
+                float y = ALTO_PAGINA - MARGEN;
 
-            float y = ALTO_PAGINA - MARGEN;
+                y = dibujarEncabezado(flujoContenido, y, idPedido);
+                y = dibujarDatosCliente(flujoContenido, y, nombreCliente, correoCliente, telefonoCliente, direccionCliente, documentoCliente);
+                y = dibujarTablaArticulos(documento, flujoContenido, y, articulos);
+                y = dibujarTotales(flujoContenido, y, subtotal, descuento, envio, impuestos, total, metodoPago);
 
-            y = dibujarEncabezado(flujoContenido, y, idPedido);
-            y = dibujarDatosCliente(flujoContenido, y, nombreCliente, correoCliente, telefonoCliente, direccionCliente, documentoCliente);
-            y = dibujarTablaArticulos(documento, flujoContenido, y, articulos);
-            y = dibujarTotales(flujoContenido, y, subtotal, descuento, envio, impuestos, total, metodoPago);
-
-            dibujarPiePagina(flujoContenido, y);
-
-            flujoContenido.close();
+                dibujarPiePagina(flujoContenido, y);
+            }
 
             ByteArrayOutputStream salida = new ByteArrayOutputStream();
             documento.save(salida);

@@ -1,4 +1,4 @@
-﻿# Manual Tecnico de Instalacion, Configuracion y Despliegue
+# Manual Tecnico de Instalacion, Configuracion y Despliegue
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Version:** 2.0.0 - Documentacion Tecnica Oficial  
@@ -220,12 +220,12 @@ En estaciones de trabajo para desarrollo local donde no se disponga de Docker, l
    ```
 3. Ejecutar los scripts de estructura DDL y datos de prueba:
    ```bash
-   psql -U postgres -d tienda_textil -f "tienda digital de telas/backend-java/conexionPostgres/schema.sql"```
+   psql -U postgres -d tienda_textil -f "tienda digital de telas/backend-java/servidor-api/schema.sql"```
 
 ### 5.2. Compilacion y Ejecucion del Backend Java
 1. Ubicarse en la carpeta del backend:
    ```bash
-   cd "tienda digital de telas/backend-java/conexionPostgres"```
+   cd "tienda digital de telas/backend-java/servidor-api"```
 2. Crear la carpeta para los binarios compilados:
    ```bash
    mkdir -p bin
@@ -353,7 +353,7 @@ TASA DE EXITO: 100.0%
 
 ### 7.2. Pruebas de Seguridad y Correccion de Concurrencia
 ```powershell
-java -cp "bin;$jars"PruebasSeguridadYBugs
+java -cp "bin;$jars"PruebasSeguridadIntegridad
 ```
 Salida certificada:
 ```text

@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-frontend:
-    name: 📦 Construir Frontend (React)
+    name: Construir Frontend (React)
     runs-on: ubuntu-latest
     steps:
       - name: Descargar repositorio
@@ -27,7 +27,7 @@ jobs:
         run: npm run build
 
   build-backend:
-    name: ☕ Construir Backend (Java)
+    name: Construir Backend (Java)
     runs-on: ubuntu-latest
     steps:
       - name: Descargar repositorio
@@ -41,13 +41,13 @@ jobs:
 
       - name: Verificar compilación Java
         run: |
-          cd backend-java/conexionPostgres
+          cd backend-java/servidor-api
           mkdir -p bin
           find src -name "*.java" > sources.txt
           javac -d bin -cp "lib/*" @sources.txt
 
   docker-compose-test:
-    name: 🐳 Prueba de Docker Compose
+    name: Prueba de Docker Compose
     runs-on: ubuntu-latest
     needs: [build-frontend, build-backend]
     steps:

@@ -121,7 +121,7 @@ Implementada en `src/PruebasReglasNegocioTextil.java`, esta suite verifica de fo
 
 ## 5. Matriz de la Suite de Pruebas de Seguridad y Casos Extremos
 
-Implementada en `src/PruebasSeguridadYBugs.java`, esta suite verifica 12 escenarios criticos de ciberseguridad, validacion de entradas maliciosas y tolerancia a fallos:
+Implementada en `src/PruebasSeguridadIntegridad.java`, esta suite verifica 12 escenarios criticos de ciberseguridad, validacion de entradas maliciosas y tolerancia a fallos:
 
 | ID | Categoria de Prueba | Escenario y Vector Evaluado | Comportamiento del Sistema y Mitigacion | Estado |
 | :---: | :--- | :--- | :--- | :---: |
@@ -170,7 +170,7 @@ Ejecutando verificacion de reglas de negocio textiles...
   [OK] Regla 14: Calculadora con margen del 10% validada con precision decimal.
 Pruebas de Negocio: 14/14 APROBADAS (100.0%)
 
-[SUITE 2: PruebasSeguridadYBugs]
+[SUITE 2: PruebasSeguridadIntegridad]
 Ejecutando verificacion de seguridad, integridad y tolerancia a fallos...
   [OK] Seguridad 1: Hashing SHA-256 en UTF-8 consistente y unidireccional.
   [OK] Seguridad 2: Sanitizacion contra inyeccion SQL en consultas de catalogo.

@@ -18,6 +18,7 @@ import java.util.Map;
 
 /**
  * Controlador para la generación y descarga de facturas electrónicas en PDF.
+ * Consulta las tablas reales del esquema PostgreSQL ('pedidos', 'items_pedido', 'productos', 'usuarios').
  */
 public class ManejadorFactura extends ManejadorBase {
     private final PedidoDAO pedidoDAO;
@@ -40,7 +41,17 @@ public class ManejadorFactura extends ManejadorBase {
                 manejarListarFacturas(intercambio);
             } else {
                 String[] partes = ruta.split("/");
-                int idPedido = Integer.parseInt(partes[partes.length - 1]);
+                int idPedido = -1;
+                for (String p : partes) {
+                    if (p.matches("\\d+")) {
+                        idPedido = Integer.parseInt(p);
+                        break;
+                    }
+                }
+                if (idPedido <= 0) {
+                    enviarRespuestaJson(intercambio, 400, "{\"error\":\"ID de pedido inválido en la ruta\"}");
+                    return;
+                }
                 manejarDescargarFactura(intercambio, idPedido);
             }
         } else {
@@ -50,11 +61,10 @@ public class ManejadorFactura extends ManejadorBase {
 
     private void manejarListarFacturas(HttpExchange intercambio) throws Exception {
         List<Map<String, Object>> facturas = new ArrayList<>();
-        String consulta = "SELECT o.id, o.client_id, o.total, o.status, o.order_date, " +
-                "u.name AS client_name, u.email AS client_email " +
-                "FROM orders o " +
-                "LEFT JOIN users u ON o.client_id = u.id " +
-                "ORDER BY o.id DESC";
+        String consulta = "SELECT p.id, p.usuario_id, p.monto_total, p.estado, p.creado_en, " +
+                "p.nombre_cliente, p.correo_cliente " +
+                "FROM pedidos p " +
+                "ORDER BY p.id DESC";
 
         try (Connection con = Conexion.obtenerConexion();
              PreparedStatement pst = con.prepareStatement(consulta);
@@ -62,12 +72,16 @@ public class ManejadorFactura extends ManejadorBase {
             while (rs.next()) {
                 Map<String, Object> fac = new HashMap<>();
                 fac.put("orderId", rs.getInt("id"));
-                fac.put("clientId", rs.getInt("client_id"));
-                fac.put("clientName", rs.getString("client_name"));
-                fac.put("clientEmail", rs.getString("client_email"));
-                fac.put("total", rs.getDouble("total"));
-                fac.put("status", rs.getString("status"));
-                fac.put("date", rs.getString("order_date"));
+                fac.put("clientId", rs.getInt("usuario_id"));
+                fac.put("clientName", rs.getString("nombre_cliente"));
+                fac.put("clientEmail", rs.getString("correo_cliente"));
+                fac.put("total", rs.getDouble("monto_total"));
+                fac.put("status", rs.getString("estado"));
+                if (rs.getTimestamp("creado_en") != null) {
+                    fac.put("date", rs.getTimestamp("creado_en").toString());
+                } else {
+                    fac.put("date", "");
+                }
                 facturas.add(fac);
             }
         }
@@ -82,39 +96,54 @@ public class ManejadorFactura extends ManejadorBase {
             return;
         }
 
-        String nombreCliente = "";
+        String nombreCliente = "Cliente D&D Textil";
         String correoCliente = "";
         String telefonoCliente = "";
         String direccionCliente = "";
         String documentoCliente = "";
+        String metodoPago = "N/A";
 
-        String consultaUsuario = "SELECT name, email FROM users WHERE id = ?";
+        String consultaPedido = "SELECT nombre_cliente, correo_cliente, telefono_cliente, direccion_envio, metodo_pago " +
+                "FROM pedidos WHERE id = ?";
         try (Connection con = Conexion.obtenerConexion();
-             PreparedStatement pst = con.prepareStatement(consultaUsuario)) {
-            pst.setInt(1, pedido.getIdCliente());
+             PreparedStatement pst = con.prepareStatement(consultaPedido)) {
+            pst.setInt(1, idPedido);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    nombreCliente = rs.getString("name") != null ? rs.getString("name") : "";
-                    correoCliente = rs.getString("email") != null ? rs.getString("email") : "";
+                    if (rs.getString("nombre_cliente") != null && !rs.getString("nombre_cliente").isBlank()) {
+                        nombreCliente = rs.getString("nombre_cliente");
+                    }
+                    if (rs.getString("correo_cliente") != null) {
+                        correoCliente = rs.getString("correo_cliente");
+                    }
+                    if (rs.getString("telefono_cliente") != null) {
+                        telefonoCliente = rs.getString("telefono_cliente");
+                    }
+                    if (rs.getString("direccion_envio") != null) {
+                        direccionCliente = rs.getString("direccion_envio");
+                    }
+                    if (rs.getString("metodo_pago") != null) {
+                        metodoPago = rs.getString("metodo_pago");
+                    }
                 }
             }
         }
 
         List<Map<String, Object>> articulos = new ArrayList<>();
-        String consultaArticulos = "SELECT oi.product_id, oi.quantity, oi.unit_price, p.name " +
-                "FROM order_items oi " +
-                "LEFT JOIN products p ON oi.product_id = p.id " +
-                "WHERE oi.order_id = ?";
+        String consultaArticulos = "SELECT ip.producto_id, ip.cantidad, ip.precio_por_metro, ip.subtotal, pr.nombre " +
+                "FROM items_pedido ip " +
+                "LEFT JOIN productos pr ON ip.producto_id = pr.id " +
+                "WHERE ip.pedido_id = ?";
         try (Connection con = Conexion.obtenerConexion();
              PreparedStatement pst = con.prepareStatement(consultaArticulos)) {
             pst.setInt(1, idPedido);
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> item = new HashMap<>();
-                    item.put("productId", rs.getInt("product_id"));
-                    item.put("quantity", rs.getInt("quantity"));
-                    item.put("unitPrice", rs.getDouble("unit_price"));
-                    item.put("name", rs.getString("name") != null ? rs.getString("name") : "Producto");
+                    item.put("productId", rs.getInt("producto_id"));
+                    item.put("quantity", rs.getDouble("cantidad"));
+                    item.put("unitPrice", rs.getDouble("precio_por_metro"));
+                    item.put("name", rs.getString("nombre") != null ? rs.getString("nombre") : "Tela Textil");
                     articulos.add(item);
                 }
             }
@@ -122,7 +151,7 @@ public class ManejadorFactura extends ManejadorBase {
 
         double subtotal = 0;
         for (Map<String, Object> item : articulos) {
-            int cantidad = ((Number) item.get("quantity")).intValue();
+            double cantidad = ((Number) item.get("quantity")).doubleValue();
             double precio = ((Number) item.get("unitPrice")).doubleValue();
             subtotal += cantidad * precio;
         }
@@ -132,15 +161,16 @@ public class ManejadorFactura extends ManejadorBase {
         byte[] pdfBytes = servicioFactura.generarFactura(
                 idPedido, nombreCliente, correoCliente, telefonoCliente,
                 direccionCliente, documentoCliente, articulos,
-                subtotal, 0, 0, impuestos, total, "N/A"
+                subtotal, 0, 0, impuestos, total, metodoPago
         );
 
-        intercambio.getResponseHeaders().add("Content-Type", "application/pdf");
-        intercambio.getResponseHeaders().add("Content-Disposition",
+        intercambio.getResponseHeaders().set("Content-Type", "application/pdf");
+        intercambio.getResponseHeaders().set("Content-Disposition",
                 "attachment; filename=\"FAC-" + String.format("%06d", idPedido) + ".pdf\"");
         intercambio.sendResponseHeaders(200, pdfBytes.length);
-        OutputStream os = intercambio.getResponseBody();
-        os.write(pdfBytes);
-        os.close();
+
+        try (OutputStream os = intercambio.getResponseBody()) {
+            os.write(pdfBytes);
+        }
     }
 }
