@@ -300,10 +300,11 @@ ON CONFLICT (nombre) DO NOTHING;
 
 INSERT INTO usuarios (nombre, correo, contrasena_hash, rol, activo) VALUES
 ('Anderson Moreno', 'admin@ddtextil.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'administrador', true),
-('Carlos Pérez', 'vendedor@ddtextil.com', 'c95c735d5dd15e3ae1eb64e9a4f6cf70e30d7b2759e0a701d89da59d2a6a61b8', 'vendedor', true),
-('María González', 'maria.gonzalez@ddtextil.com', 'c95c735d5dd15e3ae1eb64e9a4f6cf70e30d7b2759e0a701d89da59d2a6a61b8', 'vendedor', true),
-('Juan Cliente', 'cliente@gmail.com', '49f074d0e9fcb95ec70c2a71569931fc484fcde1e0e8e9ceeb5ad334a1ce2105', 'cliente', true)
-ON CONFLICT (correo) DO NOTHING;
+('Carlos Pérez', 'vendedor@ddtextil.com', '56976bf24998ca63e35fe4f1e2469b5751d1856003e8d16fef0aafef496ed044', 'vendedor', true),
+('María González', 'maria.gonzalez@ddtextil.com', '56976bf24998ca63e35fe4f1e2469b5751d1856003e8d16fef0aafef496ed044', 'vendedor', true),
+('Juan Cliente', 'cliente@gmail.com', '09a31a7001e261ab1e056182a71d3cf57f582ca9a29cff5eb83be0f0549730a9', 'cliente', true),
+('Cliente Demo', 'cliente@ddtextil.com', '09a31a7001e261ab1e056182a71d3cf57f582ca9a29cff5eb83be0f0549730a9', 'cliente', true)
+ON CONFLICT (correo) DO UPDATE SET contrasena_hash = EXCLUDED.contrasena_hash;
 
 INSERT INTO secciones_inicio (clave, titulo, subtitulo, activo, orden) VALUES
 ('nuevas', 'Nuevas Colecciones', 'Lo último en tendencias de moda y textiles', true, 1),

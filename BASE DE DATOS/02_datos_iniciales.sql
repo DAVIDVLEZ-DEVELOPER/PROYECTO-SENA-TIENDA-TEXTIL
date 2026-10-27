@@ -11,6 +11,13 @@ BEGIN
     ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS role VARCHAR(50);
     UPDATE usuarios SET name = nombre, email = correo, role = rol;
 
+    -- Actualizar contrasenas por defecto con sus hashes SHA-256 en UTF-8
+    UPDATE usuarios SET contrasena_hash = '56976bf24998ca63e35fe4f1e2469b5751d1856003e8d16fef0aafef496ed044' WHERE correo IN ('vendedor@ddtextil.com', 'maria.gonzalez@ddtextil.com');
+    UPDATE usuarios SET contrasena_hash = '09a31a7001e261ab1e056182a71d3cf57f582ca9a29cff5eb83be0f0549730a9' WHERE correo IN ('cliente@gmail.com', 'cliente@ddtextil.com');
+    INSERT INTO usuarios (nombre, correo, contrasena_hash, rol, activo) VALUES
+    ('Cliente Demo', 'cliente@ddtextil.com', '09a31a7001e261ab1e056182a71d3cf57f582ca9a29cff5eb83be0f0549730a9', 'cliente', true)
+    ON CONFLICT (correo) DO UPDATE SET contrasena_hash = EXCLUDED.contrasena_hash;
+
     -- diapositivas_carrusel
     ALTER TABLE diapositivas_carrusel ADD COLUMN IF NOT EXISTS image TEXT;
     ALTER TABLE diapositivas_carrusel ADD COLUMN IF NOT EXISTS active BOOLEAN DEFAULT true;

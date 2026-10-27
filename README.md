@@ -142,23 +142,15 @@ docker compose down -v
 
 ## Credenciales de prueba
 
-Usuarios sembrados en la base de datos para validar los niveles de acceso del software.
+Usuarios sembrados en la base de datos para validar los niveles de acceso del software. Todos los usuarios cuentan con sus credenciales operativas listas para autenticacion directa o mediante los botones de acceso rapido en la interfaz.
 
-| Rol | Correo electronico | Contrasena |
-| :--- | :--- | :--- |
-| Administrador | `admin@ddtextil.com` | `admin123` |
-| Vendedor | `vendedor@ddtextil.com` | `vendedor123` |
-| Vendedor | `maria.gonzalez@ddtextil.com` | `vendedor123` |
-| Cliente | `cliente@gmail.com` | `cliente123` |
-
-> **Nota:** con los datos iniciales actuales solo funciona la cuenta del administrador. Los hash de vendedor y cliente en `01_esquema_espanol.sql` no corresponden a esas contraseñas, y el botón de acceso rápido "Cliente" llena `cliente@ddtextil.com`, que no existe. Mientras se corrige, ejecuta en la base:
->
-> ```sql
-> UPDATE usuarios SET contrasena_hash = encode(sha256('vendedor123'), 'hex')
->  WHERE correo IN ('vendedor@ddtextil.com', 'maria.gonzalez@ddtextil.com');
-> UPDATE usuarios SET contrasena_hash = encode(sha256('cliente123'), 'hex')
->  WHERE correo = 'cliente@gmail.com';
-> ```
+| Rol | Correo electronico | Contrasena | Acceso / Panel |
+| :--- | :--- | :--- | :--- |
+| Administrador | `admin@ddtextil.com` | `admin123` | Control total, inventario, moderacion, cupones y metricas (`/admin`) |
+| Vendedor | `vendedor@ddtextil.com` | `vendedor123` | Gestion de telas, ordenes asignadas y alertas de stock (`/vendedor`) |
+| Vendedor | `maria.gonzalez@ddtextil.com` | `vendedor123` | Gestion de telas y pedidos asignados (`/vendedor`) |
+| Cliente | `cliente@ddtextil.com` | `cliente123` | Compras, calculadora textil, rastreo y facturas PDF (`/cliente`) |
+| Cliente | `cliente@gmail.com` | `cliente123` | Cuenta alternativa de compras y pruebas de pasarela (`/cliente`) |
 
 ## Calidad de Software y Suite de Pruebas Automatizadas
 
