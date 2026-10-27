@@ -27,6 +27,7 @@ public abstract class ManejadorBase implements HttpHandler {
     private static final String NOMBRE_SERVICIO = "ddtextil-backend";
     private static final int MAX_PETICIONES_POR_VENTANA = 120; // 120 req/min por IP
     private static final long VENTANA_TIEMPO_MS = 60_000L; // 1 minuto
+    public static final int TAMANO_MAXIMO_CUERPO_BYTES = 5 * 1024 * 1024; // 5 MB límite de carga útil (OWASP DoS)
 
     // Rastreador en memoria para Rate Limiting concurrente
     private static final ConcurrentHashMap<String, ContadorPeticiones> registroRateLimit = new ConcurrentHashMap<>();
@@ -64,6 +65,19 @@ public abstract class ManejadorBase implements HttpHandler {
             intercambio.sendResponseHeaders(204, -1);
             intercambio.getResponseBody().close();
             return;
+        }
+
+        // Validación de tamaño máximo de carga útil (OWASP DoS Protection)
+        String contentLengthHeader = intercambio.getRequestHeaders().getFirst("Content-Length");
+        if (contentLengthHeader != null && !contentLengthHeader.isBlank()) {
+            try {
+                long longitudCuerpo = Long.parseLong(contentLengthHeader.trim());
+                if (longitudCuerpo > TAMANO_MAXIMO_CUERPO_BYTES) {
+                    registrarLogJson("WARN", "Carga útil rechazada por exceder límite de 5 MB: " + longitudCuerpo + " bytes", correlationId, intercambio, 413);
+                    enviarRespuestaError(intercambio, 413, "Carga útil demasiado grande. El límite máximo admitido es de 5 MB.");
+                    return;
+                }
+            } catch (NumberFormatException ignored) {}
         }
 
         // 3. Rate Limiting por IP para protección contra DoS y Fuerza Bruta
@@ -208,5 +222,38 @@ public abstract class ManejadorBase implements HttpHandler {
         } catch (NumberFormatException e) {
             return valorPorDefecto;
         }
+    }
+
+    /**
+     * Lee el cuerpo de la petición de forma segura limitando la lectura al tamaño máximo permitido.
+     */
+    protected byte[] leerCuerpoSeguro(HttpExchange intercambio) throws IOException {
+        java.io.InputStream in = intercambio.getRequestBody();
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int totalLeido = 0;
+        int leido;
+        while ((leido = in.read(buffer)) != -1) {
+            totalLeido += leido;
+            if (totalLeido > TAMANO_MAXIMO_CUERPO_BYTES) {
+                throw new ExcepcionDominio("El cuerpo de la petición excede el tamaño máximo permitido de 5 MB.");
+            }
+            out.write(buffer, 0, leido);
+        }
+        return out.toByteArray();
+    }
+
+    /**
+     * Sanitiza cadenas de entrada contra ataques de Cross-Site Scripting (XSS).
+     */
+    public static String sanitizarHtml(String entrada) {
+        if (entrada == null) return null;
+        return entrada
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;")
+                .replace("/", "&#x2F;");
     }
 }

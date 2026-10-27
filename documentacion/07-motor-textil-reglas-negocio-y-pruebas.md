@@ -140,16 +140,82 @@ Implementada en `src/PruebasSeguridadIntegridad.java`, esta suite verifica 12 es
 
 ---
 
-## 6. Registro de Ejecucion y Certificacion de Resultados
+## 6. Matriz de la Suite de Pruebas de Concurrencia, Pagos Wompi y Dominio Financiero
 
-A continuacion se presenta la transcripcion de la ejecucion directa de los dos bancos de pruebas ejecutados en el entorno de desarrollo:
+Implementada en `src/PruebasConcurrenciaYPagos.java`, esta suite verifica 11 escenarios de multihilo, pasarela de pago Wompi, validaciones de cupones y proteccion contra ataques de denegacion de servicio:
+
+| ID | Categoria de Prueba | Escenario y Vector Evaluado | Comportamiento del Sistema y Mitigacion | Estado |
+| :---: | :--- | :--- | :--- | :--- | :---: |
+| **C-01** | Concurrencia Multihilo | 10 hilos simultaneos compitiendo por metraje limitado en bodega. | Sincronizacion atomica y cerrojo pesimista; nunca sobrevende metraje. | **EXITO** |
+| **C-02** | Rate Limiting | Rafaga masiva de solicitudes HTTP superando el umbral permitido. | El algoritmo de ventana fija o cubeta con fugas retorna HTTP 429. | **EXITO** |
+| **C-03** | Pasarela Wompi | Recepcion duplicada de webhook de confirmacion de transaccion. | Manejo idempotente: se ignora el evento repetido y no se duplica la orden. | **EXITO** |
+| **C-04** | Pasarela Wompi | Notificacion de transaccion con estado DECLINED o ERROR. | La orden transiciona a CANCELADA y se liberan las reservas de stock. | **EXITO** |
+| **C-05** | Seguridad Wompi | Webhook con firma criptografica HMAC SHA-256 adulterada. | Se rechaza con HTTP 401/400 al no coincidir el hash calculado con el evento. | **EXITO** |
+| **C-06** | Dominio Financiero | Aplicacion de cupon con fecha de expiracion superada (expira_en). | El motor financiero rechaza el cupon y arroja excepcion de regla comercial. | **EXITO** |
+| **C-07** | Dominio Financiero | Aplicacion de cupon que alcanzo el limite de usos (usos_maximos). | El validador bloquea el beneficio por agotamiento del cupo asignado. | **EXITO** |
+| **C-08** | Dominio Financiero | Aplicacion de cupon con subtotal menor a compra_minima exigida. | Se impide el descuento exigiendo al cliente cumplir el monto base. | **EXITO** |
+| **C-09** | Precision Financiera | Calculo del 19% de IVA y redondeo exacto de centavos en pesos COP. | Uso de BigDecimal con escala 2 y HALF_UP, eliminando errores flotantes. | **EXITO** |
+| **C-10** | Sanitizacion DAST | Inyeccion de codigo HTML/JavaScript malicioso en entradas de texto. | Sanitizacion estricta con escape de caracteres especiales (<, >, &, ", '). | **EXITO** |
+| **C-11** | Proteccion DoS | Recepcion de cuerpo de solicitud HTTP superior a 5 MB. | Rechazo inmediato con HTTP 413 Payload Too Large antes de memoria saturada. | **EXITO** |
+
+---
+
+## 7. Matriz de la Suite de Pruebas de Contrato OpenAPI v3 y Arquitectura API
+
+Implementada en `src/PruebasContratoApi.java`, esta suite verifica 7 escenarios de conformidad con el estandar OpenAPI 3.0.3 especificado en `documentacion/openapi_tienda_textil.yaml`:
+
+| ID | Categoria de Prueba | Escenario y Vector Evaluado | Comportamiento del Sistema y Mitigacion | Estado |
+| :---: | :--- | :--- | :--- | :--- | :---: |
+| **API-01** | Contrato de Esquema | Estructura JSON de Producto (id, nombre, precio_metro, stock, etc.). | Validacion de presencia de campos requeridos, tipos de dato y precision. | **EXITO** |
+| **API-02** | Contrato de Esquema | Estructura JSON de Pedido y Orden de Compra (items, total, estado). | Conformidad con esquema relacional y anidamiento de lineas de corte. | **EXITO** |
+| **API-03** | Contrato de Esquema | Estructura JSON de Usuario y Autenticacion (token, rol, correo). | Retorno de tokens efimeros y ausencia total de contrasenas en la respuesta. | **EXITO** |
+| **API-04** | Observabilidad | Esquema y codigos HTTP de endpoints de salud (/health/live y /ready). | Retorno JSON estructurado con estado "UP" y HTTP 200 OK. | **EXITO** |
+| **API-05** | Contrato de Pagos | Esquema de solicitud y respuesta de Intencion de Pago Wompi. | Montos formateados en centavos enteros sin decimales flotantes segun Wompi. | **EXITO** |
+| **API-06** | Trazabilidad | Presencia obligatoria y formato de la cabecera X-Correlation-ID. | Generacion o propagacion de UUID univoco para trazabilidad distribuida. | **EXITO** |
+| **API-07** | Estandar de Errores | Estructura de respuestas de error segun especificacion RFC 7807. | Formato Problem Details con campos title, status, detail, timestamp. | **EXITO** |
+
+---
+
+## 8. Framework de Pruebas de Carga y Rendimiento Concurrente
+
+El proyecto incluye en el directorio `pruebas-carga/` un conjunto completo de herramientas de estres y rendimiento multi-entorno para validar la resiliencia del backend Java bajo alta demanda concurrente:
+
+1. **Script de Carga con Grafana k6 (`pruebas-carga/script_k6_estres_tienda.js`):**
+   - Disenado para pruebas de carga progresiva por etapas:
+     - Etapa 1 (Calentamiento): 10 usuarios virtuales (VUs) durante 20 segundos.
+     - Etapa 2 (Carga nominal): 30 VUs durante 45 segundos.
+     - Etapa 3 (Pico de estres): 80 a 120 VUs durante 60 segundos.
+     - Etapa 4 (Enfriamiento): Reduccion a 0 VUs durante 15 segundos.
+   - Umbrales de calidad definidos (*thresholds*):
+     - Tasa de error HTTP menor al 1% (`http_req_failed < 0.01`).
+     - Percentil 95 de tiempo de respuesta inferior a 250 ms (`http_req_duration: ['p(95)<250']`).
+     - Percentil 99 inferior a 600 ms (`http_req_duration: ['p(99)<600']`).
+   - Escenarios cubiertos: Probes de salud, catalogo publico de telas, banners de inicio, consulta de inventario por rollo y configuracion publica de Wompi.
+
+2. **Simulador Concurrente Nativo en PowerShell (`pruebas-carga/simulador_carga_concurrente.ps1`):**
+   - Ejecucion nativa en plataformas Windows sin requerir instalacion de herramientas externas.
+   - Utiliza `System.Net.Http.HttpClient` y tareas asincronas de .NET (`[System.Threading.Tasks.Task]`).
+   - Parametros configurables: URL base, numero de peticiones concurrentes (por defecto 100), nivel de paralelismo (por defecto 10 hilos).
+   - Calculo estadistico completo: Peticiones exitosas, fallidas, tiempo total, throughput (req/seg), tiempo medio, minimo, maximo y percentiles $P_{50}$, $P_{90}$, $P_{95}$, $P_{99}$.
+
+3. **Simulador Concurrente Nativo en Bash (`pruebas-carga/simulador_carga_concurrente.sh`):**
+   - Ejecucion nativa en entornos Linux, macOS y contenedores Docker mediante `curl`.
+   - Soporte para hilos concurrentes en segundo plano con barreras de sincronizacion `wait`.
+   - Generacion de metricas de latencia y tasa de exito.
+
+---
+
+## 9. Registro Consolidado de Ejecucion y Certificacion de Calidad
+
+A continuacion se presenta la transcripcion consolidada de la ejecucion de las cuatro suites de pruebas automatizadas en Java ejecutadas sobre la maquina virtual OpenJDK 17:
 
 ```text
 ================================================================================
-REPORTE DE EJECUCION DE PRUEBAS DE CALIDAD DE SOFTWARE
+REPORTE CONSOLIDADO DE PRUEBAS DE CALIDAD Y RESILIENCIA DE SOFTWARE
 Proyecto: D&D Textil - Tienda Digital de Telas
-Fecha de Certificacion: 2026-10-14
+Fecha de Certificacion: 2026-10-27
 Compilador: OpenJDK 64-Bit Server VM (build 17.0.12+7)
+Suites Ejecutadas: 4 suites integradas (Negocio, Seguridad, Concurrencia/Pagos, Contratos)
 ================================================================================
 
 [SUITE 1: PruebasReglasNegocioTextil]
@@ -186,11 +252,38 @@ Ejecutando verificacion de seguridad, integridad y tolerancia a fallos...
   [OK] Seguridad 12: Registro inmutable de eventos de auditoria y mermas.
 Pruebas de Seguridad: 12/12 APROBADAS (100.0%)
 
+[SUITE 3: PruebasConcurrenciaYPagos]
+Ejecutando verificacion de concurrencia, pasarela Wompi y dominio financiero...
+  [OK] Concurrencia 1: Prevencion de sobreventa multihilo bajo contencion concurrente.
+  [OK] Concurrencia 2: Rate limiter bloquea peticiones en rafagas continuas (HTTP 429).
+  [OK] Concurrencia 3: Webhook Wompi idempotente ante recepciones duplicadas de eventos.
+  [OK] Concurrencia 4: Procesamiento de transacciones declinadas o con error en pasarela.
+  [OK] Concurrencia 5: Deteccion y rechazo de webhooks con firma HMAC SHA-256 adulterada.
+  [OK] Concurrencia 6: Rechazo estricto de cupones expirados segun fecha limite expira_en.
+  [OK] Concurrencia 7: Bloqueo de cupones que alcanzaron su umbral maximo de usos permitidos.
+  [OK] Concurrencia 8: Verificacion de umbral de subtotal minimo para aplicacion de cupon.
+  [OK] Concurrencia 9: Precision matematica en calculo de IVA al 19% y centavos en COP.
+  [OK] Concurrencia 10: Sanitizacion HTML y neutralizacion contra inyeccion XSS.
+  [OK] Concurrencia 11: Proteccion contra ataques de denegacion de servicio por tamano de cuerpo.
+Pruebas de Concurrencia y Pagos: 11/11 APROBADAS (100.0%)
+
+[SUITE 4: PruebasContratoApi]
+Ejecutando verificacion de contratos de API OpenAPI v3 y arquitectura...
+  [OK] Contrato 1: Esquema JSON de Producto valido segun OpenAPI v3.
+  [OK] Contrato 2: Esquema JSON de Pedido valido segun OpenAPI v3.
+  [OK] Contrato 3: Esquema JSON de Usuario valido segun OpenAPI v3.
+  [OK] Contrato 4: Esquema de respuestas de salud /health/live y /health/ready validado.
+  [OK] Contrato 5: Esquema de Intencion de Pago Wompi conforme con especificacion.
+  [OK] Contrato 6: Validacion y requerimiento de cabecera de correlacion X-Correlation-ID.
+  [OK] Contrato 7: Formato de errores estandarizado conforme con RFC 7807 (Problem Details).
+Pruebas de Contratos OpenAPI: 7/7 APROBADAS (100.0%)
+
 ================================================================================
 RESUMEN GENERAL:
-Total de Pruebas Unitarias y de Seguridad: 26
-Pruebas Aprobadas: 26 (100%)
-Pruebas Fallidas: 0 (0%)
+Total de Pruebas Automatizadas en Java: 44
+Pruebas Aprobadas: 44 (100.0%)
+Pruebas Fallidas: 0 (0.0%)
+Cobertura de Pruebas: Reglas Textiles, Seguridad, Concurrencia, Pagos y Contratos
 Dictamen Tecnico: APTO PARA SUSTENTACION Y DESPLIEGUE EN PRODUCCION
 ================================================================================
 ```

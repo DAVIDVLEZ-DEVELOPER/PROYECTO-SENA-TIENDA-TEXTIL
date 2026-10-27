@@ -46,6 +46,14 @@ jobs:
           find src -name "*.java" > sources.txt
           javac -d bin -cp "lib/*" @sources.txt
 
+      - name: Ejecutar Suites de Pruebas Automatizadas (SENA ADSO)
+        run: |
+          cd backend-java/servidor-api
+          java -cp "bin:lib/*" PruebasReglasNegocioTextil
+          java -cp "bin:lib/*" PruebasSeguridadIntegridad
+          java -cp "bin:lib/*" PruebasConcurrenciaYPagos
+          java -cp "bin:lib/*" PruebasContratoApi
+
   docker-compose-test:
     name: Prueba de Docker Compose
     runs-on: ubuntu-latest

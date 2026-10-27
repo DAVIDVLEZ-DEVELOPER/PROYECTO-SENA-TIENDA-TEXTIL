@@ -162,16 +162,31 @@ Usuarios sembrados en la base de datos para validar los niveles de acceso del so
 
 ## Calidad de Software y Suite de Pruebas Automatizadas
 
-El proyecto implementa los estandares de la norma **ISO/IEC 25010** y las directrices de aseguramiento de calidad del **SENA**. Cuenta con una suite integral de 29 pruebas automatizadas (14 de reglas de negocio textiles y 15 de seguridad y casos extremos):
+El proyecto implementa los estandares de la norma **ISO/IEC 25010** y las directrices de aseguramiento de calidad del **SENA**. Cuenta con cuatro suites integrales con **44 pruebas automatizadas** en Java (14 de reglas de negocio textiles, 12 de seguridad y tolerancia a fallos, 11 de concurrencia, pagos Wompi y dominio financiero, y 7 de contratos OpenAPI v3), ademas de un framework completo de pruebas de carga y desempeno:
 
 ```bash
 # Navegar al directorio del backend
 cd "tienda digital de telas/backend-java/servidor-api"
 
-# Ejecutar las suites de pruebas automatizadas
+# Ejecutar las 4 suites de pruebas automatizadas (Windows: punto y coma)
 java -cp "lib/*;bin" PruebasReglasNegocioTextil
 java -cp "lib/*;bin" PruebasSeguridadIntegridad
+java -cp "lib/*;bin" PruebasConcurrenciaYPagos
+java -cp "lib/*;bin" PruebasContratoApi
+
+# En Linux / macOS / Docker (usar dos puntos como separador)
+java -cp "lib/*:bin" PruebasReglasNegocioTextil
+java -cp "lib/*:bin" PruebasSeguridadIntegridad
+java -cp "lib/*:bin" PruebasConcurrenciaYPagos
+java -cp "lib/*:bin" PruebasContratoApi
 ```
+
+### Pruebas de Carga y Rendimiento Concurrente
+
+Disponibles en el directorio [`pruebas-carga/`](pruebas-carga/README.md):
+- **Grafana k6:** `k6 run pruebas-carga/script_k6_estres_tienda.js`
+- **PowerShell (Nativo Windows):** `powershell -ExecutionPolicy Bypass -File pruebas-carga/simulador_carga_concurrente.ps1 -TotalPeticiones 100 -Concurrencia 10`
+- **Bash (Nativo Linux/macOS):** `./pruebas-carga/simulador_carga_concurrente.sh http://localhost:8081 100 10`
 
 ### Probes de Observabilidad (Health Checks)
 * **Liveness Probe**: `GET http://localhost:8081/health/live`
@@ -197,6 +212,7 @@ El cuerpo documental oficial del sistema esta estructurado de forma modular en l
 * 12. **[Diagramas de Secuencia](documentacion/12-diagramas-de-secuencia.md)**
 * 13. **[Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)**
 * 14. **[Matriz de Requerimientos (RF, RNF y Trazabilidad)](documentacion/Matriz_de_requerimientos_v2.xlsx)**
+* 15. **[Framework de Pruebas de Carga y Rendimiento](pruebas-carga/README.md)**
 
 ---
 

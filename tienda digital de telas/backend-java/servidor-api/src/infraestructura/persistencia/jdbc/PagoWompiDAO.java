@@ -123,21 +123,29 @@ public class PagoWompiDAO {
                 // 2. Aplicar Cupón si existe
                 double descuento = 0.0;
                 if (codigoCupon != null && !codigoCupon.trim().isEmpty()) {
-                    String sqlCupon = "SELECT tipo_descuento, valor_descuento, compra_minima, activo, expira_en FROM cupones WHERE UPPER(codigo) = UPPER(?)";
+                    String sqlCupon = "SELECT tipo_descuento, valor_descuento, compra_minima, activo, expira_en, usos_maximos, conteo_usos FROM cupones WHERE UPPER(codigo) = UPPER(?)";
                     try (PreparedStatement pst = con.prepareStatement(sqlCupon)) {
                         pst.setString(1, codigoCupon.trim());
                         try (ResultSet rs = pst.executeQuery()) {
                             if (rs.next() && rs.getBoolean("activo")) {
-                                double compraMinima = rs.getDouble("compra_minima");
-                                if (compraMinima <= 0 || subtotal >= compraMinima) {
-                                    String tipo = rs.getString("tipo_descuento");
-                                    double valor = rs.getDouble("valor_descuento");
-                                    if ("percentage".equalsIgnoreCase(tipo) || "porcentaje".equalsIgnoreCase(tipo)) {
-                                        descuento = subtotal * (valor / 100.0);
-                                    } else {
-                                        descuento = valor;
+                                java.sql.Timestamp expira = rs.getTimestamp("expira_en");
+                                boolean expirado = (expira != null && expira.before(new java.util.Date()));
+                                int usosMax = rs.getInt("usos_maximos");
+                                int conteoUsos = rs.getInt("conteo_usos");
+                                boolean limiteAlcanzado = (usosMax > 0 && conteoUsos >= usosMax);
+
+                                if (!expirado && !limiteAlcanzado) {
+                                    double compraMinima = rs.getDouble("compra_minima");
+                                    if (compraMinima <= 0 || subtotal >= compraMinima) {
+                                        String tipo = rs.getString("tipo_descuento");
+                                        double valor = rs.getDouble("valor_descuento");
+                                        if ("percentage".equalsIgnoreCase(tipo) || "porcentaje".equalsIgnoreCase(tipo)) {
+                                            descuento = subtotal * (valor / 100.0);
+                                        } else {
+                                            descuento = valor;
+                                        }
+                                        descuento = Math.min(descuento, subtotal);
                                     }
-                                    descuento = Math.min(descuento, subtotal);
                                 }
                             }
                         }
