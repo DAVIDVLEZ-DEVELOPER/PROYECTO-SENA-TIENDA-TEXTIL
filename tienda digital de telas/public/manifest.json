@@ -1,0 +1,22 @@
+{
+  "name": "D&D Textil - Tienda Digital de Telas",
+  "short_name": "D&D Textil",
+  "description": "Plataforma de comercializacion y control logistico de telas por metraje continuo",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["shopping", "business", "lifestyle"],
+  "icons": [
+    {
+      "src": "/images/proyecto-preview.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
