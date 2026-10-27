@@ -1,4 +1,4 @@
-﻿.env
+.env
 node_modules/
 dist/
 bin/
@@ -8,4 +8,6 @@ bin/
 .DS_Store
 Thumbs.db
 .vscode/
-*.ps1
+BASE DE DATOS/respaldos/*.gz
+BASE DE DATOS/respaldos/*.sha256
+BASE DE DATOS/respaldos/*.sql
