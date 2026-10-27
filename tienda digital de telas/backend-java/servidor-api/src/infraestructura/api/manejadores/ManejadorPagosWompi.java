@@ -33,10 +33,12 @@ public class ManejadorPagosWompi extends ManejadorBase {
 
     private final PagoWompiDAO pagoWompiDAO;
     private final Gson gson;
+    private final aplicacion.servicios.ServicioNotificacionesEmail servicioNotificaciones;
 
     public ManejadorPagosWompi() {
         this.pagoWompiDAO = new PagoWompiDAO();
         this.gson = new Gson();
+        this.servicioNotificaciones = new aplicacion.servicios.ServicioNotificacionesEmail();
     }
 
     @Override
@@ -233,6 +235,16 @@ public class ManejadorPagosWompi extends ManejadorBase {
         TransaccionWompi tx = new TransaccionWompi(txId, referencia, estado, montoCentavos, moneda, metodoPago);
 
         pagoWompiDAO.procesarTransaccionWompi(tx, payloadRaw);
+
+        if ("APPROVED".equalsIgnoreCase(estado)) {
+            String correoCliente = extraerTexto(txObj, "customer_email", "cliente@ddtextil.com");
+            double montoCop = montoCentavos / 100.0;
+            try {
+                servicioNotificaciones.enviarNotificacionPagoAprobado(correoCliente, "Cliente D&D Textil", referencia, montoCop);
+            } catch (Exception e) {
+                System.err.println("[NOTIFICACIONES] Error al despachar correo de pago: " + e.getMessage());
+            }
+        }
 
         // Siempre responder 200 OK a Wompi para acusar recibo
         enviarRespuestaJson(intercambio, 200, "{\"received\": true, \"status\": \"PROCESSED\"}");
