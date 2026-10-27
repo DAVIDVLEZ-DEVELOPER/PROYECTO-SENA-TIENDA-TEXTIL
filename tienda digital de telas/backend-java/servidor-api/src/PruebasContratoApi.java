@@ -247,6 +247,10 @@ public class PruebasContratoApi {
         }
     }
 
+    private static void validarPropiedadBooleano(JsonObject obj, String clave, boolean requerida) {
+        validarPropiedadBooleano(obj, clave, null, requerida);
+    }
+
     private static void validarPropiedadBooleano(JsonObject obj, String clave1, String clave2, boolean requerida) {
         String clavePresente = obj.has(clave1) ? clave1 : (clave2 != null && obj.has(clave2) ? clave2 : null);
         if (requerida && clavePresente == null) {
