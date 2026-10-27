@@ -110,6 +110,9 @@ El cuerpo documental oficial del proyecto se encuentra centralizado en el direct
 ### 15. [Framework de Pruebas de Carga y Rendimiento](pruebas-carga/README.md)
 *   Herramientas automatizadas de estres y desempeno: Script Grafana k6 (`script_k6_estres_tienda.js`), simulador concurrente nativo PowerShell (`simulador_carga_concurrente.ps1`) y script Bash (`simulador_carga_concurrente.sh`) con evaluacion de percentiles P50 a P99 y throughput.
 
+### 16. [Guion de Demostracion para Sustentacion SENA ADSO](documentacion/16-guion-demostracion-sustentacion-sena.md)
+*   Protocolo formal de sustentacion paso a paso (25 minutos): roles de cliente, operario de corte en bodega, vendedor y administrador, emision de factura PDF con CUFE, impresion de etiquetas termicas con QR, ejecucion de pruebas automatizadas y banco de preguntas tecnicas del jurado evaluador.
+
 ---
 
 ## Certificacion de Conformidad Tecnica

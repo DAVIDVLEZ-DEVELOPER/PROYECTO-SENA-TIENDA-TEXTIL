@@ -213,6 +213,7 @@ El cuerpo documental oficial del sistema esta estructurado de forma modular en l
 * 13. **[Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)**
 * 14. **[Matriz de Requerimientos (RF, RNF y Trazabilidad)](documentacion/Matriz_de_requerimientos_v2.xlsx)**
 * 15. **[Framework de Pruebas de Carga y Rendimiento](pruebas-carga/README.md)**
+* 16. **[Guion de Demostracion para Sustentacion SENA ADSO](documentacion/16-guion-demostracion-sustentacion-sena.md)**
 
 ---
 
