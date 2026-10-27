@@ -27,9 +27,9 @@ function Evaluar-Check($nombre, $condicion, $mensajeDetalle) {
     $script:totalChecks++
     if ($condicion) {
         $script:checksExitosos++
-        Write-Output "  [OK] $nombre: $mensajeDetalle"
+        Write-Output "  [OK] $($nombre): $mensajeDetalle"
     } else {
-        Write-Output "  [ALERTA] $nombre: $mensajeDetalle"
+        Write-Output "  [ALERTA] $($nombre): $mensajeDetalle"
     }
 }
 
