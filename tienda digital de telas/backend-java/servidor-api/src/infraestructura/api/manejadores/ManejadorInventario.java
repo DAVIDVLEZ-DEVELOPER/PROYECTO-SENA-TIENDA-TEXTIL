@@ -17,6 +17,7 @@ import dominio.modelos.LoteInventario;
 public class ManejadorInventario extends ManejadorBase {
     private final InventarioDAO dao = new InventarioDAO();
     private final Gson gson = new Gson();
+    private final aplicacion.servicios.ServicioEtiquetasBodega servicioEtiquetas = new aplicacion.servicios.ServicioEtiquetasBodega();
 
     @Override
     protected void procesarPeticion(HttpExchange intercambio) throws Exception {
@@ -55,6 +56,44 @@ public class ManejadorInventario extends ManejadorBase {
             enviarRespuestaJson(intercambio, 200, gson.toJson(dao.obtenerActividadReciente()));
         } else if (ruta.equals("/api/banner")) {
             enviarRespuestaJson(intercambio, 200, gson.toJson(dao.obtenerBanner()));
+        } else if (ruta.contains("/label") || ruta.contains("/etiqueta")) {
+            java.net.URI uri = intercambio.getRequestURI();
+            String query = uri.getQuery();
+            java.util.Map<String, String> params = new java.util.HashMap<>();
+            if (query != null) {
+                for (String param : query.split("&")) {
+                    String[] pair = param.split("=");
+                    if (pair.length > 1) {
+                        params.put(pair[0], java.net.URLDecoder.decode(pair[1], StandardCharsets.UTF_8));
+                    }
+                }
+            }
+            String codigo = params.getOrDefault("codigo", "ROL-001");
+            String tela = params.getOrDefault("tela", "Lino Natural Premium");
+            String lote = params.getOrDefault("lote", "LOT-2026-A");
+            double metros = 50.0;
+            try {
+                if (params.containsKey("metros")) metros = Double.parseDouble(params.get("metros"));
+            } catch (Exception ignored) {}
+            String estado = params.getOrDefault("estado", "disponible");
+            String ubicacion = params.getOrDefault("ubicacion", "PAS-02-EST-04");
+
+            String formato = params.getOrDefault("formato", "svg");
+            if ("html".equalsIgnoreCase(formato)) {
+                String html = servicioEtiquetas.generarEtiquetaHtml(codigo, tela, lote, metros, estado, ubicacion);
+                byte[] bytes = html.getBytes(StandardCharsets.UTF_8);
+                intercambio.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
+                intercambio.sendResponseHeaders(200, bytes.length);
+                intercambio.getResponseBody().write(bytes);
+                intercambio.getResponseBody().close();
+            } else {
+                String svg = servicioEtiquetas.generarEtiquetaSvg(codigo, tela, lote, metros, estado, ubicacion);
+                byte[] bytes = svg.getBytes(StandardCharsets.UTF_8);
+                intercambio.getResponseHeaders().set("Content-Type", "image/svg+xml; charset=UTF-8");
+                intercambio.sendResponseHeaders(200, bytes.length);
+                intercambio.getResponseBody().write(bytes);
+                intercambio.getResponseBody().close();
+            }
         } else {
             enviarRespuestaJson(intercambio, 404, "{\"error\":\"Ruta no encontrada\"}");
         }
