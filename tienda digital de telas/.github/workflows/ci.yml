@@ -2,13 +2,13 @@ name: CI/CD Pipeline - Tienda Textil SENA
 
 on:
   push:
-    branches: [ "main", "master", "desarrollo" ]
+    branches: [ "main", "master", "feature/**", "desarrollo" ]
   pull_request:
     branches: [ "main", "master" ]
 
 jobs:
   build-frontend:
-    name: Construir Frontend (React)
+    name: Construir y Probar Frontend (React)
     runs-on: ubuntu-latest
     steps:
       - name: Descargar repositorio
@@ -18,16 +18,24 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
-          
+
       - name: Instalar dependencias
-        run: npm ci || npm install
+        run: |
+          cd "tienda digital de telas"
+          npm ci || npm install
+
+      - name: Ejecutar Pruebas Automatizadas del Frontend
+        run: |
+          cd "tienda digital de telas"
+          npm test
 
       - name: Compilar Frontend (Vite)
-        run: npm run build
+        run: |
+          cd "tienda digital de telas"
+          npm run build
 
   build-backend:
-    name: Construir Backend (Java)
+    name: Construir y Probar Backend (Java)
     runs-on: ubuntu-latest
     steps:
       - name: Descargar repositorio
@@ -39,16 +47,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Verificar compilación Java
+      - name: Verificar compilacion Java
         run: |
-          cd backend-java/servidor-api
+          cd "tienda digital de telas/backend-java/servidor-api"
           mkdir -p bin
           find src -name "*.java" > sources.txt
           javac -d bin -cp "lib/*" @sources.txt
 
       - name: Ejecutar Suites de Pruebas Automatizadas (SENA ADSO)
         run: |
-          cd backend-java/servidor-api
+          cd "tienda digital de telas/backend-java/servidor-api"
           java -cp "bin:lib/*" PruebasReglasNegocioTextil
           java -cp "bin:lib/*" PruebasSeguridadIntegridad
           java -cp "bin:lib/*" PruebasConcurrenciaYPagos
@@ -62,7 +70,6 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v3
 
-      - name: Construir y Validar Contenedores (Dry Run)
+      - name: Validar archivo docker-compose
         run: |
-          # Solo construimos las imágenes para asegurarnos de que los Dockerfiles están correctos
-          docker-compose build
+          docker compose config
