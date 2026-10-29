@@ -1,6 +1,6 @@
 # Diagrama de clases — D&D Textil
 
-> Generado desde el backend compilado (`javap` sobre `tienda digital de telas/backend-java/conexionPostgres/src`), así que los atributos y métodos son exactamente los del código. Se presentan dos vistas: el **modelo de dominio** (las clases de datos) y la **arquitectura por capas** (quién llama a quién).
+> Generado desde el backend compilado (`javap` sobre `tienda digital de telas/backend-java/servidor-api/src`), así que los atributos y métodos son exactamente los del código. Se presentan dos vistas: el **modelo de dominio** (las clases de datos) y la **arquitectura por capas** (quién llama a quién).
 
 ## 1. Modelo de dominio
 
@@ -81,7 +81,7 @@ classDiagram
         -String fechaExpiracion
         -boolean activo
         -int conteoUso
-        -Cupon.Reglas reglas
+        -CuponReglas reglas
     }
     class LoteInventario {
         -String id
@@ -111,6 +111,7 @@ classDiagram
         -boolean alertaHabilitada
     }
     class RolloTextil {
+        <<soloPruebas>>
         -int id
         -int productoId
         -String codigoRollo
@@ -185,10 +186,6 @@ classDiagram
         -String tipoBanner
         -String fechaActualizacion
     }
-    class ItemConfiguracion {
-        -String clave
-        -String valor
-    }
     class VentaDiaria {
         -int id
         -String fechaVenta
@@ -224,8 +221,6 @@ classDiagram
     ReporteError "0..*" --> "0..1" Usuario : vendedor
     ActividadReciente "0..*" --> "0..1" Usuario : usuario
     DiapositivaCarrusel "0..*" --> "0..1" SeccionInicio : sección
-    class RolloTextil
-    <<soloPruebas>> RolloTextil
 ```
 
 ## 2. Arquitectura por capas
@@ -295,12 +290,12 @@ classDiagram
         +generarHashContrasena(String) String
     }
     class ServicioCorteTextil {
-        +validarMetrajeContinuo(List~RolloTextil~, double, String) ServicioCorteTextil.ResultadoValidacionCorte
-        +procesarCorteYRemanente(RolloTextil, double, double) ServicioCorteTextil.ResultadoProcesamientoCorte
-        +calcularPrecioEscalonado(double, double) ServicioCorteTextil.TarifaCalculada
+        +validarMetrajeContinuo(List~RolloTextil~, double, String) ResultadoValidacionCorte
+        +procesarCorteYRemanente(RolloTextil, double, double) ResultadoProcesamientoCorte
+        +calcularPrecioEscalonado(double, double) TarifaCalculada
     }
     class ServicioFactura {
-        +generarFactura(int, String, String, String, String, String, List~Map~String, Object~~, double, double, double, double, double, String) byte[]
+        +generarFactura(int, String, String, String, String, String, List~Map~, double, double, double, double, double, String) byte[]
     }
     class RepositorioUsuario {
         <<interface>>

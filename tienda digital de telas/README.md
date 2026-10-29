@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=00b4d8&height=200&section=header&text=Tienda%20Digital&fontSize=70&animation=fadeIn"/>
 </p>
 
@@ -64,7 +64,7 @@
 npm install
 
 # (Opcional) Si tienes backend en Java/Postgres:
-cd backend-java/conexionPostgres
+cd backend-java/servidor-api
 java -cp "bin;lib/gson-2.10.1.jar;lib/postgresql-42.7.3.jar"App
 
 # Inicia la aplicación frontend
@@ -365,7 +365,7 @@ El proyecto está dividido en dos grandes bloques: **Frontend (React)** y **Back
 ```text
 PROYECTO-SENA-TIENDA-TEXTIL
  ├── backend-java/
- │   └── conexionPostgres/
+ │   └── servidor-api/
  │       ├── lib/                 # Dependencias (.jar como PostgreSQL JDBC y Gson)
  │       ├── src/                 # Código fuente Java (Arquitectura Limpia)
  │       ├── schema_complete.sql  # Script DDL de la Base de Datos PostgreSQL
@@ -399,8 +399,8 @@ src/
  │    └── configuracion/
  │         └── Conexion.java    # Pool de conexiones HikariCP / PostgreSQL
  ├── App.java                   # Punto de entrada principal
- ├── PobladorDatosPrueba.java   # Utilidad para poblar la BD con datos iniciales reales
- └── PruebasSeguridadYBugs.java # Suite de validación de seguridad y concurrencia
+ ├── SembradorDatosPrueba.java   # Utilidad para poblar la BD con datos iniciales reales
+ └── PruebasSeguridadIntegridad.java # Suite de validación de seguridad y concurrencia
 ```
 
 ---
@@ -637,13 +637,13 @@ Variables opcionales (tienen valores por defecto):
 Desde la carpeta del proyecto frontend (`tienda digital de telas/`):
 
 ```bash
-javac -encoding UTF-8 -cp "backend-java/conexionPostgres/lib/*"-d "backend-java/conexionPostgres/bin"backend-java/conexionPostgres/src/App.java backend-java/conexionPostgres/src/conexion/*.java backend-java/conexionPostgres/src/api/*.java backend-java/conexionPostgres/src/dao/*.java backend-java/conexionPostgres/src/models/*.java
+javac -encoding UTF-8 -cp "backend-java/servidor-api/lib/*"-d "backend-java/servidor-api/bin"backend-java/servidor-api/src/App.java backend-java/servidor-api/src/conexion/*.java backend-java/servidor-api/src/api/*.java backend-java/servidor-api/src/dao/*.java backend-java/servidor-api/src/models/*.java
 ```
 
 #### 2.3. Ejecutar el backend
 
 ```bash
-java -cp "backend-java/conexionPostgres/bin;backend-java/conexionPostgres/lib/*"App
+java -cp "backend-java/servidor-api/bin;backend-java/servidor-api/lib/*"App
 ```
 
 Deberías ver:
@@ -757,10 +757,10 @@ Para solucionarlo y tener la base de datos idéntica al repositorio oficial:
    ```bash
    psql -U postgres -d tienda_digital_textiles_db -f "BASE DE DATOS/TIENDA DIGITAL TEXTIL.sql"```
 
-> **Consejo Pro (PobladorDatosPrueba):**  
+> **Consejo Pro (SembradorDatosPrueba):**  
 > Alternativamente, en lugar de importar el archivo `.sql`, puedes usar nuestra herramienta nativa de Java para resetear y sembrar automáticamente la base de datos con contraseñas encriptadas en SHA-256:  
 > ```bash
-> cd "backend-java/conexionPostgres"> java -cp "bin;lib/*"PobladorDatosPrueba
+> cd "backend-java/servidor-api"> java -cp "bin;lib/*"SembradorDatosPrueba
 > ```  
 > Esto truncará las tablas e insertará usuarios, métricas, productos temporales y las **credenciales válidas**.
 

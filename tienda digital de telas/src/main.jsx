@@ -20,3 +20,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
     </React.StrictMode>,
 )
+
+// Registro del Service Worker para soporte PWA y cache offline
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch((error) => {
+            console.debug('Service Worker no activo en entorno local:', error);
+        });
+    });
+}

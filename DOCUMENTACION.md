@@ -1,4 +1,4 @@
-﻿# Indice General de Documentacion Tecnica - D&D Textil
+# Indice General de Documentacion Tecnica - D&D Textil
 **Proyecto:** Plataforma Distribuida de Comercializacion y Control Logistico Textil (D&D Textil)  
 **Programa de Formacion:** Tecnologo en Analisis y Desarrollo de Software (ADSO) - SENA  
 **Estandares Aplicados:** IEEE 830, ISO/IEC 25010, Modelo C4 (Simon Brown), BDD (Gherkin), Clean Architecture, Domain-Driven Design (DDD), OWASP API Security, PCI-DSS v4.0, Ley 1581 de 2012 (Habeas Data)  
@@ -79,9 +79,12 @@ El cuerpo documental oficial del proyecto se encuentra centralizado en el direct
 *   **Fundamentacion de Dominio:** Peculiaridades del corte de telas (continuidad de pieza, consistencia cromatica por lote, reclasificacion de mermas y tarifas por volumen).
 *   **Entidad RolloTextil:** Estados del ciclo de vida (`DISPONIBLE`, `RESERVADO`, `RETAZO_LIQUIDADO`, `AGOTADO`) y metodos de corte.
 *   **Servicio de Corte Textil:** Algoritmo Best Fit para seleccion de rollo con menor desperdicio y formula de liquidacion con descuentos (12% mayorista, 25% rollo cerrado, 40% retazos).
-*   **Matriz de Pruebas de Reglas de Negocio:** Detalle de los 14 casos de prueba unitarios ejecutados en `PruebasReglasNegocioTextil.java` (100% aprobados).
-*   **Matriz de Pruebas de Seguridad y Casos Extremos:** Detalle de los 12 casos de prueba ejecutados en `PruebasSeguridadYBugs.java` (100% aprobados).
-*   **Certificacion de Resultados:** Registro oficial de ejecucion de las 26 pruebas automatizadas.
+*   **Suite 1 (Reglas de Negocio Textiles):** Detalle de los 14 casos de prueba unitarios ejecutados en `PruebasReglasNegocioTextil.java` (100% aprobados).
+*   **Suite 2 (Seguridad e Integridad):** Detalle de los 12 casos de prueba ejecutados en `PruebasSeguridadIntegridad.java` (100% aprobados).
+*   **Suite 3 (Concurrencia, Pagos Wompi y Dominio Financiero):** Detalle de los 11 casos de prueba ejecutados en `PruebasConcurrenciaYPagos.java` (100% aprobados).
+*   **Suite 4 (Contratos OpenAPI v3 y Arquitectura API):** Detalle de los 7 casos de prueba ejecutados en `PruebasContratoApi.java` (100% aprobados).
+*   **Framework de Rendimiento:** Pruebas de carga concurrentes multi-herramienta en `pruebas-carga/` (k6, PowerShell y Bash).
+*   **Certificacion de Resultados:** Registro oficial de ejecucion de las 44 pruebas automatizadas en Java (100% aprobadas).
 
 ### 8. [08. Modelo Entidad-Relacion](documentacion/08-modelo-entidad-relacion.md)
 *   **DER completo y simplificado:** Las 25 tablas del esquema `01_esquema_espanol.sql` con sus 20 llaves foraneas, cardinalidades y diccionario resumido.
@@ -98,14 +101,17 @@ El cuerpo documental oficial del proyecto se encuentra centralizado en el direct
 ### 12. [12. Diagramas de Secuencia](documentacion/12-diagramas-de-secuencia.md)
 *   **Flujos clave:** Inicio de sesion, registro, compra con bloqueo de stock, factura en PDF y motor de corte textil.
 
-### 13. [13. Manual de Usuario](documentacion/13-manual-de-usuario.md)
-*   **Guia por rol con capturas:** Cliente, vendedor y administrador, paso a paso. Version en [PDF](documentacion/pdf/Manual%20de%20usuario%20-%20D%26D%20Textil.pdf).
-
-### 14. [Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)
+### 13. [Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)
 *   Especificacion Swagger / OpenAPI v3.0 completa y estandarizada de todos los endpoints de la API REST, con esquemas de peticion, esquemas de respuesta y codigos de error HTTP.
 
-### 15. [Matriz de Requerimientos](documentacion/Matriz_de_requerimientos_v2.xlsx)
+### 14. [Matriz de Requerimientos](documentacion/Matriz_de_requerimientos_v2.xlsx)
 *   Requerimientos funcionales y no funcionales (ISO/IEC 25010) y matriz de trazabilidad hacia casos de uso y clases de diseno.
+
+### 15. [Framework de Pruebas de Carga y Rendimiento](pruebas-carga/README.md)
+*   Herramientas automatizadas de estres y desempeno: Script Grafana k6 (`script_k6_estres_tienda.js`), simulador concurrente nativo PowerShell (`simulador_carga_concurrente.ps1`) y script Bash (`simulador_carga_concurrente.sh`) con evaluacion de percentiles P50 a P99 y throughput.
+
+### 16. [Guion de Demostracion para Sustentacion SENA ADSO](documentacion/16-guion-demostracion-sustentacion-sena.md)
+*   Protocolo formal de sustentacion paso a paso (25 minutos): roles de cliente, operario de corte en bodega, vendedor y administrador, emision de factura PDF con CUFE, impresion de etiquetas termicas con QR, ejecucion de pruebas automatizadas y banco de preguntas tecnicas del jurado evaluador.
 
 ---
 

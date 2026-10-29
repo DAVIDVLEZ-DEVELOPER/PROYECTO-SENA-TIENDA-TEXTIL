@@ -142,36 +142,43 @@ docker compose down -v
 
 ## Credenciales de prueba
 
-Usuarios sembrados en la base de datos para validar los niveles de acceso del software.
+Usuarios sembrados en la base de datos para validar los niveles de acceso del software. Todos los usuarios cuentan con sus credenciales operativas listas para autenticacion directa o mediante los botones de acceso rapido en la interfaz.
 
-| Rol | Correo electronico | Contrasena |
-| :--- | :--- | :--- |
-| Administrador | `admin@ddtextil.com` | `admin123` |
-| Vendedor | `vendedor@ddtextil.com` | `vendedor123` |
-| Vendedor | `maria.gonzalez@ddtextil.com` | `vendedor123` |
-| Cliente | `cliente@gmail.com` | `cliente123` |
-
-> **Nota:** con los datos iniciales actuales solo funciona la cuenta del administrador. Los hash de vendedor y cliente en `01_esquema_espanol.sql` no corresponden a esas contraseñas, y el botón de acceso rápido "Cliente" llena `cliente@ddtextil.com`, que no existe. Mientras se corrige, ejecuta en la base:
->
-> ```sql
-> UPDATE usuarios SET contrasena_hash = encode(sha256('vendedor123'), 'hex')
->  WHERE correo IN ('vendedor@ddtextil.com', 'maria.gonzalez@ddtextil.com');
-> UPDATE usuarios SET contrasena_hash = encode(sha256('cliente123'), 'hex')
->  WHERE correo = 'cliente@gmail.com';
-> ```
+| Rol | Correo electronico | Contrasena | Acceso / Panel |
+| :--- | :--- | :--- | :--- |
+| Administrador | `admin@ddtextil.com` | `admin123` | Control total, inventario, moderacion, cupones y metricas (`/admin`) |
+| Vendedor | `vendedor@ddtextil.com` | `vendedor123` | Gestion de telas, ordenes asignadas y alertas de stock (`/vendedor`) |
+| Vendedor | `maria.gonzalez@ddtextil.com` | `vendedor123` | Gestion de telas y pedidos asignados (`/vendedor`) |
+| Cliente | `cliente@ddtextil.com` | `cliente123` | Compras, calculadora textil, rastreo y facturas PDF (`/cliente`) |
+| Cliente | `cliente@gmail.com` | `cliente123` | Cuenta alternativa de compras y pruebas de pasarela (`/cliente`) |
 
 ## Calidad de Software y Suite de Pruebas Automatizadas
 
-El proyecto implementa los estandares de la norma **ISO/IEC 25010** y las directrices de aseguramiento de calidad del **SENA**. Cuenta con una suite integral de 29 pruebas automatizadas (14 de reglas de negocio textiles y 15 de seguridad y casos extremos):
+El proyecto implementa los estandares de la norma **ISO/IEC 25010** y las directrices de aseguramiento de calidad del **SENA**. Cuenta con cuatro suites integrales con **44 pruebas automatizadas** en Java (14 de reglas de negocio textiles, 12 de seguridad y tolerancia a fallos, 11 de concurrencia, pagos Wompi y dominio financiero, y 7 de contratos OpenAPI v3), ademas de un framework completo de pruebas de carga y desempeno:
 
 ```bash
 # Navegar al directorio del backend
-cd "tienda digital de telas/backend-java/conexionPostgres"
+cd "tienda digital de telas/backend-java/servidor-api"
 
-# Ejecutar las suites de pruebas automatizadas
+# Ejecutar las 4 suites de pruebas automatizadas (Windows: punto y coma)
 java -cp "lib/*;bin" PruebasReglasNegocioTextil
-java -cp "lib/*;bin" PruebasSeguridadYBugs
+java -cp "lib/*;bin" PruebasSeguridadIntegridad
+java -cp "lib/*;bin" PruebasConcurrenciaYPagos
+java -cp "lib/*;bin" PruebasContratoApi
+
+# En Linux / macOS / Docker (usar dos puntos como separador)
+java -cp "lib/*:bin" PruebasReglasNegocioTextil
+java -cp "lib/*:bin" PruebasSeguridadIntegridad
+java -cp "lib/*:bin" PruebasConcurrenciaYPagos
+java -cp "lib/*:bin" PruebasContratoApi
 ```
+
+### Pruebas de Carga y Rendimiento Concurrente
+
+Disponibles en el directorio [`pruebas-carga/`](pruebas-carga/README.md):
+- **Grafana k6:** `k6 run pruebas-carga/script_k6_estres_tienda.js`
+- **PowerShell (Nativo Windows):** `powershell -ExecutionPolicy Bypass -File pruebas-carga/simulador_carga_concurrente.ps1 -TotalPeticiones 100 -Concurrencia 10`
+- **Bash (Nativo Linux/macOS):** `./pruebas-carga/simulador_carga_concurrente.sh http://localhost:8081 100 10`
 
 ### Probes de Observabilidad (Health Checks)
 * **Liveness Probe**: `GET http://localhost:8081/health/live`
@@ -195,11 +202,10 @@ El cuerpo documental oficial del sistema esta estructurado de forma modular en l
 * 10. **[Casos de Uso](documentacion/10-casos-de-uso.md)**
 * 11. **[Diagrama de Clases del Backend](documentacion/11-diagrama-de-clases.md)**
 * 12. **[Diagramas de Secuencia](documentacion/12-diagramas-de-secuencia.md)**
-* 13. **[Manual de Usuario](documentacion/13-manual-de-usuario.md)**
-* **[Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)**
-* **[Matriz de Requerimientos (RF, RNF y Trazabilidad)](documentacion/Matriz_de_requerimientos_v2.xlsx)**
-
-Version para imprimir: **[Manual de usuario (PDF)](documentacion/pdf/Manual%20de%20usuario%20-%20D%26D%20Textil.pdf)**
+* 13. **[Contrato de Interfaz OpenAPI v3.0](documentacion/openapi_tienda_textil.yaml)**
+* 14. **[Matriz de Requerimientos (RF, RNF y Trazabilidad)](documentacion/Matriz_de_requerimientos_v2.xlsx)**
+* 15. **[Framework de Pruebas de Carga y Rendimiento](pruebas-carga/README.md)**
+* 16. **[Guion de Demostracion para Sustentacion SENA ADSO](documentacion/16-guion-demostracion-sustentacion-sena.md)**
 
 ---
 

@@ -68,7 +68,7 @@ De acuerdo con el estandar **PCI-DSS v4.0 (Requisito 3)**, la plataforma **D&D T
    - La captura de datos de pago se realiza en el navegador mediante componentes provistos por la pasarela transaccional certificada PCI Nivel 1.
    - Nuestros servidores reciben unicamente un **token transaccional cifrado** y un identificador de transaccion de un solo uso para confirmar la aprobacion o rechazo del cobro.
 3. **Verificacion Automatizada en Backend:**
-   - La suite de pruebas `PruebasSeguridadYBugs.java` (Test 11) inspecciona activamente que ningun payload de pedido contenga secuencias numericas compatibles con el algoritmo de Luhn (tarjetas Visa, Mastercard o American Express) ni campos de CVV, rechazando de inmediato la solicitud con codigo HTTP 400 Bad Request.
+   - La suite de pruebas `PruebasSeguridadIntegridad.java` (Test 11) inspecciona activamente que ningun payload de pedido contenga secuencias numericas compatibles con el algoritmo de Luhn (tarjetas Visa, Mastercard o American Express) ni campos de CVV, rechazando de inmediato la solicitud con codigo HTTP 400 Bad Request.
 
 ---
 
