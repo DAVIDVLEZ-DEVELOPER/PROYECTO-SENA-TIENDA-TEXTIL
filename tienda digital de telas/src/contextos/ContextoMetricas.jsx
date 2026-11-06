@@ -160,22 +160,25 @@ const normalizarLote = (b) => ({
     lastUpdate: b.lastUpdate || b.ultimaActualizacion || ''
 });
 
-/**
- * Función auxiliar: hace fetch a un endpoint del backend Java y retorna el JSON o null si falla.
- * @param {string} endpoint - Ruta relativa (ej: '/api/usuarios')
- * @returns {Promise<any|null>}
- */
-async function apiFetch(endpoint, token, alRechazarSesion) {
+/** Consulta la API y distingue el resultado HTTP de los datos recibidos. */
+async function apiFetchDetallado(endpoint, token, alRechazarSesion) {
     try {
         const res = await fetch(getApiUrl(endpoint), token ? { headers: { Authorization: `Bearer ${token}` } } : undefined);
         if (res.status === 401 && token && alRechazarSesion) alRechazarSesion(token);
-        if (!res.ok) return null;
+        if (!res.ok) return { exito: false, estado: res.status, datos: null };
         const text = await res.text();
-        if (!text || text === 'null' || text === '{}') return null;
-        return JSON.parse(text);
+        const datos = text ? JSON.parse(text) : null;
+        return { exito: true, estado: res.status, datos };
     } catch {
-        return null;
+        return { exito: false, estado: 0, datos: null };
     }
+}
+
+/** Retorna el JSON de la API o null si falla o no contiene datos. */
+async function apiFetch(endpoint, token, alRechazarSesion) {
+    const { exito, datos } = await apiFetchDetallado(endpoint, token, alRechazarSesion);
+    if (!exito || datos === null || (Object.getPrototypeOf(datos) === Object.prototype && Object.keys(datos).length === 0)) return null;
+    return datos;
 }
 
 /**
@@ -195,6 +198,7 @@ export function MetricsProvider({ children }) {
     // ── Estado principal ──────────────────────────────────────────────────
     const [users,             setUsers]             = useState([]);
     const [orders,            setOrders]            = useState([]);
+    const [ordersLoadFailed, setOrdersLoadFailed] = useState(false);
     const [coupons,           setCoupons]           = useState([]);
     const [supportTickets,    setSupportTickets]    = useState([]);
     const [bugReports,        setBugReports]        = useState([]);
@@ -234,14 +238,14 @@ export function MetricsProvider({ children }) {
         setLoading(true);
         try {
             const [
-                apiUsers, apiPending, apiOrders, apiCoupons,
+                apiUsers, apiPending, respuestaPedidos, apiCoupons,
                 apiTickets, apiBugs, apiBatches, apiWaste, apiThresholds,
                 apiSales, apiRegions, apiActivity, apiBanner, apiErpSales,
                 apiErpNotif, apiErpFabric, apiConfigRaw, apiProductDiscounts
             ] = await Promise.all([
                 apiFetch(RUTAS_API?.usuarios || '/api/usuarios'),
                 apiFetch('/api/productos/pendientes'),
-                apiFetch(RUTAS_API?.pedidos || '/api/pedidos', tokenSesion, invalidarSesion),
+                apiFetchDetallado(RUTAS_API?.pedidos || '/api/pedidos', tokenSesion, invalidarSesion),
                 apiFetch(RUTAS_API?.cupones || '/api/cupones'),
                 apiFetch('/api/soporte/tickets'),
                 apiFetch('/api/soporte/errores'),
@@ -261,7 +265,14 @@ export function MetricsProvider({ children }) {
             if (!esCargaVigente()) return;
             if (apiUsers?.length > 0) setUsers(apiUsers.map(normalizarUsuario));
             setPendingProducts(apiPending || []);
-            setOrders(Array.isArray(apiOrders) ? apiOrders.map(normalizarPedido) : []);
+            if (respuestaPedidos.exito && Array.isArray(respuestaPedidos.datos)) {
+                setOrders(respuestaPedidos.datos.map(normalizarPedido));
+                setOrdersLoadFailed(false);
+            } else if (!tokenSesion || respuestaPedidos.estado === 401) {
+                setOrdersLoadFailed(false);
+            } else {
+                setOrdersLoadFailed(true);
+            }
             if (apiCoupons?.length > 0) setCoupons(apiCoupons.map(normalizarCupon));
             if (apiTickets?.length > 0) setSupportTickets(apiTickets.map(normalizarTicket));
             if (apiBugs?.length > 0) setBugReports(apiBugs.map(normalizarReporteError));
@@ -307,6 +318,7 @@ export function MetricsProvider({ children }) {
     useEffect(() => {
         // No mostrar pedidos de la sesión anterior mientras carga la nueva.
         setOrders([]);
+        setOrdersLoadFailed(false);
         fetchAllData();
     }, [fetchAllData]);
 
@@ -819,6 +831,7 @@ export function MetricsProvider({ children }) {
         loading,
         users,
         orders,
+        ordersLoadFailed,
         products,
         pendingProducts,
         coupons,
