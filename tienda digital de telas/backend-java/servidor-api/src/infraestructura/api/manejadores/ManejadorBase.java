@@ -7,11 +7,13 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import dominio.excepciones.ExcepcionDominio;
 import infraestructura.configuracion.ConfiguracionEntorno;
+import infraestructura.seguridad.TokenSesion;
 
 /**
  * Clase base abstracta para todos los controladores de la API REST (D&D Textil).
@@ -171,6 +173,17 @@ public abstract class ManejadorBase implements HttpHandler {
      * Método principal que cada manejador concreto debe implementar.
      */
     protected abstract void procesarPeticion(HttpExchange intercambio) throws Exception;
+
+    /**
+     * Obtiene la identidad verificada de la cabecera "Authorization: Bearer ...", o vacío si falta o no es válida.
+     */
+    protected Optional<TokenSesion.Identidad> obtenerIdentidad(HttpExchange intercambio) {
+        String autorizacion = intercambio.getRequestHeaders().getFirst("Authorization");
+        if (autorizacion == null) return Optional.empty();
+        String[] partes = autorizacion.trim().split("\\s+", 2);
+        if (partes.length != 2 || !"Bearer".equalsIgnoreCase(partes[0])) return Optional.empty();
+        return TokenSesion.verificar(partes[1]);
+    }
 
     /**
      * Envía una respuesta HTTP con cuerpo JSON en UTF-8 asegurando el cierre del flujo.

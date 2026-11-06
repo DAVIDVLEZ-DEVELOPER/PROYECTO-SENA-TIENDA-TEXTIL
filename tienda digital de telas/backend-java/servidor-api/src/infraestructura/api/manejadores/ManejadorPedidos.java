@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import infraestructura.persistencia.jdbc.PedidoDAO;
+import infraestructura.seguridad.TokenSesion;
 import dominio.modelos.Pedido;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,20 +34,25 @@ public class ManejadorPedidos extends ManejadorBase {
 
         // GET /api/orders o /api/pedidos (o individual /api/orders/{id})
         if ("GET".equalsIgnoreCase(metodo)) {
+            TokenSesion.Identidad identidad = obtenerIdentidad(intercambio).orElse(null);
+            if (identidad == null) {
+                enviarRespuestaJson(intercambio, 401, "{\"error\":\"Autenticación requerida\"}");
+                return;
+            }
             if (ruta.matches("^/api/(orders|pedidos)/\\d+/?$")) {
                 int idPedido = extraerIdRuta(ruta);
-                if (idPedido > 0) {
-                    Pedido pedido = pedidoDAO.obtenerPedidoPorId(idPedido);
-                    if (pedido != null) {
-                        enviarRespuestaJson(intercambio, 200, gson.toJson(pedido));
-                    } else {
-                        enviarRespuestaJson(intercambio, 404, "{\"error\":\"Pedido no encontrado\"}");
-                    }
-                    return;
+                Pedido pedido = pedidoDAO.obtenerPedidoPorId(idPedido);
+                if (pedido != null && puedeVerPedido(identidad, pedido)) {
+                    enviarRespuestaJson(intercambio, 200, gson.toJson(pedido));
+                } else {
+                    enviarRespuestaJson(intercambio, 404, "{\"error\":\"Pedido no encontrado\"}");
                 }
+                return;
             }
 
-            List<Pedido> pedidos = pedidoDAO.obtenerTodosLosPedidos();
+            List<Pedido> pedidos = identidad.esAdministrador() ? pedidoDAO.obtenerTodosLosPedidos()
+                    : identidad.esVendedor() ? pedidoDAO.obtenerPedidosPorVendedor(identidad.idUsuario())
+                    : pedidoDAO.obtenerPedidosPorCliente(identidad.idUsuario());
             enviarRespuestaJson(intercambio, 200, gson.toJson(pedidos));
 
         // POST /api/orders o /api/pedidos
@@ -125,6 +131,16 @@ public class ManejadorPedidos extends ManejadorBase {
         } else {
             enviarRespuestaJson(intercambio, 405, "{\"error\":\"Método no permitido\"}");
         }
+    }
+
+    /**
+     * Un administrador ve cualquier pedido; un vendedor solo los suyos como vendedor;
+     * cualquier otro rol solo los que realizó como cliente.
+     */
+    public static boolean puedeVerPedido(TokenSesion.Identidad identidad, Pedido pedido) {
+        if (identidad.esAdministrador()) return true;
+        if (identidad.esVendedor()) return pedido.getIdVendedor() == identidad.idUsuario();
+        return pedido.getIdCliente() == identidad.idUsuario();
     }
 
     private int extraerIdRuta(String ruta) {

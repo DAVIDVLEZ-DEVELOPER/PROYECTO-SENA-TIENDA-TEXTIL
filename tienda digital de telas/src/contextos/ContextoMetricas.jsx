@@ -12,6 +12,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useProductos } from './ContextoProducto';
+import { useAutenticacion } from './ContextoAutenticacion';
 import { formatCurrency } from '../utilidades/formateadores';
 
 import { getApiUrl, RUTAS_API } from '../config';
@@ -164,9 +165,9 @@ const normalizarLote = (b) => ({
  * @param {string} endpoint - Ruta relativa (ej: '/api/usuarios')
  * @returns {Promise<any|null>}
  */
-async function apiFetch(endpoint) {
+async function apiFetch(endpoint, token) {
     try {
-        const res = await fetch(getApiUrl(endpoint));
+        const res = await fetch(getApiUrl(endpoint), token ? { headers: { Authorization: `Bearer ${token}` } } : undefined);
         if (!res.ok) return null;
         const text = await res.text();
         if (!text || text === 'null' || text === '{}') return null;
@@ -183,6 +184,8 @@ async function apiFetch(endpoint) {
  * @param {{ children: React.ReactNode }} props
  */
 export function MetricsProvider({ children }) {
+    const { user } = useAutenticacion();
+    const tokenSesion = user?.token;
     // ── Productos (delegados a ContextoProducto para evitar duplicación) ────
     const { products, refreshProducts } = useProductos();
     const [pendingProducts,   setPendingProducts]   = useState([]);
@@ -234,7 +237,7 @@ export function MetricsProvider({ children }) {
             ] = await Promise.all([
                 apiFetch(RUTAS_API?.usuarios || '/api/usuarios'),
                 apiFetch('/api/productos/pendientes'),
-                apiFetch(RUTAS_API?.pedidos || '/api/pedidos'),
+                apiFetch(RUTAS_API?.pedidos || '/api/pedidos', tokenSesion),
                 apiFetch(RUTAS_API?.cupones || '/api/cupones'),
                 apiFetch('/api/soporte/tickets'),
                 apiFetch('/api/soporte/errores'),
@@ -253,7 +256,7 @@ export function MetricsProvider({ children }) {
             ]);
             if (apiUsers?.length > 0) setUsers(apiUsers.map(normalizarUsuario));
             setPendingProducts(apiPending || []);
-            if (apiOrders?.length > 0) setOrders(apiOrders.map(normalizarPedido));
+            setOrders(Array.isArray(apiOrders) ? apiOrders.map(normalizarPedido) : []);
             if (apiCoupons?.length > 0) setCoupons(apiCoupons.map(normalizarCupon));
             if (apiTickets?.length > 0) setSupportTickets(apiTickets.map(normalizarTicket));
             if (apiBugs?.length > 0) setBugReports(apiBugs.map(normalizarReporteError));
@@ -294,7 +297,7 @@ export function MetricsProvider({ children }) {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [tokenSesion]);
 
     useEffect(() => { fetchAllData(); }, [fetchAllData]);
 

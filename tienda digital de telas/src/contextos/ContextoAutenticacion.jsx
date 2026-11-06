@@ -87,6 +87,7 @@ export function AuthProvider({ children }) {
                 const nombreUsuario = rawUser.name || rawUser.nombre || 'Usuario';
                 const loggedInUser = {
                     ...rawUser,
+                    token: datos.token,
                     name: nombreUsuario,
                     nombre: nombreUsuario,
                     email: rawUser.email || rawUser.correo,
@@ -191,6 +192,7 @@ export function AuthProvider({ children }) {
                 const nombreUsuario = rawUser.name || rawUser.nombre || ssoData.nombre || 'Usuario';
                 const loggedInUser = {
                     ...rawUser,
+                    token: datos.token,
                     name: nombreUsuario,
                     nombre: nombreUsuario,
                     email: rawUser.email || rawUser.correo || ssoData.email,

@@ -3,6 +3,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dominio.modelos.ReporteError;
 import dominio.modelos.Usuario;
+import dominio.modelos.Pedido;
+import infraestructura.seguridad.TokenSesion;
+import infraestructura.api.manejadores.ManejadorPedidos;
+import java.util.Base64;
 import aplicacion.servicios.ServicioAutenticacion;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -388,6 +392,70 @@ public class PruebasSeguridadIntegridad {
             double subtotalConDescuento = Math.max(0.0, subtotal - descuentoAplicado);
             if (subtotalConDescuento < 0.0) {
                 throw new AssertionError("Fallo: El total con descuento resultó negativo.");
+            }
+        });
+
+        ejecutarPrueba("16. Sesiones firmadas: identidad, integridad, expiración y entradas malformadas", () -> {
+            byte[] secreto = "secreto-determinista-de-prueba".getBytes(StandardCharsets.UTF_8);
+            long ahora = 1700000000L;
+            String token = TokenSesion.emitir(42, "cliente", secreto, ahora);
+            TokenSesion.Identidad identidad = TokenSesion.verificar(token, secreto, ahora).orElseThrow();
+            if (identidad.idUsuario() != 42 || !"cliente".equals(identidad.rol())) {
+                throw new AssertionError("La sesión no conserva el identificador y el rol.");
+            }
+            String[] partes = token.split("\\.");
+            String cargaAlterada = Base64.getUrlEncoder().withoutPadding().encodeToString(
+                    "{\"sub\":42,\"rol\":\"admin\",\"exp\":1700043200}".getBytes(StandardCharsets.UTF_8));
+            String firmaAlterada = (partes[1].startsWith("A") ? "B" : "A") + partes[1].substring(1);
+            if (TokenSesion.verificar(cargaAlterada + "." + partes[1], secreto, ahora).isPresent()
+                    || TokenSesion.verificar(partes[0] + "." + firmaAlterada, secreto, ahora).isPresent()) {
+                throw new AssertionError("Se aceptó una carga o firma alterada.");
+            }
+            byte[] otroSecreto = "otro-secreto".getBytes(StandardCharsets.UTF_8);
+            if (TokenSesion.verificar(TokenSesion.emitir(42, "cliente", otroSecreto, ahora), secreto, ahora).isPresent()) {
+                throw new AssertionError("Se aceptó una sesión firmada con otro secreto.");
+            }
+            if (TokenSesion.verificar(token, secreto, ahora + TokenSesion.DURACION_SEGUNDOS).isPresent()) {
+                throw new AssertionError("Se aceptó una sesión expirada.");
+            }
+            for (String malformado : new String[] {null, "", "abc", "a.b.c", "a.b"}) {
+                if (TokenSesion.verificar(malformado, secreto, ahora).isPresent()) {
+                    throw new AssertionError("Se aceptó una entrada malformada.");
+                }
+            }
+            // Firmas válidas para comprobar también el rechazo de cargas JSON inválidas o incompletas.
+            for (String cargaInvalida : new String[] {"{", "{}", "{\"sub\":42,\"rol\":\"cliente\"}",
+                    "{\"sub\":null,\"rol\":\"cliente\",\"exp\":1700043200}"}) {
+                String carga = Base64.getUrlEncoder().withoutPadding().encodeToString(cargaInvalida.getBytes(StandardCharsets.UTF_8));
+                javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
+                mac.init(new javax.crypto.spec.SecretKeySpec(secreto, "HmacSHA256"));
+                String firma = Base64.getUrlEncoder().withoutPadding().encodeToString(mac.doFinal(carga.getBytes(StandardCharsets.UTF_8)));
+                if (TokenSesion.verificar(carga + "." + firma, secreto, ahora).isPresent()) {
+                    throw new AssertionError("Se aceptó una carga JSON inválida o incompleta.");
+                }
+            }
+        });
+
+        ejecutarPrueba("17. Autorización de pedidos por administrador, vendedor y cliente", () -> {
+            Pedido pedido = new Pedido();
+            pedido.setIdCliente(10);
+            pedido.setIdVendedor(20);
+            for (String rol : new String[] {"administrador", "admin", "ADMIN"}) {
+                if (!ManejadorPedidos.puedeVerPedido(new TokenSesion.Identidad(99, rol), pedido)) {
+                    throw new AssertionError("El administrador no puede consultar el pedido.");
+                }
+            }
+            for (String rol : new String[] {"vendedor", "seller", "VENDEDOR"}) {
+                if (!ManejadorPedidos.puedeVerPedido(new TokenSesion.Identidad(20, rol), pedido)
+                        || ManejadorPedidos.puedeVerPedido(new TokenSesion.Identidad(10, rol), pedido)) {
+                    throw new AssertionError("El vendedor puede consultar pedidos ajenos o no ve los propios.");
+                }
+            }
+            for (String rol : new String[] {"cliente", "desconocido"}) {
+                if (!ManejadorPedidos.puedeVerPedido(new TokenSesion.Identidad(10, rol), pedido)
+                        || ManejadorPedidos.puedeVerPedido(new TokenSesion.Identidad(20, rol), pedido)) {
+                    throw new AssertionError("El cliente o rol desconocido puede consultar pedidos ajenos o no ve los propios.");
+                }
             }
         });
 
