@@ -14,7 +14,7 @@ const MOOD_FILTERS = {
     },
     'Exterior': (p) => {
         const text = `${p.category || ''} ${p.categoria || ''} ${p.name || ''} ${p.nombre || ''} ${p.description || ''} ${p.descripcion || ''}`.toLowerCase();
-        return text.includes('dril') || text.includes('lino') || text.includes('poliester') || text.includes('poliéster') || text.includes('mueble') || text.includes('cortina') || text.includes('tapiceria') || text.includes('resistente');
+        return text.includes('dril') || text.includes('lino') || text.includes('poliester') || text.includes('poliéster') || text.includes('mueble') || text.includes('cortina') || text.includes('tapiceria') || text.includes('tapicería') || text.includes('resistente');
     },
     'Verano': (p) => {
         const text = `${p.category || ''} ${p.categoria || ''} ${p.name || ''} ${p.nombre || ''} ${p.description || ''} ${p.descripcion || ''} ${p.material || ''} ${p.composicion || ''}`.toLowerCase();
