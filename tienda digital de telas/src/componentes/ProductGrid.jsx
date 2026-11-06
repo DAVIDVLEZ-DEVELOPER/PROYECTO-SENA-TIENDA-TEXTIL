@@ -17,7 +17,7 @@ const MOOD_FILTERS = {
         return text.includes('dril') || text.includes('lino') || text.includes('poliester') || text.includes('poliéster') || text.includes('mueble') || text.includes('cortina') || text.includes('tapiceria') || text.includes('resistente');
     },
     'Verano': (p) => {
-        const text = `${p.category || ''} ${p.categoria || ''} ${p.name || ''} ${p.nombre || ''} ${p.description || ''} ${p.descripcion || ''}`.toLowerCase();
+        const text = `${p.category || ''} ${p.categoria || ''} ${p.name || ''} ${p.nombre || ''} ${p.description || ''} ${p.descripcion || ''} ${p.material || ''} ${p.composicion || ''}`.toLowerCase();
         return text.includes('algodon') || text.includes('algodón') || text.includes('lino') || text.includes('fresca') || text.includes('verano') || text.includes('camisa');
     }
 };
