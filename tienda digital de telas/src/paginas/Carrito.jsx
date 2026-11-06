@@ -124,9 +124,9 @@ export default function Carrito() {
         setCouponError('');
         const code = couponCode.trim().toUpperCase();
         if (!code) return;
-        const found = coupons?.find(c => c.code === code && c.active);
+        const found = coupons?.find(c => (c.code === code || c.codigo === code) && (c.active || c.activo));
         if (!found) { setCouponError('Cupón inválido o inactivo'); return; }
-        if (new Date(found.expiresAt) < new Date()) { setCouponError('Este cupón ha expirado'); return; }
+        if (found.expiresAt && new Date(found.expiresAt) < new Date()) { setCouponError('Este cupón ha expirado'); return; }
         if (found.rules?.minPurchase && subtotal < found.rules.minPurchase) {
             setCouponError(`Compra mínima: ${formatCurrency(found.rules.minPurchase)}`);
             return;

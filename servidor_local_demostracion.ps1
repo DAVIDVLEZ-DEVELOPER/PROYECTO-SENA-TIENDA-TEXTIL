@@ -144,14 +144,39 @@ while ($listener.IsListening) {
             continue
         }
 
-        if ($urlPath -eq "/api/auth/login" -or $urlPath -eq "/api/login") {
-            $resJson = '{"token":"demo-jwt-token-sena-adso-2026","user":{"id":1,"name":"Anderson Moreno","email":"admin@ddtextil.com","role":"administrador"}}'
+        if ($urlPath -eq "/api/auth/login" -or $urlPath -eq "/api/login" -or $urlPath -eq "/api/iniciar-sesion") {
+            $resJson = '{"success":true,"token":"demo-jwt-token-sena-adso-2026","user":{"id":1,"name":"Anderson Moreno","email":"admin@ddtextil.com","role":"administrador"}}'
             $bytes = [System.Text.Encoding]::UTF8.GetBytes($resJson)
             $res.ContentType = "application/json"
             $res.StatusCode = 200
             $res.OutputStream.Write($bytes, 0, $bytes.Length)
             $res.Close()
             continue
+        }
+
+        if ($urlPath -eq "/api/secciones-inicio" -or $urlPath -eq "/api/home-sections") {
+            $seccionesJson = '[{"id":1,"key":"nuevas","clave":"nuevas","title":"Nuevas Colecciones","titulo":"Nuevas Colecciones","subtitle":"Tendencias exclusivas","subtitulo":"Tendencias exclusivas","active":true,"activo":true,"order":1,"orden":1},{"id":2,"key":"exclusivas","clave":"exclusivas","title":"Telas Exclusivas","titulo":"Telas Exclusivas","subtitle":"Diseños especiales","subtitulo":"Diseños especiales","active":true,"activo":true,"order":2,"orden":2},{"id":3,"key":"ofertas","clave":"ofertas","title":"Ofertas Especiales","titulo":"Ofertas Especiales","subtitle":"Descuentos increíbles","subtitulo":"Descuentos increíbles","active":true,"activo":true,"order":3,"orden":3}]'
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($seccionesJson)
+            $res.ContentType = "application/json"
+            $res.StatusCode = 200
+            $res.OutputStream.Write($bytes, 0, $bytes.Length)
+            $res.Close()
+            continue
+        }
+
+        if ($urlPath.StartsWith("/uploads/")) {
+            $uploadRel = $urlPath.Substring(9)
+            $uploadFile = Join-Path $rootDir "tienda digital de telas\backend-java\servidor-api\uploads\$uploadRel"
+            if (Test-Path $uploadFile) {
+                $ext = [System.IO.Path]::GetExtension($uploadFile).ToLower()
+                $res.ContentType = if ($mimeMap.ContainsKey($ext)) { $mimeMap[$ext] } else { "application/octet-stream" }
+                $bytes = [System.IO.File]::ReadAllBytes($uploadFile)
+                $res.StatusCode = 200
+                $res.ContentLength64 = $bytes.Length
+                $res.OutputStream.Write($bytes, 0, $bytes.Length)
+                $res.Close()
+                continue
+            }
         }
 
         # --- ARCHIVOS ESTATICOS DEL FRONTEND (SPA) ---

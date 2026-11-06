@@ -10,9 +10,12 @@ import { formatCurrency } from '../utilidades/formateadores';
 const CATEGORY_STYLES = {
     'Seda':       'bg-purple-500/90 text-white',
     'Algodon':    'bg-sky-500/90 text-white',
+    'Algodón':    'bg-sky-500/90 text-white',
     'Lino':       'bg-emerald-500/90 text-white',
     'Lana':       'bg-amber-500/90 text-white',
     'Poliester':  'bg-rose-500/90 text-white',
+    'Poliéster':  'bg-rose-500/90 text-white',
+    'Dril':       'bg-teal-500/90 text-white',
     'Terciopelo': 'bg-indigo-500/90 text-white',
 };
 

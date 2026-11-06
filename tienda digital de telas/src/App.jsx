@@ -81,8 +81,6 @@ function AppRoutes() {
                     <Route path="/login" element={<IniciarSesion />} />
                     <Route path="/registro" element={<Registro />} />
                     <Route path="/reportar-fallo" element={<BugReport />} />
-                    <Route path="/pago" element={<Payment />} />
-                    <Route path="/checkout" element={<Pago />} />
                     <Route path="/confirmacion" element={<ConfirmacionPedido />} />
 
                     {/* Payment */}
@@ -101,14 +99,6 @@ function AppRoutes() {
                         element={
                             <ProtectedRoute>
                                 <Pago />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/confirmacion"
-                        element={
-                            <ProtectedRoute>
-                                <ConfirmacionPedido />
                             </ProtectedRoute>
                         }
                     />

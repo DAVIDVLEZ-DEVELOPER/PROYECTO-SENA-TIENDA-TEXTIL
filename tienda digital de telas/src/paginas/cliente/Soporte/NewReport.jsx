@@ -63,7 +63,7 @@ function NewReport() {
     // Filter delivered orders (only those can have issues reported)
     const deliveredOrders = orders.filter(o =>
         o.status === 'delivered' &&
-        (o.clientId === user?.id || true) // Show all for demo
+        (o.clientId === user?.id || o.idCliente === user?.id)
     );
 
     const handlePhotoUpload = (e) => {

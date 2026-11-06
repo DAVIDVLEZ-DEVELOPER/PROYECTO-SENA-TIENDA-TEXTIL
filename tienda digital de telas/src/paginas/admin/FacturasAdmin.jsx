@@ -124,7 +124,7 @@ function FacturasAdmin() {
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
                                 {filtered.map((inv) => (
-                                    <tr key={inv.orderId} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <tr key={inv.orderId ?? inv.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
@@ -132,9 +132,9 @@ function FacturasAdmin() {
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-gray-900 dark:text-white">
-                                                        FAC-{String(inv.orderId).padStart(6, '0')}
+                                                        FAC-{String(inv.orderId ?? inv.id).padStart(6, '0')}
                                                     </p>
-                                                    <p className="text-xs text-gray-500"># Pedido: {inv.orderId}</p>
+                                                    <p className="text-xs text-gray-500"># Pedido: {inv.orderId ?? inv.id}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -174,7 +174,7 @@ function FacturasAdmin() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <button
-                                                onClick={() => handleDownload(inv.orderId)}
+                                                onClick={() => handleDownload(inv.orderId ?? inv.id)}
                                                 className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-colors text-sm"
                                             >
                                                 <Download className="w-4 h-4" />
