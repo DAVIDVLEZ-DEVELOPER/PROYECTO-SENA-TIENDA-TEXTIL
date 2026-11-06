@@ -340,28 +340,41 @@ export function MetricsProvider({ children }) {
 
     /** Actualiza el rol de un usuario en el backend y estado local */
     const updateUserRole = async (userId, newRole) => {
+        const usuarioAnterior = users.find(u => u.id === userId);
+        const restaurarRol = () => setUsers(prev => prev.map(u => u.id === userId && usuarioAnterior
+            ? { ...u, role: usuarioAnterior.role, rol: usuarioAnterior.rol } : u));
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole, rol: newRole } : u));
         try {
-            await fetch(getApiUrl(`/api/usuarios/${userId}/rol`), {
+            const res = await fetch(getApiUrl(`/api/usuarios/${userId}/rol`), {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tokenSesion}` },
                 body: JSON.stringify({ role: newRole, rol: newRole })
             });
-        } catch (e) { console.error('Error al actualizar rol de usuario:', e); }
+            if (!res.ok) restaurarRol();
+        } catch (e) {
+            restaurarRol();
+            console.error('Error al actualizar rol de usuario:', e);
+        }
     };
 
     /** Activa / desactiva un usuario en el backend y estado local */
     const toggleUserActive = async (userId) => {
         const targetUser = users.find(u => u.id === userId);
         const nextActive = targetUser ? !targetUser.active : true;
+        const restaurarEstado = () => setUsers(prev => prev.map(u => u.id === userId && targetUser
+            ? { ...u, active: targetUser.active, activo: targetUser.activo } : u));
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, active: nextActive, activo: nextActive } : u));
         try {
-            await fetch(getApiUrl(`/api/usuarios/${userId}/estado`), {
+            const res = await fetch(getApiUrl(`/api/usuarios/${userId}/estado`), {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tokenSesion}` },
                 body: JSON.stringify({ active: nextActive, activo: nextActive })
             });
-        } catch (e) { console.error('Error al actualizar estado de usuario:', e); }
+            if (!res.ok) restaurarEstado();
+        } catch (e) {
+            restaurarEstado();
+            console.error('Error al actualizar estado de usuario:', e);
+        }
     };
 
     /** Filtra usuarios por rol */

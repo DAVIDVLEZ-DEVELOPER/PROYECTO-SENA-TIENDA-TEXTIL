@@ -12,7 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import dominio.excepciones.ExcepcionDominio;
+import dominio.modelos.Usuario;
 import infraestructura.configuracion.ConfiguracionEntorno;
+import infraestructura.persistencia.jdbc.UsuarioDAO;
 import infraestructura.seguridad.TokenSesion;
 
 /**
@@ -27,6 +29,7 @@ import infraestructura.seguridad.TokenSesion;
 public abstract class ManejadorBase implements HttpHandler {
 
     private static final String NOMBRE_SERVICIO = "ddtextil-backend";
+    private static final UsuarioDAO USUARIOS = new UsuarioDAO();
     private static final int MAX_PETICIONES_POR_VENTANA = 120; // 120 req/min por IP
     private static final long VENTANA_TIEMPO_MS = 60_000L; // 1 minuto
     public static final int TAMANO_MAXIMO_CUERPO_BYTES = 5 * 1024 * 1024; // 5 MB límite de carga útil (OWASP DoS)
@@ -175,14 +178,27 @@ public abstract class ManejadorBase implements HttpHandler {
     protected abstract void procesarPeticion(HttpExchange intercambio) throws Exception;
 
     /**
-     * Obtiene la identidad verificada de la cabecera "Authorization: Bearer ...", o vacío si falta o no es válida.
+     * Verifica la sesión Bearer y relee el rol y estado activo/suspendido de la base de datos en cada llamada.
+     * Devuelve vacío si la sesión o el usuario actual no son válidos.
      */
     protected Optional<TokenSesion.Identidad> obtenerIdentidad(HttpExchange intercambio) {
         String autorizacion = intercambio.getRequestHeaders().getFirst("Authorization");
         if (autorizacion == null) return Optional.empty();
         String[] partes = autorizacion.trim().split("\\s+", 2);
         if (partes.length != 2 || !"Bearer".equalsIgnoreCase(partes[0])) return Optional.empty();
-        return TokenSesion.verificar(partes[1]);
+        return TokenSesion.verificar(partes[1]).flatMap(reclamada ->
+                identidadVigente(reclamada, USUARIOS.buscarPorId(reclamada.idUsuario()).orElse(null)));
+    }
+
+    /**
+     * Valida el usuario actual y obtiene su rol sin confiar en el rol reclamado por la sesión.
+     */
+    public static Optional<TokenSesion.Identidad> identidadVigente(TokenSesion.Identidad reclamada, Usuario actual) {
+        if (actual == null || !actual.isActivo() || actual.isSuspendido()
+                || actual.getId() != reclamada.idUsuario()) {
+            return Optional.empty();
+        }
+        return Optional.of(new TokenSesion.Identidad(actual.getId(), actual.getRol()));
     }
 
     /**

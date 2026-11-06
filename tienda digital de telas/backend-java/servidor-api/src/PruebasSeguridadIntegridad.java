@@ -6,6 +6,7 @@ import dominio.modelos.Usuario;
 import dominio.modelos.Pedido;
 import infraestructura.seguridad.TokenSesion;
 import infraestructura.api.manejadores.ManejadorPedidos;
+import infraestructura.api.manejadores.ManejadorBase;
 import java.util.Base64;
 import aplicacion.servicios.ServicioAutenticacion;
 import java.io.File;
@@ -456,6 +457,37 @@ public class PruebasSeguridadIntegridad {
                         || ManejadorPedidos.puedeVerPedido(new TokenSesion.Identidad(20, rol), pedido)) {
                     throw new AssertionError("El cliente o rol desconocido puede consultar pedidos ajenos o no ve los propios.");
                 }
+            }
+        });
+
+        ejecutarPrueba("18. Identidad vigente: rol y estado actuales prevalecen sobre la sesión", () -> {
+            TokenSesion.Identidad reclamada = new TokenSesion.Identidad(7, "administrador");
+            Usuario cliente = new Usuario(7, "Cliente", "cliente@ejemplo.com", "cliente", true, false,
+                    null, null, null, null, null);
+            TokenSesion.Identidad vigente = ManejadorBase.identidadVigente(reclamada, cliente).orElseThrow();
+            if (!"cliente".equals(vigente.rol()) || vigente.esAdministrador()) {
+                throw new AssertionError("El rol administrador de la sesión prevaleció sobre el rol cliente actual.");
+            }
+            Usuario administrador = new Usuario(7, "Administrador", "admin@ejemplo.com", "administrador", true, false,
+                    null, null, null, null, null);
+            vigente = ManejadorBase.identidadVigente(new TokenSesion.Identidad(7, "cliente"), administrador).orElseThrow();
+            if (!"administrador".equals(vigente.rol()) || !vigente.esAdministrador()) {
+                throw new AssertionError("No se respetó el rol administrador actual.");
+            }
+            Usuario inactivo = new Usuario(7, "Inactivo", "inactivo@ejemplo.com", "administrador", false, false,
+                    null, null, null, null, null);
+            Usuario suspendido = new Usuario(7, "Suspendido", "suspendido@ejemplo.com", "administrador", true, true,
+                    null, null, null, null, null);
+            Usuario ajeno = new Usuario(8, "Ajeno", "ajeno@ejemplo.com", "administrador", true, false,
+                    null, null, null, null, null);
+            if (ManejadorBase.identidadVigente(reclamada, null).isPresent()
+                    || ManejadorBase.identidadVigente(reclamada, inactivo).isPresent()
+                    || ManejadorBase.identidadVigente(reclamada, suspendido).isPresent()
+                    || ManejadorBase.identidadVigente(reclamada, ajeno).isPresent()) {
+                throw new AssertionError("Se aceptó un usuario inexistente, inactivo, suspendido o con otro identificador.");
+            }
+            if (ManejadorBase.identidadVigente(reclamada, administrador).isEmpty()) {
+                throw new AssertionError("Se rechazó un administrador activo con el identificador correcto.");
             }
         });
 

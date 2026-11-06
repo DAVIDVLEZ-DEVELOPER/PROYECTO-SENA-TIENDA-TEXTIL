@@ -10,6 +10,7 @@ import java.util.List;
  * Manejador para la gestión y consulta de usuarios del sistema.
  * Rutas base: /api/users y /api/usuarios.
  * Soporta consulta GET de todos los usuarios registrados.
+ * Las modificaciones PUT requieren permisos de administrador vigentes.
  */
 public class ManejadorUsuarios extends ManejadorBase {
     private final UsuarioDAO usuarioDAO;
@@ -36,6 +37,15 @@ public class ManejadorUsuarios extends ManejadorBase {
             List<Usuario> usuarios = usuarioDAO.obtenerTodosLosUsuarios();
             enviarRespuestaJson(intercambio, 200, gson.toJson(usuarios));
         } else if ("PUT".equalsIgnoreCase(metodo)) {
+            var identidad = obtenerIdentidad(intercambio);
+            if (identidad.isEmpty()) {
+                enviarRespuestaJson(intercambio, 401, "{\"error\":\"Autenticación requerida\"}");
+                return;
+            }
+            if (!identidad.get().esAdministrador()) {
+                enviarRespuestaJson(intercambio, 403, "{\"error\":\"Se requieren permisos de administrador\"}");
+                return;
+            }
             String[] segmentos = ruta.split("/");
             int idUsuario = -1;
             for (String segmento : segmentos) {
