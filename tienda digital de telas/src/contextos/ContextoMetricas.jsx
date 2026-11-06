@@ -10,7 +10,7 @@
  *   region_sales, recent_activity, global_banner, system_config
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useProductos } from './ContextoProducto';
 import { useAutenticacion } from './ContextoAutenticacion';
 import { formatCurrency } from '../utilidades/formateadores';
@@ -187,6 +187,7 @@ async function apiFetch(endpoint, token, alRechazarSesion) {
 export function MetricsProvider({ children }) {
     const { user, invalidarSesion } = useAutenticacion();
     const tokenSesion = user?.token;
+    const cargaVigenteRef = useRef(0);
     // ── Productos (delegados a ContextoProducto para evitar duplicación) ────
     const { products, refreshProducts } = useProductos();
     const [pendingProducts,   setPendingProducts]   = useState([]);
@@ -228,6 +229,8 @@ export function MetricsProvider({ children }) {
 
     // ── Carga inicial: todos los endpoints en paralelo ───────────────────
     const fetchAllData = useCallback(async () => {
+        const idCarga = ++cargaVigenteRef.current;
+        const esCargaVigente = () => idCarga === cargaVigenteRef.current;
         setLoading(true);
         try {
             const [
@@ -255,6 +258,7 @@ export function MetricsProvider({ children }) {
                 apiFetch('/api/configuracion/system_config'),
                 apiFetch('/api/configuracion/product_discounts'),
             ]);
+            if (!esCargaVigente()) return;
             if (apiUsers?.length > 0) setUsers(apiUsers.map(normalizarUsuario));
             setPendingProducts(apiPending || []);
             setOrders(Array.isArray(apiOrders) ? apiOrders.map(normalizarPedido) : []);
@@ -296,11 +300,15 @@ export function MetricsProvider({ children }) {
         } catch (err) {
             console.error('Backend no disponible:', err.message);
         } finally {
-            setLoading(false);
+            if (esCargaVigente()) setLoading(false);
         }
     }, [tokenSesion, invalidarSesion]);
 
-    useEffect(() => { fetchAllData(); }, [fetchAllData]);
+    useEffect(() => {
+        // No mostrar pedidos de la sesión anterior mientras carga la nueva.
+        setOrders([]);
+        fetchAllData();
+    }, [fetchAllData]);
 
     // ── Aplicar colores del tema al DOM ──────────────────────────────────
     useEffect(() => {
