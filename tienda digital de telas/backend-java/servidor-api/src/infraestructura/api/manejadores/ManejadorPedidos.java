@@ -41,7 +41,7 @@ public class ManejadorPedidos extends ManejadorBase {
             }
             if (ruta.matches("^/api/(orders|pedidos)/\\d+/?$")) {
                 int idPedido = extraerIdRuta(ruta);
-                Pedido pedido = pedidoDAO.obtenerPedidoPorId(idPedido);
+                Pedido pedido = obtenerPedidoParaIdentidad(idPedido, identidad);
                 if (pedido != null && puedeVerPedido(identidad, pedido)) {
                     enviarRespuestaJson(intercambio, 200, gson.toJson(pedido));
                 } else {
@@ -133,9 +133,17 @@ public class ManejadorPedidos extends ManejadorBase {
         }
     }
 
+    private Pedido obtenerPedidoParaIdentidad(int idPedido, TokenSesion.Identidad identidad) {
+        if (identidad.esAdministrador()) return pedidoDAO.obtenerPedidoPorId(idPedido);
+        if (identidad.esVendedor()) return pedidoDAO.obtenerPedidoParaVendedor(idPedido, identidad.idUsuario());
+        return pedidoDAO.obtenerPedidoPorId(idPedido);
+    }
+
     /**
-     * Un administrador ve cualquier pedido; un vendedor solo los suyos como vendedor;
+     * Un administrador ve cualquier pedido; un vendedor solo sus líneas de productos;
      * cualquier otro rol solo los que realizó como cliente.
+     * Para vendedores, el pedido debe cargarse con obtenerPedidoParaVendedor:
+     * la pertenencia depende del producto, no del vendedor asignado al pedido.
      */
     public static boolean puedeVerPedido(TokenSesion.Identidad identidad, Pedido pedido) {
         if (identidad.esAdministrador()) return true;
