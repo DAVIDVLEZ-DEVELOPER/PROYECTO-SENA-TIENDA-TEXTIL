@@ -167,7 +167,7 @@ while ($listener.IsListening) {
         if ($urlPath.StartsWith("/uploads/")) {
             $uploadRel = $urlPath.Substring(9)
             $uploadFile = Join-Path $rootDir "tienda digital de telas\backend-java\servidor-api\uploads\$uploadRel"
-            if (Test-Path $uploadFile) {
+            if (Test-Path $uploadFile -PathType Leaf) {
                 $ext = [System.IO.Path]::GetExtension($uploadFile).ToLower()
                 $res.ContentType = if ($mimeMap.ContainsKey($ext)) { $mimeMap[$ext] } else { "application/octet-stream" }
                 $bytes = [System.IO.File]::ReadAllBytes($uploadFile)
@@ -177,6 +177,10 @@ while ($listener.IsListening) {
                 $res.Close()
                 continue
             }
+
+            $res.StatusCode = 404
+            $res.Close()
+            continue
         }
 
         # --- ARCHIVOS ESTATICOS DEL FRONTEND (SPA) ---
