@@ -145,7 +145,12 @@ while ($listener.IsListening) {
         }
 
         if ($urlPath -eq "/api/auth/login" -or $urlPath -eq "/api/login" -or $urlPath -eq "/api/iniciar-sesion") {
-            $resJson = '{"success":true,"token":"demo-jwt-token-sena-adso-2026","user":{"id":1,"name":"Anderson Moreno","email":"admin@ddtextil.com","role":"administrador"}}'
+            # El token demo no tiene firma; solo imita el formato real.
+            $expiracion = [DateTimeOffset]::UtcNow.AddHours(12).ToUnixTimeSeconds()
+            $carga = '{"sub":1,"rol":"administrador","exp":' + $expiracion + '}'
+            $cargaB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($carga)).TrimEnd('=').Replace('+','-').Replace('/','_')
+            $tokenDemo = "$cargaB64.demo-sin-firma"
+            $resJson = '{"success":true,"token":"' + $tokenDemo + '","user":{"id":1,"name":"Anderson Moreno","email":"admin@ddtextil.com","role":"administrador"}}'
             $bytes = [System.Text.Encoding]::UTF8.GetBytes($resJson)
             $res.ContentType = "application/json"
             $res.StatusCode = 200

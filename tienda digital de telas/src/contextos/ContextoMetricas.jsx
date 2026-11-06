@@ -165,9 +165,10 @@ const normalizarLote = (b) => ({
  * @param {string} endpoint - Ruta relativa (ej: '/api/usuarios')
  * @returns {Promise<any|null>}
  */
-async function apiFetch(endpoint, token) {
+async function apiFetch(endpoint, token, alRechazarSesion) {
     try {
         const res = await fetch(getApiUrl(endpoint), token ? { headers: { Authorization: `Bearer ${token}` } } : undefined);
+        if (res.status === 401 && token && alRechazarSesion) alRechazarSesion(token);
         if (!res.ok) return null;
         const text = await res.text();
         if (!text || text === 'null' || text === '{}') return null;
@@ -184,7 +185,7 @@ async function apiFetch(endpoint, token) {
  * @param {{ children: React.ReactNode }} props
  */
 export function MetricsProvider({ children }) {
-    const { user } = useAutenticacion();
+    const { user, invalidarSesion } = useAutenticacion();
     const tokenSesion = user?.token;
     // ── Productos (delegados a ContextoProducto para evitar duplicación) ────
     const { products, refreshProducts } = useProductos();
@@ -237,7 +238,7 @@ export function MetricsProvider({ children }) {
             ] = await Promise.all([
                 apiFetch(RUTAS_API?.usuarios || '/api/usuarios'),
                 apiFetch('/api/productos/pendientes'),
-                apiFetch(RUTAS_API?.pedidos || '/api/pedidos', tokenSesion),
+                apiFetch(RUTAS_API?.pedidos || '/api/pedidos', tokenSesion, invalidarSesion),
                 apiFetch(RUTAS_API?.cupones || '/api/cupones'),
                 apiFetch('/api/soporte/tickets'),
                 apiFetch('/api/soporte/errores'),
@@ -297,7 +298,7 @@ export function MetricsProvider({ children }) {
         } finally {
             setLoading(false);
         }
-    }, [tokenSesion]);
+    }, [tokenSesion, invalidarSesion]);
 
     useEffect(() => { fetchAllData(); }, [fetchAllData]);
 
